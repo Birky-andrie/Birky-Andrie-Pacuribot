@@ -58,7 +58,7 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
           <div className="lg:col-span-5 space-y-8">
             <div>
               <p className="font-mono text-xs uppercase tracking-widest text-[var(--color-signal)]">
-                04 // Start an Engagement
+                06 // Start an Engagement
               </p>
               <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-[var(--color-ink)]">
                 Ready to replace manual bottlenecks or scale ad creatives?

@@ -7,7 +7,7 @@ export function ToolkitSection() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-10 border-b border-[var(--color-ink)]">
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-[var(--color-signal)]">
-              03 // Tech Stack &amp; Toolkit
+              05 // Tech Stack &amp; Toolkit
             </p>
             <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-[var(--color-ink)]">
               Tools grouped by operational function.

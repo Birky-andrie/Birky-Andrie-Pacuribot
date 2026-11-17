@@ -37,7 +37,7 @@ export function WorkMatrix({ externalFilter }: WorkMatrixProps) {
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 border-b border-[var(--color-ink)]">
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-[var(--color-signal)]">
-              02 // Selected Work &amp; Verified Repositories
+              03 // Selected Work &amp; Verified Repositories
             </p>
             <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-[var(--color-ink)]">
               Proof of execution, not just tech stacks.

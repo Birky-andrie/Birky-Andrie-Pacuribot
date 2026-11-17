@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { Navbar } from "./Navbar";
 import { Hero } from "./Hero";
 import { ServicesGrid } from "./ServicesGrid";
+import { InteractiveProofs } from "./InteractiveProofs";
 import { WorkMatrix } from "./WorkMatrix";
+import { EngagementModels } from "./EngagementModels";
 import { ToolkitSection } from "./ToolkitSection";
 import { ContactSection } from "./ContactSection";
 import { CommandPalette } from "./CommandPalette";
@@ -32,7 +34,9 @@ export function PortfolioShell() {
       <main>
         <Hero />
         <ServicesGrid onSelectService={setSelectedService} />
+        <InteractiveProofs />
         <WorkMatrix externalFilter={workFilter} />
+        <EngagementModels onSelectModel={setSelectedService} />
         <ToolkitSection />
       </main>
       <ContactSection preselectedService={selectedService} />
