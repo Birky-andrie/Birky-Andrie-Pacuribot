@@ -16,6 +16,9 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
   const [email, setEmail] = useState("");
   const [brief, setBrief] = useState("");
   const [copiedBrief, setCopiedBrief] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "submitting" | "sent"
+  >("idle");
 
   useEffect(() => {
     if (preselectedService) {
@@ -33,11 +36,30 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
     ].join("\n");
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`[Portfolio Inquiry] ${service}`);
-    const body = encodeURIComponent(buildBriefText());
-    window.location.href = `mailto:${PROFILE.email}?subject=${subject}&body=${body}`;
+    setSubmitStatus("submitting");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ service, name, email, brief }),
+      });
+      const data = (await res.json()) as { ok?: boolean; mode?: string };
+      setSubmitStatus("sent");
+
+      if (data.mode !== "resend") {
+        const subject = encodeURIComponent(`[Portfolio Inquiry] ${service}`);
+        const body = encodeURIComponent(buildBriefText());
+        window.location.href = `mailto:${PROFILE.email}?subject=${subject}&body=${body}`;
+      }
+    } catch {
+      setSubmitStatus("sent");
+      const subject = encodeURIComponent(`[Portfolio Inquiry] ${service}`);
+      const body = encodeURIComponent(buildBriefText());
+      window.location.href = `mailto:${PROFILE.email}?subject=${subject}&body=${body}`;
+    }
   };
 
   const handleCopyBrief = async () => {
@@ -122,7 +144,7 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
                   Project Brief Intake
                 </span>
                 <span className="font-mono text-[11px] text-[var(--color-ink-muted)]">
-                  DIRECT MAILTO + CLIPBOARD
+                  VERCEL API + DIRECT MAILTO
                 </span>
               </div>
 
@@ -205,9 +227,14 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-2 border border-[var(--color-ink)] bg-[var(--color-ink)] px-5 py-3 font-mono text-xs uppercase tracking-wider text-[var(--color-paper)] hover:bg-[var(--color-signal)] hover:border-[var(--color-signal)] transition-colors cursor-pointer"
+                  disabled={submitStatus === "submitting"}
+                  className="inline-flex items-center gap-2 border border-[var(--color-ink)] bg-[var(--color-ink)] px-5 py-3 font-mono text-xs uppercase tracking-wider text-[var(--color-paper)] hover:bg-[var(--color-signal)] hover:border-[var(--color-signal)] transition-colors cursor-pointer disabled:opacity-60"
                 >
-                  Send Brief via Email
+                  {submitStatus === "submitting"
+                    ? "Dispatching Brief..."
+                    : submitStatus === "sent"
+                      ? "Brief Logged // Send Again"
+                      : "Send Brief via Email"}
                   <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
                 </button>
 
@@ -237,7 +264,7 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
           <span>
             &copy; {new Date().getFullYear()} {PROFILE.name}. Built with Next.js &amp; Tailwind CSS.
           </span>
-          <span>SWISS-GRID EDITORIAL // ZERO-SLOP ARCHITECTURE</span>
+          <span>SWISS-GRID EDITORIAL // VERCEL PRODUCTION BUILD</span>
         </div>
       </div>
     </footer>

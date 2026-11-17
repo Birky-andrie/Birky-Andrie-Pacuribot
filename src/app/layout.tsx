@@ -23,9 +23,25 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://birky-pacuribot.vercel.app"
+  ),
   title: "Birky Andrie L. Pacuribot — CS Engineer & Creative Technologist",
   description:
-    "Custom web & workflow engineering, AI rapid prototyping, direct-response video ad production, and technical project leadership. Based in Cagayan de Oro, working globally.",
+    "Custom web & workflow engineering (<5s audit reporting), AI rapid prototyping (HusAI), direct-response video ad production (20–40s A/B cuts), and technical project leadership.",
+  openGraph: {
+    title: "Birky Andrie L. Pacuribot — CS Engineer & Creative Technologist",
+    description:
+      "Fast internal web systems and direct-response video assets that drive measurable revenue.",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Birky Andrie L. Pacuribot — CS Engineer & Creative Technologist",
+    description:
+      "Fast internal web systems and direct-response video assets that drive measurable revenue.",
+  },
 };
 
 export default function RootLayout({
