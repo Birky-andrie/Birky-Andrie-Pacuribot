@@ -1,37 +1,66 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowUpRight, Command, Menu, X } from "lucide-react";
 import { PROFILE } from "@/data/portfolio";
 
 const NAV_LINKS = [
   { label: "Services", href: "#services" },
-  { label: "Selected Work", href: "#work" },
+  { label: "Proof Lab", href: "#proof-lab" },
+  { label: "Work", href: "#work" },
+  { label: "Engagements", href: "#engagements" },
   { label: "Toolkit", href: "#toolkit" },
-  { label: "Contact", href: "#contact" },
 ];
 
-export function Navbar() {
+interface NavbarProps {
+  onOpenCommandPalette: () => void;
+}
+
+export function Navbar({ onOpenCommandPalette }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [phtTime, setPhtTime] = useState<string>("");
+
+  useEffect(() => {
+    const updateClock = () => {
+      try {
+        const formatted = new Intl.DateTimeFormat("en-US", {
+          timeZone: "Asia/Manila",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }).format(new Date());
+        setPhtTime(`${formatted} PHT`);
+      } catch {
+        setPhtTime("UTC+8");
+      }
+    };
+    updateClock();
+    const timer = setInterval(updateClock, 30000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--color-hairline)] bg-[var(--color-paper)]/95 backdrop-blur-[2px]">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 h-14">
-        <a
-          href="#"
-          className="font-mono text-xs font-medium tracking-wider uppercase text-[var(--color-ink)] flex items-center gap-2.5"
-        >
-          <span
-            className="inline-block h-2 w-2 bg-[var(--color-signal)]"
-            aria-hidden="true"
-          />
-          <span>{PROFILE.shortName}</span>
-          <span className="hidden sm:inline text-[var(--color-ink-muted)] font-normal">
-            // {PROFILE.location}
+        <div className="flex items-center gap-3">
+          <a
+            href="#"
+            className="font-mono text-xs font-medium tracking-wider uppercase text-[var(--color-ink)] flex items-center gap-2"
+          >
+            <span
+              className="inline-block h-2 w-2 bg-[var(--color-signal)]"
+              aria-hidden="true"
+            />
+            <span>{PROFILE.shortName}</span>
+          </a>
+          <span className="hidden xl:inline-flex items-center gap-1.5 border border-[var(--color-hairline)] bg-[var(--color-paper-alt)] px-2 py-0.5 font-mono text-[11px] tabular-nums text-[var(--color-ink-muted)]">
+            <span>CDO, PH</span>
+            <span>//</span>
+            <span className="text-[var(--color-ink)]">{phtTime || "UTC+8"}</span>
           </span>
-        </a>
+        </div>
 
-        <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
+        <nav className="hidden lg:flex items-center gap-6" aria-label="Primary">
           {NAV_LINKS.map((item) => (
             <a
               key={item.href}
@@ -43,7 +72,21 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={onOpenCommandPalette}
+            className="inline-flex items-center gap-1.5 border border-[var(--color-hairline)] bg-[var(--color-paper-alt)] px-2.5 py-1.5 font-mono text-[11px] text-[var(--color-ink)] hover:border-[var(--color-ink)] transition-colors cursor-pointer"
+            aria-label="Open command palette"
+            title="Open Command Palette (Ctrl+K / ⌘K)"
+          >
+            <Command className="h-3 w-3 text-[var(--color-signal)]" aria-hidden="true" />
+            <span className="hidden sm:inline">Index</span>
+            <kbd className="border border-[var(--color-hairline)] bg-[var(--color-paper)] px-1 text-[10px] text-[var(--color-ink-muted)]">
+              ⌘K
+            </kbd>
+          </button>
+
           <a
             href="#contact"
             className="hidden sm:inline-flex items-center gap-1.5 border border-[var(--color-ink)] bg-[var(--color-ink)] px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider text-[var(--color-paper)] hover:bg-[var(--color-signal)] hover:border-[var(--color-signal)] transition-colors"
@@ -55,7 +98,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setMobileOpen((prev) => !prev)}
-            className="md:hidden inline-flex items-center justify-center border border-[var(--color-hairline)] p-1.5 text-[var(--color-ink)] hover:border-[var(--color-ink)]"
+            className="lg:hidden inline-flex items-center justify-center border border-[var(--color-hairline)] p-1.5 text-[var(--color-ink)] hover:border-[var(--color-ink)]"
             aria-expanded={mobileOpen}
             aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
           >
@@ -65,7 +108,7 @@ export function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden border-t border-[var(--color-hairline)] bg-[var(--color-paper)] px-4 py-4">
+        <div className="lg:hidden border-t border-[var(--color-hairline)] bg-[var(--color-paper)] px-4 py-4">
           <nav className="flex flex-col gap-3" aria-label="Mobile">
             {NAV_LINKS.map((item) => (
               <a

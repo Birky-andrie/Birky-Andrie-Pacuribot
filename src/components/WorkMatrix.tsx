@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowUpRight, ChevronDown, ChevronUp } from "lucide-react";
 import { CASE_STUDIES, type WorkCategory } from "@/data/portfolio";
 
@@ -12,9 +12,19 @@ const FILTERS: { id: WorkCategory; label: string }[] = [
   { id: "github", label: "GITHUB REPOS" },
 ];
 
-export function WorkMatrix() {
+interface WorkMatrixProps {
+  externalFilter?: WorkCategory;
+}
+
+export function WorkMatrix({ externalFilter }: WorkMatrixProps) {
   const [activeFilter, setActiveFilter] = useState<WorkCategory>("all");
   const [expandedId, setExpandedId] = useState<string | null>("pacs-builders");
+
+  useEffect(() => {
+    if (externalFilter) {
+      setActiveFilter(externalFilter);
+    }
+  }, [externalFilter]);
 
   const filtered =
     activeFilter === "all"
