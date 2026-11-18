@@ -2,11 +2,20 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowUpRight, Check, Command, Copy, Search, X } from "lucide-react";
-import { PROFILE, SERVICES, type WorkCategory } from "@/data/portfolio";
+import {
+  PROFILE,
+  SERVICES,
+  type FocusMode,
+  type ProofTab,
+  type WorkCategory,
+} from "@/data/portfolio";
 
 interface CommandPaletteProps {
   open: boolean;
   onClose: () => void;
+  focusMode: FocusMode;
+  onChangeFocusMode: (mode: FocusMode) => void;
+  onJumpToProof: (tab: ProofTab) => void;
   onSelectService: (serviceTitle: string) => void;
   onFilterWork: (category: WorkCategory) => void;
 }
@@ -22,6 +31,9 @@ interface CommandAction {
 export function CommandPalette({
   open,
   onClose,
+  focusMode,
+  onChangeFocusMode,
+  onJumpToProof,
   onSelectService,
   onFilterWork,
 }: CommandPaletteProps) {
@@ -32,12 +44,7 @@ export function CommandPalette({
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        if (open) {
-          onClose();
-        }
-      } else if (e.key === "Escape" && open) {
+      if (e.key === "Escape" && open) {
         e.preventDefault();
         onClose();
       }
@@ -65,6 +72,66 @@ export function CommandPalette({
   const actions: CommandAction[] = useMemo(
     () => [
       {
+        id: "proof-husai",
+        group: "Cinema Proof Stage",
+        label: "Launch HusAI Showcase (60s Remotion Demo + Localhost :5173)",
+        hint: "01 // HUSAI",
+        run: () => {
+          onClose();
+          onJumpToProof("husai");
+        },
+      },
+      {
+        id: "proof-hipsurfer",
+        group: "Cinema Proof Stage",
+        label: "Launch Hackerlily HipSurfer 9:16 Video Reels (3 Cuts)",
+        hint: "02 // REELS",
+        run: () => {
+          onClose();
+          onJumpToProof("hackerlily");
+        },
+      },
+      {
+        id: "proof-pacs",
+        group: "Cinema Proof Stage",
+        label: "Launch Pacs Builders <5s Audit Engine Benchmark",
+        hint: "03 // AUDIT",
+        run: () => {
+          onClose();
+          onJumpToProof("pacs");
+        },
+      },
+      {
+        id: "focus-all",
+        group: "Persona Focus URL",
+        label: "Switch Focus: Hybrid View (Engineering + Creative)",
+        hint: focusMode === "all" ? "ACTIVE" : "?focus=all",
+        run: () => {
+          onChangeFocusMode("all");
+          onClose();
+        },
+      },
+      {
+        id: "focus-eng",
+        group: "Persona Focus URL",
+        label: "Switch Focus: Software Engineering & AI Systems",
+        hint: focusMode === "engineering" ? "ACTIVE" : "?focus=engineering",
+        run: () => {
+          onChangeFocusMode("engineering");
+          onClose();
+        },
+      },
+      {
+        id: "focus-creative",
+        group: "Persona Focus URL",
+        label: "Switch Focus: Direct-Response 9:16 Video & Creative",
+        hint: focusMode === "creative" ? "ACTIVE" : "?focus=creative",
+        run: () => {
+          onChangeFocusMode("creative");
+          onClose();
+        },
+      },
+      {
         id: "nav-services",
         group: "Navigation",
         label: "Go to Services & Capabilities",
@@ -72,16 +139,9 @@ export function CommandPalette({
         run: () => jumpTo("#services"),
       },
       {
-        id: "nav-proof",
-        group: "Navigation",
-        label: "Go to Interactive Proof Lab (HusAI / Pacs / Ad Breakdown)",
-        hint: "#proof-lab",
-        run: () => jumpTo("#proof-lab"),
-      },
-      {
         id: "nav-work",
         group: "Navigation",
-        label: "Go to Selected Work & GitHub Matrix",
+        label: "Go to Selected Work Index (Dennis Snellenberg Hover Matrix)",
         hint: "#work",
         run: () => jumpTo("#work"),
       },
@@ -109,7 +169,7 @@ export function CommandPalette({
       {
         id: "filter-eng",
         group: "Filter Work",
-        label: "Filter Work: Engineering Systems",
+        label: "Filter Work Index: Engineering Systems",
         hint: "04 items",
         run: () => {
           onFilterWork("engineering");
@@ -119,7 +179,7 @@ export function CommandPalette({
       {
         id: "filter-creative",
         group: "Filter Work",
-        label: "Filter Work: Direct-Response Creative",
+        label: "Filter Work Index: Direct-Response Creative",
         hint: "01 item",
         run: () => {
           onFilterWork("creative");
@@ -129,7 +189,7 @@ export function CommandPalette({
       {
         id: "filter-github",
         group: "Filter Work",
-        label: "Filter Work: Viable GitHub Repositories",
+        label: "Filter Work Index: Viable GitHub Repositories",
         hint: "03 items",
         run: () => {
           onFilterWork("github");
@@ -149,7 +209,9 @@ export function CommandPalette({
       {
         id: "copy-email",
         group: "Direct Actions",
-        label: copiedEmail ? "Copied Email Address!" : `Copy Email (${PROFILE.email})`,
+        label: copiedEmail
+          ? "Copied Email Address!"
+          : `Copy Email (${PROFILE.email})`,
         hint: "Clipboard",
         run: async () => {
           try {
@@ -170,7 +232,11 @@ export function CommandPalette({
         label: "Open HusAI Live App (Vercel)",
         hint: "hus-ai-five.vercel.app",
         run: () => {
-          window.open("https://hus-ai-five.vercel.app", "_blank", "noopener,noreferrer");
+          window.open(
+            "https://hus-ai-five.vercel.app",
+            "_blank",
+            "noopener,noreferrer"
+          );
           onClose();
         },
       },
@@ -186,7 +252,7 @@ export function CommandPalette({
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [copiedEmail]
+    [copiedEmail, focusMode]
   );
 
   const filtered = useMemo(() => {
@@ -209,7 +275,9 @@ export function CommandPalette({
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setActiveIndex((prev) => (filtered.length ? (prev + 1) % filtered.length : 0));
+      setActiveIndex((prev) =>
+        filtered.length ? (prev + 1) % filtered.length : 0
+      );
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setActiveIndex((prev) =>
@@ -256,7 +324,7 @@ export function CommandPalette({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleInputKeyDown}
-            placeholder="Type a command, section, service pillar, or repo..."
+            placeholder="Type HusAI, HipSurfer, Focus Mode, section, or command..."
             className="w-full bg-transparent font-mono text-xs text-[var(--color-ink)] placeholder:text-[var(--color-ink-muted)] focus:outline-none"
           />
         </div>

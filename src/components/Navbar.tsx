@@ -2,21 +2,33 @@
 
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Command, Menu, X } from "lucide-react";
-import { PROFILE } from "@/data/portfolio";
+import { PROFILE, type FocusMode } from "@/data/portfolio";
 
 const NAV_LINKS = [
   { label: "Services", href: "#services" },
-  { label: "Proof Lab", href: "#proof-lab" },
-  { label: "Work", href: "#work" },
+  { label: "Proof Stage", href: "#proof-lab" },
+  { label: "Work Index", href: "#work" },
   { label: "Engagements", href: "#engagements" },
   { label: "Toolkit", href: "#toolkit" },
 ];
 
+const FOCUS_OPTIONS: { id: FocusMode; label: string; title: string }[] = [
+  { id: "all", label: "ALL", title: "Full Hybrid View (Engineering + Creative)" },
+  { id: "engineering", label: "ENG", title: "Engineering & AI Systems Focus (?focus=engineering)" },
+  { id: "creative", label: "CREATIVE", title: "Direct-Response 9:16 Video Focus (?focus=creative)" },
+];
+
 interface NavbarProps {
+  focusMode: FocusMode;
+  onChangeFocusMode: (mode: FocusMode) => void;
   onOpenCommandPalette: () => void;
 }
 
-export function Navbar({ onOpenCommandPalette }: NavbarProps) {
+export function Navbar({
+  focusMode,
+  onChangeFocusMode,
+  onOpenCommandPalette,
+}: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [phtTime, setPhtTime] = useState<string>("");
 
@@ -72,7 +84,33 @@ export function Navbar({ onOpenCommandPalette }: NavbarProps) {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
+          {/* Shareable Focus Mode Switcher */}
+          <div
+            className="hidden sm:inline-flex items-center border border-[var(--color-hairline)] bg-[var(--color-paper-alt)]"
+            role="group"
+            aria-label="Portfolio Focus Mode"
+          >
+            {FOCUS_OPTIONS.map((opt) => {
+              const active = focusMode === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  type="button"
+                  title={opt.title}
+                  onClick={() => onChangeFocusMode(opt.id)}
+                  className={`px-2 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors cursor-pointer ${
+                    active
+                      ? "bg-[var(--color-ink)] text-[var(--color-paper)]"
+                      : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+
           <button
             type="button"
             onClick={onOpenCommandPalette}
@@ -81,7 +119,7 @@ export function Navbar({ onOpenCommandPalette }: NavbarProps) {
             title="Open Command Palette (Ctrl+K / ⌘K)"
           >
             <Command className="h-3 w-3 text-[var(--color-signal)]" aria-hidden="true" />
-            <span className="hidden sm:inline">Index</span>
+            <span className="hidden md:inline">Index</span>
             <kbd className="border border-[var(--color-hairline)] bg-[var(--color-paper)] px-1 text-[10px] text-[var(--color-ink-muted)]">
               ⌘K
             </kbd>
@@ -108,7 +146,27 @@ export function Navbar({ onOpenCommandPalette }: NavbarProps) {
       </div>
 
       {mobileOpen && (
-        <div className="lg:hidden border-t border-[var(--color-hairline)] bg-[var(--color-paper)] px-4 py-4">
+        <div className="lg:hidden border-t border-[var(--color-hairline)] bg-[var(--color-paper)] px-4 py-4 space-y-4">
+          <div className="flex items-center justify-between font-mono text-xs">
+            <span className="text-[var(--color-ink-muted)]">FOCUS VIEW:</span>
+            <div className="inline-flex border border-[var(--color-hairline)]">
+              {FOCUS_OPTIONS.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => onChangeFocusMode(opt.id)}
+                  className={`px-2.5 py-1 font-mono text-[10px] uppercase ${
+                    focusMode === opt.id
+                      ? "bg-[var(--color-ink)] text-[var(--color-paper)]"
+                      : "bg-[var(--color-paper-alt)] text-[var(--color-ink)]"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <nav className="flex flex-col gap-3" aria-label="Mobile">
             {NAV_LINKS.map((item) => (
               <a
