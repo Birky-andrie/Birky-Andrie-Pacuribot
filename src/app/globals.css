@@ -11,6 +11,12 @@
   --color-ink-muted: #52524E;
   --color-hairline: #D4D4CE;
   --color-signal: #D9381E;
+
+  --color-cinema: #0D0D0D;
+  --color-cinema-alt: #161616;
+  --color-cinema-border: #2A2A28;
+  --color-cinema-text: #F7F7F4;
+  --color-cinema-muted: #9E9E96;
 }
 
 @layer base {
@@ -34,6 +40,10 @@
 
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+.ease-out-expo {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {

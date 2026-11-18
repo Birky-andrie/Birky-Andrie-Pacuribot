@@ -1,4 +1,6 @@
 export type WorkCategory = "all" | "engineering" | "creative" | "leadership" | "github";
+export type FocusMode = "all" | "engineering" | "creative";
+export type ProofTab = "husai" | "hackerlily" | "pacs";
 
 export interface ServicePillar {
   id: string;
@@ -9,11 +11,22 @@ export interface ServicePillar {
   deliverables: string[];
 }
 
+export interface CaseStudyPreview {
+  type: "video" | "image" | "telemetry";
+  src?: string;
+  poster?: string;
+  badge: string;
+  highlight: string;
+  sublabel: string;
+}
+
 export interface CaseStudy {
   id: string;
+  index: string;
   code: string;
   title: string;
   clientOrContext: string;
+  locationTag: string;
   role: string;
   period: string;
   categories: Exclude<WorkCategory, "all">[];
@@ -23,6 +36,7 @@ export interface CaseStudy {
   execution: string;
   impact: string;
   stack: string[];
+  previewMedia: CaseStudyPreview;
   links?: {
     repo?: string;
     live?: string;
@@ -65,6 +79,37 @@ export const HERO_METRICS = [
     source: "Hackerlily HipSurfer (Germany)",
   },
 ] as const;
+
+export const FOCUS_COPY: Record<
+  FocusMode,
+  {
+    badge: string;
+    headline: string;
+    subheadline: string;
+  }
+> = {
+  all: {
+    badge: "HYBRID MODE // CS ENGINEER + CREATIVE TECHNOLOGIST",
+    headline:
+      "I engineer fast internal web systems and direct-response video assets that drive measurable revenue.",
+    subheadline:
+      "I replace manual spreadsheet bottlenecks with role-based web applications (<5s audit reporting), build real-time AI call-coaching software (HusAI), and produce A/B-tested 9:16 Meta & TikTok ad creatives for international brands.",
+  },
+  engineering: {
+    badge: "ENGINEERING FOCUS // FULL-STACK SYSTEMS & AI PROTOTYPING",
+    headline:
+      "I build sub-5-second internal web platforms, real-time AI coaching tools, and full-SDLC software.",
+    subheadline:
+      "Specializing in React/Next.js, TypeScript/Express, Electron, and Groq/Gemini AI pipelines—replacing manual Excel workflows with role-based audit systems and shipping production prototypes with 1.00-grade SDLC rigor.",
+  },
+  creative: {
+    badge: "CREATIVE FOCUS // DIRECT-RESPONSE 9:16 VIDEO & MOTION",
+    headline:
+      "I engineer high-retention 9:16 paid social video ads and visual systems that convert cold traffic.",
+    subheadline:
+      "Combining UI/UX typography hierarchy, beat-synced CapCut Pro editing, Foley sound design, and rapid A/B hook testing (Skeptic UGC, Competitor Switchers, Minimalist Lifestyle) for international D2C brands.",
+  },
+};
 
 export const SERVICES: ServicePillar[] = [
   {
@@ -127,64 +172,12 @@ export const SERVICES: ServicePillar[] = [
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
-    id: "pacs-builders",
-    code: "CS-01",
-    title: "Centralized Material Tracking & Auditing System",
-    clientOrContext: "Pacs Builders (Engineering Firm, CDO)",
-    role: "Contract Programmer — Frontend & Workflow Automation",
-    period: "AUG 2025 – DEC 2025",
-    categories: ["engineering"],
-    primaryMetric: "< 5s",
-    primaryMetricLabel: "Complex Audit Report Generation",
-    problem:
-      "Material receipts, site usage, and inventory movements were tracked across fragmented manual Excel sheets, causing human entry errors and slow audit reconciliation.",
-    execution:
-      "Built the frontend interface and workflow automation for a centralized web platform with role-based permissions (Admin, Auditor, Staff), automated transaction trails, and optimized reporting queries.",
-    impact:
-      "Eliminated manual spreadsheet reconciliation for non-technical staff and cut data-heavy audit and inventory report generation to under 5 seconds.",
-    stack: ["Python", "HTML/CSS", "Role-Based Auth", "SDLC", "Audit Reporting"],
-  },
-  {
-    id: "hackerlily-hipsurfer",
-    code: "CS-02",
-    title: "Direct-Response Paid Ad Creatives (HipSurfer)",
-    clientOrContext: "Hackerlily (Germany-Based Client)",
-    role: "Freelance Video Editor & Creative Strategist",
-    period: "FEB 2026 – PRESENT",
-    categories: ["creative"],
-    primaryMetric: "20–40s",
-    primaryMetricLabel: "High-Retention Ad Variations",
-    problem:
-      "International D2C paid acquisition on Meta, TikTok, and Pinterest requires rapid creative iteration to prevent ad fatigue and capture sound-off mobile scrollers.",
-    execution:
-      "Engineered beat-synced UGC and text-led video ads targeting pain points, social proof, and competitor switching. Applied mobile UI/UX typography hierarchy, Foley sound design, and rapid A/B hook testing.",
-    impact:
-      "Delivered multi-variant top-of-funnel ad assets (talking-head vs. text-led, dynamic award badges and review metrics) aligned directly with German brand stakeholders.",
-    stack: ["CapCut Pro", "A/B Hook Testing", "Kinetic Typography", "Foley Audio", "Meta / TikTok / Pinterest"],
-  },
-  {
-    id: "trailblazer-startup-lab",
-    code: "CS-03",
-    title: "Startup Incubation & Full-SDLC Delivery",
-    clientOrContext: "Trailblazer Startup Lab, USTP CDO",
-    role: "Project Lead",
-    period: "JUN 2026 – AUG 2026",
-    categories: ["leadership"],
-    primaryMetric: "1.00",
-    primaryMetricLabel: "Final Grade (Highest Distinction)",
-    problem:
-      "Translating an early-stage startup concept into a documented, testable, and deployable software product under strict academic and incubation milestones.",
-    execution:
-      "Led technical scoping, system architecture documentation, task prioritization, and end-to-end SDLC coordination from initial design specs to final deployment.",
-    impact:
-      "Delivered the complete incubation milestone on schedule and earned a Final Grade of 1.00—the highest possible academic distinction at USTP.",
-    stack: ["Technical Leadership", "SDLC Documentation", "ClickUp", "System Architecture"],
-  },
-  {
     id: "husai",
+    index: "01",
     code: "GH-01",
-    title: "HusAI — Real-Time AI Call Coach for Remote VAs",
-    clientOrContext: "GitHub Open Source · USTP Startup Incubation Demo Day",
+    title: "HusAI — Real-Time AI Call Coach",
+    clientOrContext: "USTP Startup Incubation · Open Source",
+    locationTag: "CDO, PH // VERCEL + ELECTRON",
     role: "Creator & Full-Stack Builder",
     period: "2026",
     categories: ["engineering", "github"],
@@ -205,16 +198,116 @@ export const CASE_STUDIES: CaseStudy[] = [
       "Gemini Flash",
       "Prisma",
     ],
+    previewMedia: {
+      type: "image",
+      src: "/husai/screen-solution.png",
+      badge: "HUSAI // LIVE CALL COACH",
+      highlight: "4.0s Silence VAD -> 3 Instant Smart Replies",
+      sublabel: "Localhost :5173 UI + 60s Remotion Reveal",
+    },
     links: {
       repo: "https://github.com/Birky-andrie/HusAI",
       live: "https://hus-ai-five.vercel.app",
     },
   },
   {
+    id: "hackerlily-hipsurfer",
+    index: "02",
+    code: "CS-02",
+    title: "Hackerlily HipSurfer — 9:16 Ad System",
+    clientOrContext: "Hackerlily (International Client)",
+    locationTag: "GERMANY / AU // META & TIKTOK",
+    role: "Freelance Video Editor & Creative Strategist",
+    period: "FEB 2026 – PRESENT",
+    categories: ["creative"],
+    primaryMetric: "20–40s",
+    primaryMetricLabel: "High-Retention Ad Variations",
+    problem:
+      "International D2C paid acquisition on Meta, TikTok, and Pinterest requires rapid creative iteration to prevent ad fatigue and capture sound-off mobile scrollers.",
+    execution:
+      "Engineered beat-synced UGC and text-led video ads targeting pain points, social proof, and competitor switching. Applied mobile UI/UX typography hierarchy, Foley sound design, and rapid A/B hook testing.",
+    impact:
+      "Delivered multi-variant top-of-funnel ad assets (Skeptic UGC, Competitor Switcher, and Minimalist Lifestyle cuts) aligned directly with international brand stakeholders.",
+    stack: [
+      "CapCut Pro",
+      "A/B Hook Testing",
+      "Kinetic Typography",
+      "Foley Audio",
+      "Meta / TikTok / Pinterest",
+    ],
+    previewMedia: {
+      type: "video",
+      src: "/videos/hipsurfer-02.mp4",
+      poster: "/videos/hipsurfer-02-poster.jpg",
+      badge: "9:16 PAID SOCIAL // 3 REELS",
+      highlight: "Beat-Synced Direct-Response Cuts",
+      sublabel: "Meta, TikTok & Pinterest Paid Acquisition",
+    },
+  },
+  {
+    id: "pacs-builders",
+    index: "03",
+    code: "CS-01",
+    title: "Pacs Builders — Material Audit Engine",
+    clientOrContext: "Pacs Builders (Engineering Firm)",
+    locationTag: "CDO, PH // INTERNAL WEB APP",
+    role: "Contract Programmer — Frontend & Workflow Automation",
+    period: "AUG 2025 – DEC 2025",
+    categories: ["engineering"],
+    primaryMetric: "< 5s",
+    primaryMetricLabel: "Complex Audit Report Generation",
+    problem:
+      "Material receipts, site usage, and inventory movements were tracked across fragmented manual Excel sheets, causing human entry errors and slow audit reconciliation.",
+    execution:
+      "Built the frontend interface and workflow automation for a centralized web platform with role-based permissions (Admin, Auditor, Staff), automated transaction trails, and optimized reporting queries.",
+    impact:
+      "Eliminated manual spreadsheet reconciliation for non-technical staff and cut data-heavy audit and inventory report generation from ~20 minutes to under 5 seconds.",
+    stack: ["Python", "HTML/CSS", "Role-Based Auth", "SDLC", "Audit Reporting"],
+    previewMedia: {
+      type: "telemetry",
+      badge: "RBAC AUDIT // < 5.0S SLA",
+      highlight: "1.84s Avg Query vs. ~20m Manual Excel",
+      sublabel: "Admin · Auditor · Staff Permission Trails",
+    },
+  },
+  {
+    id: "trailblazer-startup-lab",
+    index: "04",
+    code: "CS-03",
+    title: "Trailblazer Startup Lab — Incubation Lead",
+    clientOrContext: "Trailblazer Startup Lab, USTP",
+    locationTag: "USTP CDO // FULL SDLC",
+    role: "Project Lead",
+    period: "JUN 2026 – AUG 2026",
+    categories: ["leadership"],
+    primaryMetric: "1.00",
+    primaryMetricLabel: "Final Grade (Highest Distinction)",
+    problem:
+      "Translating an early-stage startup concept into a documented, testable, and deployable software product under strict academic and incubation milestones.",
+    execution:
+      "Led technical scoping, system architecture documentation, task prioritization, and end-to-end SDLC coordination from initial design specs to final deployment.",
+    impact:
+      "Delivered the complete incubation milestone on schedule and earned a Final Grade of 1.00—the highest possible academic distinction at USTP.",
+    stack: [
+      "Technical Leadership",
+      "SDLC Documentation",
+      "ClickUp",
+      "System Architecture",
+    ],
+    previewMedia: {
+      type: "telemetry",
+      badge: "INCUBATION LEADERSHIP",
+      highlight: "1.00 Final Distinction Grade",
+      sublabel: "Concept -> Architecture -> QA -> Demo Day",
+    },
+  },
+  {
     id: "siam-cs3b",
+    index: "05",
     code: "GH-02",
-    title: "SIAM_CS3B — Client-Server App & DevOps Docs",
-    clientOrContext: "GitHub Open Source · Render Deployment",
+    title: "SIAM_CS3B — Real-Time App & QA Suite",
+    clientOrContext: "GitHub Open Source · Render",
+    locationTag: "NODE.JS + SOCKET.IO",
     role: "Systems & QA Contributor",
     period: "2026",
     categories: ["engineering", "leadership", "github"],
@@ -227,15 +320,23 @@ export const CASE_STUDIES: CaseStudy[] = [
     impact:
       "Demonstrates production-minded engineering rigor—linking live Socket.IO features with formal verification and release documentation.",
     stack: ["Node.js", "Express", "Socket.IO", "CI/CD", "QA Defect Logs"],
+    previewMedia: {
+      type: "telemetry",
+      badge: "DEVOPS & QA RIGOR",
+      highlight: "Socket.IO + CI/CD + Risk Registers",
+      sublabel: "Full Defect Log & Sprint Traceability",
+    },
     links: {
       repo: "https://github.com/Birky-andrie/SIAM_CS3B",
     },
   },
   {
     id: "financify",
+    index: "06",
     code: "GH-03",
-    title: "Financify — Cross-Platform Personal Finance Base",
-    clientOrContext: "GitHub Open Source · Multi-Target Flutter",
+    title: "Financify — Cross-Platform Finance Base",
+    clientOrContext: "GitHub Open Source · Flutter/C++",
+    locationTag: "6 OS TARGETS",
     role: "Cross-Platform Developer",
     period: "2025",
     categories: ["engineering", "github"],
@@ -248,6 +349,12 @@ export const CASE_STUDIES: CaseStudy[] = [
     impact:
       "Provides a clean multi-platform foundation ready for rapid feature iteration across consumer finance workflows.",
     stack: ["Flutter", "Dart", "C++", "CMake", "Cross-Platform"],
+    previewMedia: {
+      type: "telemetry",
+      badge: "MULTI-PLATFORM ARCHITECTURE",
+      highlight: "iOS · Android · Web · Win · macOS · Linux",
+      sublabel: "Unified Dart + C++ CMake Workspace",
+    },
     links: {
       repo: "https://github.com/Birky-andrie/Financify",
     },
@@ -258,7 +365,8 @@ export const TOOLKIT_GROUPS: ToolkitGroup[] = [
   {
     code: "TK-01",
     functionName: "Engineering & Systems",
-    summary: "Frontend interfaces, workflow automation, and AI-assisted full-stack builds.",
+    summary:
+      "Frontend interfaces, workflow automation, and AI-assisted full-stack builds.",
     items: [
       { name: "React / Next.js", role: "Production UI & App Router" },
       { name: "Tailwind CSS", role: "Design systems & responsive grids" },
@@ -286,14 +394,18 @@ export const TOOLKIT_GROUPS: ToolkitGroup[] = [
   {
     code: "TK-03",
     functionName: "Operations & Leadership",
-    summary: "Structured delivery from initial documentation to remote client execution.",
+    summary:
+      "Structured delivery from initial documentation to remote client execution.",
     items: [
       { name: "ClickUp", role: "Sprint & task workflow management" },
       { name: "SDLC Documentation", role: "Specs, architecture & QA logs" },
       { name: "Agile / Sprint Planning", role: "Backlog & milestone execution" },
       { name: "Google Workspace", role: "Remote team & client operations" },
       { name: "MS Excel", role: "Legacy workflow auditing & migration" },
-      { name: "English / Filipino / Cebuano", role: "Global & local stakeholder comms" },
+      {
+        name: "English / Filipino / Cebuano",
+        role: "Global & local stakeholder comms",
+      },
     ],
   },
 ];
