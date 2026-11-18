@@ -1,21 +1,29 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Command, Menu, X } from "lucide-react";
+import { Command, X } from "lucide-react";
 import { PROFILE, type FocusMode } from "@/data/portfolio";
 
 const NAV_LINKS = [
-  { label: "Services", href: "#services" },
+  { label: "Work", href: "#work" },
   { label: "Proof Stage", href: "#proof-lab" },
-  { label: "Work Index", href: "#work" },
-  { label: "Engagements", href: "#engagements" },
-  { label: "Toolkit", href: "#toolkit" },
+  { label: "Services", href: "#services" },
+  { label: "About", href: "#about" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const FOCUS_OPTIONS: { id: FocusMode; label: string; title: string }[] = [
   { id: "all", label: "ALL", title: "Full Hybrid View (Engineering + Creative)" },
-  { id: "engineering", label: "ENG", title: "Engineering & AI Systems Focus (?focus=engineering)" },
-  { id: "creative", label: "CREATIVE", title: "Direct-Response 9:16 Video Focus (?focus=creative)" },
+  {
+    id: "engineering",
+    label: "ENG",
+    title: "Engineering & AI Systems Focus (?focus=engineering)",
+  },
+  {
+    id: "creative",
+    label: "CREATIVE",
+    title: "Direct-Response 9:16 Video Focus (?focus=creative)",
+  },
 ];
 
 interface NavbarProps {
@@ -29,65 +37,62 @@ export function Navbar({
   onChangeFocusMode,
   onOpenCommandPalette,
 }: NavbarProps) {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [phtTime, setPhtTime] = useState<string>("");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const updateClock = () => {
-      try {
-        const formatted = new Intl.DateTimeFormat("en-US", {
-          timeZone: "Asia/Manila",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        }).format(new Date());
-        setPhtTime(`${formatted} PHT`);
-      } catch {
-        setPhtTime("UTC+8");
-      }
+    const onScroll = () => {
+      setScrolled(window.scrollY > 160);
     };
-    updateClock();
-    const timer = setInterval(updateClock, 30000);
-    return () => clearInterval(timer);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--color-hairline)] bg-[var(--color-paper)]/95 backdrop-blur-[2px]">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 h-14">
-        <div className="flex items-center gap-3">
-          <a
-            href="#"
-            className="font-mono text-xs font-medium tracking-wider uppercase text-[var(--color-ink)] flex items-center gap-2"
-          >
-            <span
-              className="inline-block h-2 w-2 bg-[var(--color-signal)]"
-              aria-hidden="true"
-            />
-            <span>{PROFILE.shortName}</span>
-          </a>
-          <span className="hidden xl:inline-flex items-center gap-1.5 border border-[var(--color-hairline)] bg-[var(--color-paper-alt)] px-2 py-0.5 font-mono text-[11px] tabular-nums text-[var(--color-ink-muted)]">
-            <span>CDO, PH</span>
-            <span>//</span>
-            <span className="text-[var(--color-ink)]">{phtTime || "UTC+8"}</span>
+    <>
+      {/* Top Transparent Dennis Snellenberg Header overlaid on #999D9E Hero */}
+      <header className="absolute top-0 inset-x-0 z-40 px-6 sm:px-12 py-7 flex items-center justify-between text-white">
+        {/* Left: © Code by Birky -> slides on hover to Birky Andrie Pacuribot */}
+        <a
+          href="#"
+          className="group flex items-center gap-1.5 text-sm sm:text-base font-normal tracking-tight text-white"
+        >
+          <span className="inline-block transition-transform duration-500 ease-out-expo group-hover:rotate-[360deg]">
+            &copy;
           </span>
-        </div>
+          <span className="relative overflow-hidden inline-flex">
+            <span className="transition-transform duration-500 ease-out-expo group-hover:-translate-y-full">
+              Code by Birky
+            </span>
+            <span className="absolute left-0 top-0 translate-y-full transition-transform duration-500 ease-out-expo group-hover:translate-y-0 whitespace-nowrap">
+              Birky Pacuribot
+            </span>
+          </span>
+        </a>
 
-        <nav className="hidden lg:flex items-center gap-6" aria-label="Primary">
-          {NAV_LINKS.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] transition-colors"
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
+        {/* Right: Clean Links with bottom dot indicator + Focus Switcher + ⌘K */}
+        <div className="flex items-center gap-6 lg:gap-9">
+          <nav className="hidden md:flex items-center gap-7 lg:gap-9" aria-label="Primary">
+            {NAV_LINKS.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="group relative py-1 text-sm sm:text-base font-normal text-white/95 hover:text-white transition-colors"
+              >
+                <span>{item.label}</span>
+                <span className="
+                  pointer-events-none absolute -bottom-1.5 left-1/2 -translate-x-1/2
+                  h-1.5 w-1.5 rounded-full bg-white scale-0 transition-transform duration-300 ease-out-expo
+                  group-hover:scale-100
+                " />
+              </a>
+            ))}
+          </nav>
 
-        <div className="flex items-center gap-2">
-          {/* Shareable Focus Mode Switcher */}
+          {/* Persona Focus Pills */}
           <div
-            className="hidden sm:inline-flex items-center border border-[var(--color-hairline)] bg-[var(--color-paper-alt)]"
+            className="hidden sm:inline-flex items-center rounded-full bg-[#1C1D20]/35 backdrop-blur-sm p-1 border border-white/15"
             role="group"
             aria-label="Portfolio Focus Mode"
           >
@@ -99,10 +104,10 @@ export function Navbar({
                   type="button"
                   title={opt.title}
                   onClick={() => onChangeFocusMode(opt.id)}
-                  className={`px-2 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors cursor-pointer ${
+                  className={`rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors cursor-pointer ${
                     active
-                      ? "bg-[var(--color-ink)] text-[var(--color-paper)]"
-                      : "text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]"
+                      ? "bg-white text-[#1C1D20] font-semibold"
+                      : "text-white/80 hover:text-white"
                   }`}
                 >
                   {opt.label}
@@ -114,81 +119,137 @@ export function Navbar({
           <button
             type="button"
             onClick={onOpenCommandPalette}
-            className="inline-flex items-center gap-1.5 border border-[var(--color-hairline)] bg-[var(--color-paper-alt)] px-2.5 py-1.5 font-mono text-[11px] text-[var(--color-ink)] hover:border-[var(--color-ink)] transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20]/35 hover:bg-[#1C1D20] border border-white/20 px-3 py-1.5 font-mono text-xs text-white transition-colors cursor-pointer"
             aria-label="Open command palette"
             title="Open Command Palette (Ctrl+K / ⌘K)"
           >
-            <Command className="h-3 w-3 text-[var(--color-signal)]" aria-hidden="true" />
-            <span className="hidden md:inline">Index</span>
-            <kbd className="border border-[var(--color-hairline)] bg-[var(--color-paper)] px-1 text-[10px] text-[var(--color-ink-muted)]">
-              ⌘K
-            </kbd>
+            <Command className="h-3.5 w-3.5" aria-hidden="true" />
+            <span className="hidden sm:inline">⌘K</span>
           </button>
 
-          <a
-            href="#contact"
-            className="hidden sm:inline-flex items-center gap-1.5 border border-[var(--color-ink)] bg-[var(--color-ink)] px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider text-[var(--color-paper)] hover:bg-[var(--color-signal)] hover:border-[var(--color-signal)] transition-colors"
-          >
-            Book a Call
-            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </a>
-
+          {/* Mobile Menu Trigger */}
           <button
             type="button"
-            onClick={() => setMobileOpen((prev) => !prev)}
-            className="lg:hidden inline-flex items-center justify-center border border-[var(--color-hairline)] p-1.5 text-[var(--color-ink)] hover:border-[var(--color-ink)]"
-            aria-expanded={mobileOpen}
-            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+            onClick={() => setDrawerOpen(true)}
+            className="md:hidden inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20]/40 border border-white/20 px-3.5 py-1.5 text-xs text-white cursor-pointer"
           >
-            {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            <span>Menu</span>
           </button>
         </div>
-      </div>
+      </header>
 
-      {mobileOpen && (
-        <div className="lg:hidden border-t border-[var(--color-hairline)] bg-[var(--color-paper)] px-4 py-4 space-y-4">
-          <div className="flex items-center justify-between font-mono text-xs">
-            <span className="text-[var(--color-ink-muted)]">FOCUS VIEW:</span>
-            <div className="inline-flex border border-[var(--color-hairline)]">
-              {FOCUS_OPTIONS.map((opt) => (
-                <button
-                  key={opt.id}
-                  type="button"
-                  onClick={() => onChangeFocusMode(opt.id)}
-                  className={`px-2.5 py-1 font-mono text-[10px] uppercase ${
-                    focusMode === opt.id
-                      ? "bg-[var(--color-ink)] text-[var(--color-paper)]"
-                      : "bg-[var(--color-paper-alt)] text-[var(--color-ink)]"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
+      {/* Dennis Snellenberg Floating Circular Hamburger Button (appears on scroll or when drawer is open) */}
+      <button
+        type="button"
+        onClick={() => setDrawerOpen((prev) => !prev)}
+        aria-label={drawerOpen ? "Close navigation drawer" : "Open navigation drawer"}
+        aria-expanded={drawerOpen}
+        className={`fixed top-5 right-5 sm:top-7 sm:right-7 z-50 h-16 w-16 sm:h-20 sm:w-20 rounded-full flex items-center justify-center transition-all duration-500 ease-out-expo cursor-pointer shadow-lg ${
+          drawerOpen
+            ? "bg-[#455CE9] text-white scale-100"
+            : scrolled
+              ? "bg-[#1C1D20] hover:bg-[#455CE9] text-white scale-100"
+              : "bg-[#1C1D20] text-white scale-0 pointer-events-none"
+        }`}
+      >
+        {drawerOpen ? (
+          <X className="h-6 w-6 stroke-[1.5]" />
+        ) : (
+          <div className="flex flex-col gap-1.5 items-center justify-center">
+            <span className="block h-[1.5px] w-6 bg-white" />
+            <span className="block h-[1.5px] w-6 bg-white" />
           </div>
+        )}
+      </button>
 
-          <nav className="flex flex-col gap-3" aria-label="Mobile">
-            {NAV_LINKS.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className="font-mono text-xs uppercase tracking-wider py-1.5 border-b border-[var(--color-hairline)] text-[var(--color-ink)]"
-              >
-                {item.label}
-              </a>
-            ))}
-            <a
-              href="#contact"
-              onClick={() => setMobileOpen(false)}
-              className="mt-2 inline-flex items-center justify-center gap-1.5 border border-[var(--color-ink)] bg-[var(--color-ink)] px-4 py-2.5 font-mono text-xs uppercase tracking-wider text-[var(--color-paper)]"
-            >
-              Book a Discovery Call
-              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </a>
-          </nav>
+      {/* Dennis Snellenberg Dark Side-Drawer Menu (#1C1D20) */}
+      {drawerOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px]"
+          onClick={() => setDrawerOpen(false)}
+        >
+          <aside
+            onClick={(e) => e.stopPropagation()}
+            className="ml-auto h-full w-full max-w-md bg-[#1C1D20] text-white px-8 sm:px-14 py-12 flex flex-col justify-between"
+          >
+            <div className="space-y-8 pt-8">
+              <div className="border-b border-white/15 pb-4 font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
+                Navigation
+              </div>
+
+              <nav className="flex flex-col gap-4" aria-label="Drawer">
+                {[
+                  { label: "Home", href: "#" },
+                  ...NAV_LINKS,
+                ].map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setDrawerOpen(false)}
+                    className="group flex items-center justify-between text-3xl sm:text-4xl font-normal tracking-tight text-white/90 hover:text-white transition-transform duration-300 ease-out-expo hover:translate-x-2"
+                  >
+                    <span>{item.label}</span>
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#455CE9] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                ))}
+              </nav>
+
+              <div className="pt-4 border-t border-white/15 space-y-2">
+                <div className="font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
+                  Focus Mode URL
+                </div>
+                <div className="inline-flex rounded-full bg-white/10 p-1">
+                  {FOCUS_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => onChangeFocusMode(opt.id)}
+                      className={`rounded-full px-3 py-1 font-mono text-xs uppercase cursor-pointer ${
+                        focusMode === opt.id
+                          ? "bg-[#455CE9] text-white"
+                          : "text-white/75 hover:text-white"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-white/15 pt-6 space-y-2">
+              <div className="font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
+                Socials &amp; Direct
+              </div>
+              <div className="flex flex-wrap gap-5 text-sm text-white/90">
+                <a
+                  href={PROFILE.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[#455CE9] transition-colors"
+                >
+                  GitHub
+                </a>
+                <a
+                  href="https://hus-ai-five.vercel.app"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[#455CE9] transition-colors"
+                >
+                  HusAI Live
+                </a>
+                <a
+                  href={`mailto:${PROFILE.email}`}
+                  className="hover:text-[#455CE9] transition-colors"
+                >
+                  Email
+                </a>
+              </div>
+            </div>
+          </aside>
         </div>
       )}
-    </header>
+    </>
   );
 }

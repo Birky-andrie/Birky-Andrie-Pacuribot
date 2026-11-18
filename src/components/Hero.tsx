@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowDownRight, ArrowUpRight, Check, Copy, Play } from "lucide-react";
+import { useRef } from "react";
+import { ArrowDownRight, Globe, Play } from "lucide-react";
 import {
   FOCUS_COPY,
   HERO_METRICS,
@@ -16,174 +16,177 @@ interface HeroProps {
 }
 
 export function Hero({ focusMode, onJumpToProof }: HeroProps) {
-  const [copied, setCopied] = useState(false);
   const copy = FOCUS_COPY[focusMode];
+  const magneticBtnRef = useRef<HTMLButtonElement | null>(null);
 
-  const handleCopyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(PROFILE.email);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      window.location.href = `mailto:${PROFILE.email}`;
-    }
+  const handleMagneticMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const btn = magneticBtnRef.current;
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width / 2) * 0.28;
+    const y = (e.clientY - rect.top - rect.height / 2) * 0.28;
+    btn.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  };
+
+  const handleMagneticLeave = () => {
+    const btn = magneticBtnRef.current;
+    if (!btn) return;
+    btn.style.transform = "translate3d(0px, 0px, 0)";
   };
 
   return (
-    <section className="border-b border-[var(--color-hairline)]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12">
-          {/* Left Column: Dennis Snellenberg Editorial Scale & Positioning */}
-          <div className="lg:col-span-7 py-12 sm:py-16 lg:py-20 lg:pr-12 lg:border-r border-[var(--color-hairline)] flex flex-col justify-between gap-10">
-            <div className="space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-hairline)] pb-3 font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)]">
-                <span className="inline-flex items-center gap-2 text-[var(--color-ink)]">
-                  <span
-                    className="h-1.5 w-1.5 bg-[var(--color-signal)]"
-                    aria-hidden="true"
-                  />
-                  {copy.badge}
-                </span>
-                <span className="tabular-nums">[00.1 // CDO · UTC+8]</span>
+    <>
+      {/* PART 1: Iconic Dennis Snellenberg 100vh #999D9E Full-Screen Hero */}
+      <section className="relative h-screen min-h-[680px] max-h-[1080px] w-full overflow-hidden bg-[#999D9E] text-white select-none">
+        {/* Subtle studio radial backdrop glow behind subject */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(circle at 50% 42%, rgba(255,255,255,0.16) 0%, rgba(153,157,158,0) 62%)",
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Center Portrait Subject rising from bottom-center */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 top-14 flex items-end justify-center">
+          <div className="relative h-[84%] sm:h-[88%] w-full max-w-[540px] flex items-end justify-center">
+            <img
+              src="/portrait.jpg"
+              alt="Birky Andrie L. Pacuribot"
+              className="h-full w-full object-cover object-top grayscale-[12%] contrast-[1.05]"
+            />
+            {/* Bottom gradient fade so the white marquee reads with crisp contrast */}
+            <div
+              className="absolute inset-x-0 bottom-0 h-36"
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(120,124,125,0.55) 0%, rgba(153,157,158,0) 100%)",
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Left-Docked Location Pill ("Located in the Philippines" + Spinning Globe Circle) */}
+        <div className="hidden sm:flex absolute left-0 top-[36%] z-20 items-center gap-6 rounded-r-full bg-[#1C1D20] text-white pl-8 lg:pl-12 pr-3.5 py-3.5">
+          <div className="text-sm lg:text-base leading-[1.2] font-normal tracking-tight">
+            <div>Located</div>
+            <div>in the</div>
+            <div>Philippines</div>
+          </div>
+          <div className="h-12 w-12 lg:h-14 lg:w-14 rounded-full bg-[#999D9E] flex items-center justify-center text-white">
+            <Globe className="h-6 w-6 lg:h-7 lg:w-7 stroke-[1.5] animate-globe-spin" />
+          </div>
+        </div>
+
+        {/* Right-Aligned Diagonal Arrow & Role Title */}
+        <div className="absolute right-6 sm:right-12 lg:right-24 top-[24%] sm:top-[30%] z-20 max-w-xs sm:max-w-md text-left">
+          <ArrowDownRight
+            className="h-7 w-7 sm:h-8 sm:w-8 mb-4 sm:mb-6 text-white stroke-[1.75]"
+            aria-hidden="true"
+          />
+          <h1 className="text-2xl sm:text-3xl lg:text-[2.5rem] font-normal leading-[1.15] tracking-[-0.02em] text-white drop-shadow-xs">
+            <span className="block">Freelance</span>
+            <span className="block">CS Engineer &amp;</span>
+            <span className="block">Creative Technologist</span>
+          </h1>
+
+          {/* Quick-Launch Pills to HusAI & HipSurfer 9:16 Reels */}
+          <div className="mt-5 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => onJumpToProof("husai")}
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20]/85 hover:bg-[#455CE9] border border-white/20 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-white transition-colors cursor-pointer"
+            >
+              <Play className="h-3 w-3 fill-current" />
+              <span>HusAI Demo</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onJumpToProof("hackerlily")}
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20]/85 hover:bg-[#455CE9] border border-white/20 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-white transition-colors cursor-pointer"
+            >
+              <Play className="h-3 w-3 fill-current" />
+              <span>9:16 Ad Reels</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Giant Bottom-Bleeding Infinite Marquee ("Birky Andrie Pacuribot —") */}
+        <div className="pointer-events-none absolute bottom-3 sm:bottom-5 inset-x-0 z-20 overflow-hidden">
+          <div className="animate-dennis-marquee">
+            <span className="font-[family-name:var(--font-display)] text-[14vw] sm:text-[12.5vw] font-normal leading-none tracking-[-0.03em] text-white pr-10">
+              Birky Andrie Pacuribot &mdash;
+            </span>
+            <span className="font-[family-name:var(--font-display)] text-[14vw] sm:text-[12.5vw] font-normal leading-none tracking-[-0.03em] text-white pr-10">
+              Birky Andrie Pacuribot &mdash;
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* PART 2: Iconic Dennis Snellenberg Split Statement Section + Circular Magnetic Button */}
+      <section
+        id="about"
+        className="bg-white text-[#1C1D20] pt-20 pb-24 sm:pt-32 sm:pb-32"
+      >
+        <div className="mx-auto max-w-6xl px-6 sm:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+            {/* Left 7 Cols: Large Editorial Statement */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="font-mono text-xs uppercase tracking-widest text-[#999D9E]">
+                {copy.badge}
               </div>
-
-              <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl lg:text-[3.65rem] font-semibold leading-[1.01] tracking-[-0.035em] text-[var(--color-ink)]">
+              <h2 className="text-2xl sm:text-4xl lg:text-[2.45rem] font-normal leading-[1.3] tracking-[-0.015em] text-[#1C1D20]">
                 {copy.headline}
-              </h1>
+              </h2>
+            </div>
 
-              <p className="max-w-2xl text-base sm:text-lg leading-relaxed text-[var(--color-ink-muted)]">
-                <strong className="font-medium text-[var(--color-ink)]">
-                  CS Engineer + Creative Technologist.
-                </strong>{" "}
+            {/* Right 5 Cols: Supporting Bio + Dual Positioning */}
+            <div className="lg:col-span-5 space-y-6">
+              <p className="text-base sm:text-lg leading-relaxed text-[#1C1D20]/75">
                 {copy.subheadline}
               </p>
 
-              {/* Primary CTAs */}
-              <div className="flex flex-wrap items-center gap-3 pt-1">
-                <a
-                  href="#contact"
-                  className="inline-flex items-center gap-2 border border-[var(--color-ink)] bg-[var(--color-ink)] px-5 py-3 font-mono text-xs uppercase tracking-wider text-[var(--color-paper)] hover:bg-[var(--color-signal)] hover:border-[var(--color-signal)] transition-colors"
-                >
-                  Book a Discovery Call
-                  <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-                </a>
-
-                <a
-                  href="#work"
-                  className="inline-flex items-center gap-2 border border-[var(--color-ink)] bg-transparent px-5 py-3 font-mono text-xs uppercase tracking-wider text-[var(--color-ink)] hover:bg-[var(--color-paper-alt)] transition-colors"
-                >
-                  Selected Work Index
-                  <ArrowDownRight className="h-4 w-4" aria-hidden="true" />
-                </a>
-
-                <button
-                  type="button"
-                  onClick={handleCopyEmail}
-                  className="inline-flex items-center gap-2 border border-[var(--color-hairline)] bg-transparent px-4 py-3 font-mono text-xs text-[var(--color-ink-muted)] hover:border-[var(--color-ink)] hover:text-[var(--color-ink)] transition-colors cursor-pointer"
-                  aria-label="Copy email address"
-                >
-                  {copied ? (
-                    <>
-                      <Check
-                        className="h-3.5 w-3.5 text-[var(--color-signal)]"
-                        aria-hidden="true"
-                      />
-                      <span>Copied Email</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-3.5 w-3.5" aria-hidden="true" />
-                      <span>{PROFILE.email}</span>
-                    </>
-                  )}
-                </button>
+              {/* Verified Metrics Row */}
+              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[#E2E3E7]">
+                {HERO_METRICS.map((m) => (
+                  <div key={m.label}>
+                    <div className="font-mono text-xl sm:text-2xl font-semibold tabular-nums text-[#1C1D20]">
+                      {m.value}
+                    </div>
+                    <div className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-[#999D9E]">
+                      {m.label}
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              {/* Direct Cinema Proof Stage Launchers — Neither HusAI nor HipSurfer is ever hidden */}
-              <div className="pt-2">
-                <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-ink-muted)] mb-2">
-                  DIRECT PROOF STAGE LAUNCHERS (JUMP TO LIVE MEDIA):
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => onJumpToProof("husai")}
-                    className="inline-flex items-center gap-2 border border-[var(--color-ink)] bg-[var(--color-paper-alt)] px-3.5 py-2 font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] transition-colors cursor-pointer"
-                  >
-                    <Play className="h-3 w-3 text-[var(--color-signal)] fill-current" />
-                    <span>01 // HusAI (60s Demo &amp; Localhost :5173)</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => onJumpToProof("hackerlily")}
-                    className="inline-flex items-center gap-2 border border-[var(--color-ink)] bg-[var(--color-paper-alt)] px-3.5 py-2 font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] transition-colors cursor-pointer"
-                  >
-                    <Play className="h-3 w-3 text-[var(--color-signal)] fill-current" />
-                    <span>02 // HipSurfer 9:16 Reels (3 Cuts)</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => onJumpToProof("pacs")}
-                    className="inline-flex items-center gap-2 border border-[var(--color-hairline)] bg-[var(--color-paper)] px-3 py-2 font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)] hover:border-[var(--color-ink)] hover:text-[var(--color-ink)] transition-colors cursor-pointer"
-                  >
-                    <span>03 // Pacs &lt;5s Audit</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Hero Strip: Verified Metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-l border-[var(--color-hairline)]">
-              {HERO_METRICS.map((metric) => (
-                <div
-                  key={metric.label}
-                  className="border-r border-b border-[var(--color-hairline)] p-4 bg-[var(--color-paper)]"
-                >
-                  <div className="font-mono text-2xl sm:text-3xl font-semibold tabular-nums text-[var(--color-ink)]">
-                    {metric.value}
-                  </div>
-                  <div className="mt-1 font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink)]">
-                    {metric.label}
-                  </div>
-                  <div className="mt-0.5 text-xs text-[var(--color-ink-muted)]">
-                    {metric.source}
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
 
-          {/* Right Column: Clean Structured 4:5 Studio Portrait Slot */}
-          <div className="lg:col-span-5 py-8 sm:py-12 lg:py-20 lg:pl-12 flex flex-col justify-center">
-            <figure className="border border-[var(--color-ink)] bg-[var(--color-paper-alt)]">
-              <div className="flex items-center justify-between border-b border-[var(--color-ink)] px-3.5 py-2 font-mono text-[11px] uppercase tracking-wider">
-                <span>FIG. 01 // {PROFILE.shortName}</span>
-                <span className="tabular-nums">4:5 · EDITORIAL</span>
-              </div>
-
-              <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-paper-alt)]">
-                <img
-                  src="/portrait.jpg"
-                  alt="Birky Andrie L. Pacuribot — CS Engineer and Creative Technologist"
-                  className="h-full w-full object-cover object-top"
-                />
-                {/* Architectural registration marks */}
-                <span className="pointer-events-none absolute top-3 left-3 h-3 w-3 border-t border-l border-[var(--color-paper)]/70" />
-                <span className="pointer-events-none absolute top-3 right-3 h-3 w-3 border-t border-r border-[var(--color-paper)]/70" />
-                <span className="pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l border-[var(--color-paper)]/70" />
-                <span className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-[var(--color-paper)]/70" />
-              </div>
-
-              <figcaption className="flex items-center justify-between border-t border-[var(--color-ink)] px-3.5 py-2 font-mono text-[11px] text-[var(--color-ink-muted)]">
-                <span>CAGAYAN DE ORO, PH</span>
-                <span>USTP BS CS &apos;27 // 1.00 LEAD</span>
-              </figcaption>
-            </figure>
+          {/* Horizontal Divider Line with Overlapping Circular Magnetic Button */}
+          <div className="relative mt-20 sm:mt-28">
+            <div className="h-[1px] w-full bg-[#E2E3E7]" />
+            <div className="absolute right-6 sm:right-20 -top-20 sm:-top-24">
+              <button
+                ref={magneticBtnRef}
+                type="button"
+                onMouseMove={handleMagneticMove}
+                onMouseLeave={handleMagneticLeave}
+                onClick={() => onJumpToProof("husai")}
+                className="h-40 w-40 sm:h-48 sm:w-48 rounded-full bg-[#1C1D20] hover:bg-[#455CE9] text-white flex flex-col items-center justify-center gap-1 transition-colors duration-300 ease-out-expo cursor-pointer shadow-md"
+              >
+                <span className="text-base sm:text-lg font-medium tracking-tight">
+                  Proof Stage
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-widest text-white/75">
+                  HusAI &amp; 9:16 Reels
+                </span>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

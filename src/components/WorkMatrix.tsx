@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, ChevronDown, ChevronUp, Play } from "lucide-react";
+import { ArrowUpRight, Play } from "lucide-react";
 import {
   CASE_STUDIES,
   type CaseStudy,
@@ -10,11 +10,11 @@ import {
 } from "@/data/portfolio";
 
 const FILTERS: { id: WorkCategory; label: string }[] = [
-  { id: "all", label: "ALL" },
-  { id: "engineering", label: "ENGINEERING" },
-  { id: "creative", label: "CREATIVE" },
-  { id: "leadership", label: "LEADERSHIP" },
-  { id: "github", label: "GITHUB REPOS" },
+  { id: "all", label: "All" },
+  { id: "engineering", label: "Engineering" },
+  { id: "creative", label: "Creative" },
+  { id: "leadership", label: "Leadership" },
+  { id: "github", label: "GitHub" },
 ];
 
 interface WorkMatrixProps {
@@ -30,7 +30,7 @@ export function WorkMatrix({
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [hoveredStudy, setHoveredStudy] = useState<CaseStudy | null>(null);
 
-  // Hardware-accelerated floating preview position (zero React state re-renders on mousemove)
+  // Dennis Snellenberg 340x340 cursor-centered floating preview + centered #455CE9 "View" circle
   const previewRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number | null>(null);
 
@@ -40,15 +40,15 @@ export function WorkMatrix({
     }
   }, [externalFilter]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (!previewRef.current) return;
     const clientX = e.clientX;
     const clientY = e.clientY;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(() => {
       if (!previewRef.current) return;
-      const x = Math.min(window.innerWidth - 340, clientX + 28);
-      const y = Math.max(72, Math.min(window.innerHeight - 280, clientY - 110));
+      const x = clientX - 170;
+      const y = clientY - 170;
       previewRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
     });
   };
@@ -61,26 +61,21 @@ export function WorkMatrix({
   return (
     <section
       id="work"
-      className="border-b border-[var(--color-hairline)] relative"
+      className="bg-white text-[#1C1D20] pb-24 sm:pb-32 relative"
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setHoveredStudy(null)}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 border-b border-[var(--color-ink)]">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-[var(--color-signal)]">
-              03 // Selected Work Index
-            </p>
-            <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-[var(--color-ink)]">
-              Proof of execution, indexed by impact.
-            </h2>
-          </div>
+      <div className="mx-auto max-w-6xl px-6 sm:px-12">
+        {/* Eyebrow + Filter Pills */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8">
+          <p className="font-mono text-xs uppercase tracking-widest text-[#999D9E]">
+            Recent Work
+          </p>
 
-          {/* Filter Bar */}
           <div
-            className="flex flex-wrap border-t border-l border-[var(--color-hairline)]"
+            className="flex flex-wrap gap-2"
             role="tablist"
-            aria-label="Filter case studies by category"
+            aria-label="Filter recent work"
           >
             {FILTERS.map((filter) => {
               const count =
@@ -100,32 +95,24 @@ export function WorkMatrix({
                   role="tab"
                   aria-selected={isActive}
                   onClick={() => setActiveFilter(filter.id)}
-                  className={`border-r border-b border-[var(--color-hairline)] px-3.5 py-2 font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer ${
+                  className={`rounded-full px-4 py-1.5 text-xs font-normal transition-colors cursor-pointer border ${
                     isActive
-                      ? "bg-[var(--color-ink)] text-[var(--color-paper)]"
-                      : "bg-[var(--color-paper)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-paper-alt)]"
+                      ? "border-[#1C1D20] bg-[#1C1D20] text-white"
+                      : "border-[#E2E3E7] bg-white text-[#1C1D20]/70 hover:border-[#1C1D20] hover:text-[#1C1D20]"
                   }`}
                 >
                   {filter.label}{" "}
-                  <span className="tabular-nums opacity-70">
-                    ({String(count).padStart(2, "0")})
-                  </span>
+                  <sup className="font-mono text-[10px] ml-0.5 opacity-75">
+                    {count}
+                  </sup>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Column Header Bar (Dennis Snellenberg Editorial Index Table) */}
-        <div className="hidden lg:grid lg:grid-cols-12 gap-6 py-3 border-b border-[var(--color-hairline)] font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)]">
-          <div className="lg:col-span-1">INDEX</div>
-          <div className="lg:col-span-5">PROJECT // ROLE</div>
-          <div className="lg:col-span-3">CLIENT &amp; LOCATION</div>
-          <div className="lg:col-span-3 text-right">VERIFIED METRIC</div>
-        </div>
-
-        {/* Editorial Index Rows */}
-        <div className="divide-y divide-[var(--color-hairline)] border-b border-[var(--color-ink)]">
+        {/* Dennis Snellenberg Oversized Project Rows */}
+        <div className="border-t border-[#E2E3E7] divide-y divide-[#E2E3E7] border-b">
           {filtered.map((study) => {
             const isExpanded = expandedId === study.id;
 
@@ -133,103 +120,75 @@ export function WorkMatrix({
               <article
                 key={study.id}
                 onMouseEnter={() => setHoveredStudy(study)}
-                className="group transition-colors hover:bg-[var(--color-paper-alt)]/75"
+                className="group transition-colors"
               >
-                {/* Clickable Dennis Snellenberg Index Row */}
                 <div
                   onClick={() =>
                     setExpandedId(isExpanded ? null : study.id)
                   }
-                  className="py-6 sm:py-8 px-2 sm:px-3 cursor-pointer grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center"
+                  className="py-9 sm:py-12 px-2 sm:px-6 cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4"
                 >
-                  {/* 01: Index Number */}
-                  <div className="lg:col-span-1 flex items-center justify-between lg:justify-start">
-                    <span className="font-mono text-sm sm:text-base font-medium tabular-nums text-[var(--color-ink-muted)] group-hover:text-[var(--color-signal)] transition-colors">
-                      {study.index}
-                    </span>
-                    <span className="lg:hidden font-mono text-xs text-[var(--color-signal)]">
-                      {study.code} // {study.period}
-                    </span>
-                  </div>
+                  {/* Giant Project Title (slides left/fades slightly on hover like Dennis's rows) */}
+                  <h3 className="text-3xl sm:text-5xl lg:text-[3.6rem] font-normal tracking-[-0.025em] text-[#1C1D20] transition-all duration-300 ease-out-expo group-hover:-translate-x-2 group-hover:opacity-45">
+                    {study.title.split(" — ")[0]}
+                  </h3>
 
-                  {/* 02: Oversized Neo-Grotesque Title (shifts right on hover) */}
-                  <div className="lg:col-span-5">
-                    <h3 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-[var(--color-ink)] transition-transform duration-300 ease-out-expo group-hover:translate-x-2">
-                      {study.title}
-                    </h3>
-                    <p className="mt-1 font-mono text-xs text-[var(--color-ink-muted)]">
-                      {study.role}
-                    </p>
-                  </div>
-
-                  {/* 03: Client & Location */}
-                  <div className="lg:col-span-3 font-mono text-xs space-y-1">
-                    <div className="text-[var(--color-ink)]">
-                      {study.clientOrContext}
+                  {/* Right Side: Role & Metric (slides right slightly on hover) */}
+                  <div className="flex items-center justify-between md:justify-end gap-6 transition-all duration-300 ease-out-expo group-hover:translate-x-2">
+                    <div className="text-sm sm:text-base font-normal text-[#1C1D20]/80">
+                      {study.role.split(" — ")[0]}
                     </div>
-                    <div className="text-[11px] text-[var(--color-ink-muted)]">
-                      {study.locationTag}
+                    <div className="font-mono text-xs sm:text-sm px-3 py-1 rounded-full bg-[#F4F4F6] text-[#1C1D20] tabular-nums">
+                      {study.primaryMetric} · {study.primaryMetricLabel}
                     </div>
-                  </div>
-
-                  {/* 04: Primary Metric & Expand Action */}
-                  <div className="lg:col-span-3 flex items-center justify-between lg:justify-end gap-4">
-                    <div className="lg:text-right">
-                      <div className="font-mono text-2xl sm:text-3xl font-semibold tabular-nums text-[var(--color-ink)] group-hover:text-[var(--color-signal)] transition-colors">
-                        {study.primaryMetric}
-                      </div>
-                      <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-ink-muted)]">
-                        {study.primaryMetricLabel}
-                      </div>
-                    </div>
-
-                    <span className="inline-flex items-center justify-center border border-[var(--color-hairline)] bg-[var(--color-paper)] p-2 text-[var(--color-ink)] group-hover:border-[var(--color-ink)]">
-                      {isExpanded ? (
-                        <ChevronUp className="h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4" />
-                      )}
-                    </span>
                   </div>
                 </div>
 
-                {/* Expanded Case Study Breakdown Drawer */}
+                {/* Expanded Case Study Drawer + Live Inline Video Players */}
                 {isExpanded && (
-                  <div className="px-2 sm:px-4 pb-8 pt-2 space-y-5 border-t border-[var(--color-hairline)] bg-[var(--color-paper-alt)]/50">
-                    <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                      <p className="max-w-3xl text-sm sm:text-base leading-relaxed text-[var(--color-ink)] font-medium">
-                        {study.impact}
-                      </p>
+                  <div
+                    onMouseEnter={() => setHoveredStudy(null)}
+                    className="px-4 sm:px-8 pb-10 pt-6 space-y-6 border-t border-[#E2E3E7] bg-[#F4F4F6]/60"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                      <div>
+                        <div className="font-mono text-xs uppercase tracking-wider text-[#455CE9]">
+                          {study.code} // {study.clientOrContext} ({study.period})
+                        </div>
+                        <p className="mt-1 max-w-3xl text-base sm:text-lg leading-relaxed text-[#1C1D20] font-medium">
+                          {study.impact}
+                        </p>
+                      </div>
 
                       <div className="flex flex-wrap items-center gap-2">
                         {study.id === "husai" && (
                           <button
                             type="button"
                             onClick={() => onJumpToProof("husai")}
-                            className="inline-flex items-center gap-1.5 border border-[var(--color-signal)] bg-[var(--color-signal)] px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[var(--color-paper)] hover:bg-[var(--color-ink)] hover:border-[var(--color-ink)] transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-4 py-2 font-mono text-xs uppercase tracking-wider text-white transition-colors cursor-pointer"
                           >
                             <Play className="h-3 w-3 fill-current" />
-                            Open in Dark Cinema Stage
+                            Open in Proof Stage
                           </button>
                         )}
                         {study.id === "hackerlily-hipsurfer" && (
                           <button
                             type="button"
                             onClick={() => onJumpToProof("hackerlily")}
-                            className="inline-flex items-center gap-1.5 border border-[var(--color-signal)] bg-[var(--color-signal)] px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[var(--color-paper)] hover:bg-[var(--color-ink)] hover:border-[var(--color-ink)] transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-4 py-2 font-mono text-xs uppercase tracking-wider text-white transition-colors cursor-pointer"
                           >
                             <Play className="h-3 w-3 fill-current" />
-                            Open in Dark Cinema Stage
+                            Open 9:16 Reels Stage
                           </button>
                         )}
                         {study.id === "pacs-builders" && (
                           <button
                             type="button"
                             onClick={() => onJumpToProof("pacs")}
-                            className="inline-flex items-center gap-1.5 border border-[var(--color-ink)] bg-[var(--color-ink)] px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[var(--color-paper)] hover:bg-[var(--color-signal)] hover:border-[var(--color-signal)] transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20] hover:bg-[#455CE9] px-4 py-2 font-mono text-xs uppercase tracking-wider text-white transition-colors cursor-pointer"
                           >
                             <Play className="h-3 w-3 fill-current" />
-                            Run Audit Benchmark
+                            Run &lt;5s Audit Benchmark
                           </button>
                         )}
                         {study.links?.live && (
@@ -237,10 +196,10 @@ export function WorkMatrix({
                             href={study.links.live}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1 border border-[var(--color-ink)] bg-[var(--color-ink)] px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[var(--color-paper)] hover:bg-[var(--color-signal)] hover:border-[var(--color-signal)] transition-colors"
+                            className="inline-flex items-center gap-1 rounded-full bg-[#1C1D20] hover:bg-[#455CE9] px-4 py-2 font-mono text-xs uppercase tracking-wider text-white transition-colors"
                           >
-                            Live App
-                            <ArrowUpRight className="h-3 w-3" />
+                            Live Site
+                            <ArrowUpRight className="h-3.5 w-3.5" />
                           </a>
                         )}
                         {study.links?.repo && (
@@ -248,29 +207,29 @@ export function WorkMatrix({
                             href={study.links.repo}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1 border border-[var(--color-ink)] bg-[var(--color-paper)] px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] transition-colors"
+                            className="inline-flex items-center gap-1 rounded-full border border-[#1C1D20]/25 bg-white hover:bg-[#1C1D20] hover:text-white px-4 py-2 font-mono text-xs uppercase tracking-wider text-[#1C1D20] transition-colors"
                           >
-                            GitHub Repo
-                            <ArrowUpRight className="h-3 w-3" />
+                            GitHub
+                            <ArrowUpRight className="h-3.5 w-3.5" />
                           </a>
                         )}
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-[var(--color-paper)] p-4 border border-[var(--color-hairline)]">
-                        <div className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">
-                          Problem
+                      <div className="bg-white p-5 border border-[#E2E3E7]">
+                        <div className="font-mono text-[11px] uppercase tracking-wider text-[#999D9E] mb-1.5">
+                          The Problem
                         </div>
-                        <p className="text-sm leading-relaxed text-[var(--color-ink)]">
+                        <p className="text-sm leading-relaxed text-[#1C1D20]">
                           {study.problem}
                         </p>
                       </div>
-                      <div className="bg-[var(--color-paper)] p-4 border border-[var(--color-hairline)]">
-                        <div className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">
-                          Execution
+                      <div className="bg-white p-5 border border-[#E2E3E7]">
+                        <div className="font-mono text-[11px] uppercase tracking-wider text-[#999D9E] mb-1.5">
+                          Architecture &amp; Execution
                         </div>
-                        <p className="text-sm leading-relaxed text-[var(--color-ink)]">
+                        <p className="text-sm leading-relaxed text-[#1C1D20]">
                           {study.execution}
                         </p>
                       </div>
@@ -278,10 +237,10 @@ export function WorkMatrix({
 
                     {/* Inline 9:16 Video Playback Strip for Hackerlily HipSurfer */}
                     {study.id === "hackerlily-hipsurfer" && (
-                      <div className="border border-[var(--color-ink)] bg-[var(--color-cinema)] p-4 text-[var(--color-cinema-text)]">
-                        <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider mb-3">
+                      <div className="bg-[#1C1D20] p-5 text-white">
+                        <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider mb-4">
                           <span>INLINE 9:16 AD PLAYBACK (3 FEATURED CUTS)</span>
-                          <span className="text-[var(--color-cinema-muted)]">
+                          <span className="text-[#999D9E]">
                             UNMUTE OR EXPAND IN PLAYER CONTROLS
                           </span>
                         </div>
@@ -305,7 +264,7 @@ export function WorkMatrix({
                           ].map((vid) => (
                             <div
                               key={vid.src}
-                              className="border border-[var(--color-cinema-border)] bg-[var(--color-cinema-alt)]"
+                              className="border border-white/15 bg-[#141517]"
                             >
                               <video
                                 src={vid.src}
@@ -317,7 +276,7 @@ export function WorkMatrix({
                                 preload="metadata"
                                 className="aspect-[9/16] w-full object-cover"
                               />
-                              <div className="border-t border-[var(--color-cinema-border)] px-2.5 py-1.5 font-mono text-[10px]">
+                              <div className="border-t border-white/15 px-3 py-2 font-mono text-[10px]">
                                 {vid.label}
                               </div>
                             </div>
@@ -328,12 +287,10 @@ export function WorkMatrix({
 
                     {/* Inline 16:9 Demo Video Playback for HusAI */}
                     {study.id === "husai" && (
-                      <div className="border border-[var(--color-ink)] bg-[var(--color-cinema)] p-4 text-[var(--color-cinema-text)]">
+                      <div className="bg-[#1C1D20] p-5 text-white">
                         <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider mb-3">
                           <span>HUSAI 60-SECOND PRODUCT REVEAL (REMOTION BUILD)</span>
-                          <span className="text-[var(--color-cinema-muted)]">
-                            1920×1080 · H.264
-                          </span>
+                          <span className="text-[#999D9E]">1920×1080 · H.264</span>
                         </div>
                         <video
                           src="/husai/husai-demo.mp4"
@@ -341,16 +298,16 @@ export function WorkMatrix({
                           controls
                           playsInline
                           preload="metadata"
-                          className="aspect-video w-full border border-[var(--color-cinema-border)] bg-[var(--color-cinema)]"
+                          className="aspect-video w-full border border-white/15 bg-[#141517]"
                         />
                       </div>
                     )}
 
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-2">
                       {study.stack.map((tag) => (
                         <span
                           key={tag}
-                          className="border border-[var(--color-hairline)] bg-[var(--color-paper)] px-2.5 py-1 font-mono text-[11px] text-[var(--color-ink-muted)]"
+                          className="rounded-full border border-[#E2E3E7] bg-white px-3 py-1 font-mono text-[11px] text-[#1C1D20]/75"
                         >
                           {tag}
                         </span>
@@ -362,70 +319,73 @@ export function WorkMatrix({
             );
           })}
         </div>
+
+        {/* Dennis Snellenberg Centered Rounded Pill CTA Below Recent Work */}
+        <div className="mt-14 flex justify-center">
+          <a
+            href="#proof-lab"
+            className="inline-flex items-center gap-2 rounded-full border border-[#1C1D20]/20 bg-white hover:bg-[#455CE9] hover:border-[#455CE9] hover:text-white px-9 py-4 text-sm sm:text-base font-normal text-[#1C1D20] transition-colors duration-300"
+          >
+            <span>Explore Live Proof Stage</span>
+            <sup className="font-mono text-xs opacity-75">
+              {CASE_STUDIES.length}
+            </sup>
+          </a>
+        </div>
       </div>
 
-      {/* Dennis Snellenberg Floating Cursor-Tracked Media Preview Window (Desktop lg+) */}
+      {/* Dennis Snellenberg 340x340 Square Cursor-Tracked Preview Box + Centered Blue "View" Circle */}
       <div
         ref={previewRef}
         aria-hidden="true"
-        className={`hidden lg:block pointer-events-none fixed top-0 left-0 z-40 w-[300px] border border-[var(--color-ink)] bg-[var(--color-cinema)] text-[var(--color-cinema-text)] transition-opacity duration-200 ${
-          hoveredStudy && !expandedId ? "opacity-100" : "opacity-0"
+        className={`hidden lg:flex pointer-events-none fixed top-0 left-0 z-40 h-[340px] w-[340px] bg-[#1C1D20] p-6 items-center justify-center transition-transform duration-150 ease-out ${
+          hoveredStudy && !expandedId ? "scale-100 opacity-100" : "scale-0 opacity-0"
         }`}
       >
         {hoveredStudy && (
-          <div>
-            <div className="flex items-center justify-between border-b border-[var(--color-cinema-border)] px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider">
-              <span className="text-[var(--color-signal)]">
-                {hoveredStudy.previewMedia.badge}
-              </span>
-              <span className="tabular-nums text-[var(--color-cinema-muted)]">
-                INDEX {hoveredStudy.index}
-              </span>
-            </div>
-
+          <div className="relative h-full w-full overflow-hidden bg-[#141517] flex items-center justify-center">
             {hoveredStudy.previewMedia.type === "video" &&
               hoveredStudy.previewMedia.src && (
-                <div className="aspect-[16/10] w-full overflow-hidden bg-[var(--color-cinema-alt)]">
-                  <video
-                    key={hoveredStudy.previewMedia.src}
-                    src={hoveredStudy.previewMedia.src}
-                    poster={hoveredStudy.previewMedia.poster}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="h-full w-full object-cover"
-                  />
-                </div>
+                <video
+                  key={hoveredStudy.previewMedia.src}
+                  src={hoveredStudy.previewMedia.src}
+                  poster={hoveredStudy.previewMedia.poster}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="h-full w-full object-cover"
+                />
               )}
 
             {hoveredStudy.previewMedia.type === "image" &&
               hoveredStudy.previewMedia.src && (
-                <div className="aspect-[16/10] w-full overflow-hidden bg-[var(--color-cinema-alt)]">
-                  <img
-                    src={hoveredStudy.previewMedia.src}
-                    alt={hoveredStudy.title}
-                    className="h-full w-full object-cover object-top"
-                  />
-                </div>
+                <img
+                  src={hoveredStudy.previewMedia.src}
+                  alt={hoveredStudy.title}
+                  className="h-full w-full object-cover object-top"
+                />
               )}
 
             {hoveredStudy.previewMedia.type === "telemetry" && (
-              <div className="p-4 bg-[var(--color-cinema-alt)] space-y-2">
-                <div className="font-mono text-2xl font-semibold tabular-nums text-[var(--color-cinema-text)]">
+              <div className="p-6 text-center space-y-2 text-white">
+                <div className="font-mono text-[10px] uppercase tracking-widest text-[#999D9E]">
+                  {hoveredStudy.previewMedia.badge}
+                </div>
+                <div className="font-mono text-4xl font-semibold tabular-nums">
                   {hoveredStudy.primaryMetric}
                 </div>
-                <div className="font-mono text-xs text-[var(--color-signal)]">
+                <div className="text-xs text-white/80">
                   {hoveredStudy.previewMedia.highlight}
                 </div>
               </div>
             )}
 
-            <div className="border-t border-[var(--color-cinema-border)] px-3 py-2 font-mono text-[10px] text-[var(--color-cinema-muted)] flex items-center justify-between">
-              <span className="truncate">{hoveredStudy.previewMedia.sublabel}</span>
-              <span className="text-[var(--color-cinema-text)] shrink-0 ml-2">
-                CLICK ROW →
-              </span>
+            {/* Signature Centered #455CE9 Blue "View" Cursor Circle */}
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div className="h-20 w-20 rounded-full bg-[#455CE9] text-white flex items-center justify-center text-sm font-medium shadow-md">
+                View
+              </div>
             </div>
           </div>
         )}

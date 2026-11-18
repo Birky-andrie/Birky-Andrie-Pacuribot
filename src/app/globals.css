@@ -5,18 +5,23 @@
   --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 
-  --color-paper: #F7F7F4;
-  --color-paper-alt: #EFEFEA;
-  --color-ink: #111111;
-  --color-ink-muted: #52524E;
-  --color-hairline: #D4D4CE;
-  --color-signal: #D9381E;
+  --color-paper: #FFFFFF;
+  --color-paper-alt: #F4F4F6;
+  --color-ink: #1C1D20;
+  --color-ink-muted: #7E8085;
+  --color-hairline: #E2E3E7;
+  --color-signal: #455CE9;
 
-  --color-cinema: #0D0D0D;
-  --color-cinema-alt: #161616;
-  --color-cinema-border: #2A2A28;
-  --color-cinema-text: #F7F7F4;
-  --color-cinema-muted: #9E9E96;
+  --color-dennis-grey: #999D9E;
+  --color-dennis-dark: #1C1D20;
+  --color-dennis-blue: #455CE9;
+  --color-dennis-blue-hover: #334BD3;
+
+  --color-cinema: #141517;
+  --color-cinema-alt: #1C1D20;
+  --color-cinema-border: #2C2E33;
+  --color-cinema-text: #FFFFFF;
+  --color-cinema-muted: #999D9E;
 }
 
 @layer base {
@@ -30,11 +35,12 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   ::selection {
-    background-color: var(--color-ink);
-    color: var(--color-paper);
+    background-color: var(--color-dennis-blue);
+    color: #FFFFFF;
   }
 }
 
@@ -46,9 +52,46 @@
   transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+@keyframes dennis-marquee {
+  0% {
+    transform: translate3d(0%, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-dennis-marquee {
+  display: flex;
+  width: max-content;
+  animation: dennis-marquee 22s linear infinite;
+  will-change: transform;
+}
+
+.animate-dennis-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes globe-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-globe-spin {
+  animation: globe-spin 14s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .animate-dennis-marquee,
+  .animate-globe-spin {
+    animation: none !important;
   }
   *,
   *::before,
