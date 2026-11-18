@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowUpRight, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowUpRight, ChevronDown, ChevronUp, Play } from "lucide-react";
 import { CASE_STUDIES, type WorkCategory } from "@/data/portfolio";
 
 const FILTERS: { id: WorkCategory; label: string }[] = [
@@ -18,7 +18,7 @@ interface WorkMatrixProps {
 
 export function WorkMatrix({ externalFilter }: WorkMatrixProps) {
   const [activeFilter, setActiveFilter] = useState<WorkCategory>("all");
-  const [expandedId, setExpandedId] = useState<string | null>("pacs-builders");
+  const [expandedId, setExpandedId] = useState<string | null>("hackerlily-hipsurfer");
 
   useEffect(() => {
     if (externalFilter) {
@@ -55,7 +55,9 @@ export function WorkMatrix({ externalFilter }: WorkMatrixProps) {
                 filter.id === "all"
                   ? CASE_STUDIES.length
                   : CASE_STUDIES.filter((c) =>
-                      c.categories.includes(filter.id as Exclude<WorkCategory, "all">)
+                      c.categories.includes(
+                        filter.id as Exclude<WorkCategory, "all">
+                      )
                     ).length;
               const isActive = activeFilter === filter.id;
 
@@ -88,10 +90,7 @@ export function WorkMatrix({ externalFilter }: WorkMatrixProps) {
             const isExpanded = expandedId === study.id;
 
             return (
-              <article
-                key={study.id}
-                className="py-6 sm:py-8 transition-colors"
-              >
+              <article key={study.id} className="py-6 sm:py-8 transition-colors">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   {/* Metadata & Metric */}
                   <div className="lg:col-span-3 flex lg:flex-col justify-between gap-2">
@@ -124,7 +123,17 @@ export function WorkMatrix({ externalFilter }: WorkMatrixProps) {
                         </p>
                       </div>
 
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex flex-wrap items-center gap-2 shrink-0">
+                        {(study.id === "hackerlily-hipsurfer" ||
+                          study.id === "husai") && (
+                          <a
+                            href="#proof-lab"
+                            className="inline-flex items-center gap-1 border border-[var(--color-signal)] bg-[var(--color-signal)] px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[var(--color-paper)] hover:bg-[var(--color-ink)] hover:border-[var(--color-ink)] transition-colors"
+                          >
+                            <Play className="h-3 w-3 fill-current" aria-hidden="true" />
+                            Watch Playback
+                          </a>
+                        )}
                         {study.links?.live && (
                           <a
                             href={study.links.live}
@@ -170,23 +179,95 @@ export function WorkMatrix({ externalFilter }: WorkMatrixProps) {
                     </p>
 
                     {isExpanded && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-[var(--color-hairline)]">
-                        <div className="bg-[var(--color-paper-alt)] p-4 border border-[var(--color-hairline)]">
-                          <div className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">
-                            Problem
+                      <div className="space-y-4 pt-4 border-t border-[var(--color-hairline)]">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="bg-[var(--color-paper-alt)] p-4 border border-[var(--color-hairline)]">
+                            <div className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">
+                              Problem
+                            </div>
+                            <p className="text-sm leading-relaxed text-[var(--color-ink)]">
+                              {study.problem}
+                            </p>
                           </div>
-                          <p className="text-sm leading-relaxed text-[var(--color-ink)]">
-                            {study.problem}
-                          </p>
-                        </div>
-                        <div className="bg-[var(--color-paper-alt)] p-4 border border-[var(--color-hairline)]">
-                          <div className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">
-                            Execution
+                          <div className="bg-[var(--color-paper-alt)] p-4 border border-[var(--color-hairline)]">
+                            <div className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">
+                              Execution
+                            </div>
+                            <p className="text-sm leading-relaxed text-[var(--color-ink)]">
+                              {study.execution}
+                            </p>
                           </div>
-                          <p className="text-sm leading-relaxed text-[var(--color-ink)]">
-                            {study.execution}
-                          </p>
                         </div>
+
+                        {/* Inline 9:16 Video Playback Strip for Hackerlily HipSurfer */}
+                        {study.id === "hackerlily-hipsurfer" && (
+                          <div className="border border-[var(--color-ink)] bg-[var(--color-paper-alt)] p-4">
+                            <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink)] mb-3">
+                              <span>INLINE 9:16 AD PLAYBACK (3 FEATURED CUTS)</span>
+                              <span className="text-[var(--color-ink-muted)]">
+                                UNMUTE OR EXPAND IN PLAYER CONTROLS
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                              {[
+                                {
+                                  src: "/videos/hipsurfer-01.mp4",
+                                  poster: "/videos/hipsurfer-01-poster.jpg",
+                                  label: "01 // Skeptic UGC (0:20)",
+                                },
+                                {
+                                  src: "/videos/hipsurfer-02.mp4",
+                                  poster: "/videos/hipsurfer-02-poster.jpg",
+                                  label: "02 // Competitor Switcher (0:20)",
+                                },
+                                {
+                                  src: "/videos/hipsurfer-03.mp4",
+                                  poster: "/videos/hipsurfer-03-poster.jpg",
+                                  label: "03 // Minimalist Aesthetic (0:18)",
+                                },
+                              ].map((vid) => (
+                                <div
+                                  key={vid.src}
+                                  className="border border-[var(--color-ink)] bg-[var(--color-ink)]"
+                                >
+                                  <video
+                                    src={vid.src}
+                                    poster={vid.poster}
+                                    controls
+                                    playsInline
+                                    loop
+                                    muted
+                                    preload="metadata"
+                                    className="aspect-[9/16] w-full object-cover"
+                                  />
+                                  <div className="border-t border-[var(--color-paper)]/20 px-2.5 py-1.5 font-mono text-[10px] text-[var(--color-paper)]">
+                                    {vid.label}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Inline 16:9 Demo Video Playback for HusAI */}
+                        {study.id === "husai" && (
+                          <div className="border border-[var(--color-ink)] bg-[var(--color-paper-alt)] p-4">
+                            <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink)] mb-3">
+                              <span>HUSAI 60-SECOND PRODUCT REVEAL (REMOTION BUILD)</span>
+                              <span className="text-[var(--color-ink-muted)]">
+                                1920×1080 · H.264
+                              </span>
+                            </div>
+                            <video
+                              src="/husai/husai-demo.mp4"
+                              poster="/husai/husai-poster.jpg"
+                              controls
+                              playsInline
+                              preload="metadata"
+                              className="aspect-video w-full border border-[var(--color-ink)] bg-[var(--color-ink)]"
+                            />
+                          </div>
+                        )}
                       </div>
                     )}
 

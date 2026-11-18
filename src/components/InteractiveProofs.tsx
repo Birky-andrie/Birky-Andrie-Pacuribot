@@ -5,6 +5,7 @@ import {
   ArrowUpRight,
   Check,
   Copy,
+  Maximize2,
   Pause,
   Play,
   RotateCcw,
@@ -15,10 +16,6 @@ import {
 type ProofTab = "husai" | "pacs" | "hackerlily";
 type HusaiMediaTab = "video" | "hero" | "solution" | "practice";
 
-/**
- * Verbatim data from C:\Users\PC\husai\video\src\lib\content.ts
- * (backend/src/modules/lifeline/service.ts & review/service.ts)
- */
 const HUSAI_TRANSCRIPT = [
   {
     speaker: "CLIENT",
@@ -206,14 +203,37 @@ export function InteractiveProofs() {
   const [runningAudit, setRunningAudit] = useState(false);
   const [auditLatency, setAuditLatency] = useState("1.84s");
 
-  // HipSurfer video reel state
+  // HipSurfer video reel playback state (all 3 autoplay muted in loop like an IG/TikTok reel feed!)
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
-  const [playingReelId, setPlayingReelId] = useState<string | null>(null);
-  const [mutedReels, setMutedReels] = useState<Record<string, boolean>>({
+  const [playingMap, setPlayingMap] = useState<Record<string, boolean>>({
     "reel-01": true,
     "reel-02": true,
     "reel-03": true,
   });
+  const [unmutedReelId, setUnmutedReelId] = useState<string | null>(null);
+  const [progressMap, setProgressMap] = useState<Record<string, number>>({
+    "reel-01": 0,
+    "reel-02": 0,
+    "reel-03": 0,
+  });
+
+  // Start all 3 HipSurfer reels muted on mount / tab switch so motion is immediate
+  useEffect(() => {
+    if (activeTab !== "hackerlily") return;
+    HIPSURFER_REELS.forEach((reel) => {
+      const el = videoRefs.current[reel.id];
+      if (el) {
+        el.muted = unmutedReelId !== reel.id;
+        el.play()
+          .then(() => {
+            setPlayingMap((prev) => ({ ...prev, [reel.id]: true }));
+          })
+          .catch(() => {
+            setPlayingMap((prev) => ({ ...prev, [reel.id]: false }));
+          });
+      }
+    });
+  }, [activeTab, unmutedReelId]);
 
   useEffect(() => {
     if (simState !== "listening") return;
@@ -249,32 +269,49 @@ export function InteractiveProofs() {
     const target = videoRefs.current[id];
     if (!target) return;
 
-    if (playingReelId === id && !target.paused) {
+    if (!target.paused) {
       target.pause();
-      setPlayingReelId(null);
-      return;
+      setPlayingMap((prev) => ({ ...prev, [id]: false }));
+    } else {
+      target
+        .play()
+        .then(() => setPlayingMap((prev) => ({ ...prev, [id]: true })))
+        .catch(() => setPlayingMap((prev) => ({ ...prev, [id]: false })));
     }
-
-    // Pause other reels so audio/playback stays focused
-    Object.entries(videoRefs.current).forEach(([otherId, el]) => {
-      if (otherId !== id && el && !el.paused) {
-        el.pause();
-      }
-    });
-
-    target
-      .play()
-      .then(() => setPlayingReelId(id))
-      .catch(() => setPlayingReelId(null));
   };
 
-  const toggleMuteReel = (id: string) => {
+  const toggleAudioReel = (id: string) => {
+    const nextUnmuted = unmutedReelId === id ? null : id;
+    setUnmutedReelId(nextUnmuted);
+
+    Object.entries(videoRefs.current).forEach(([reelId, el]) => {
+      if (!el) return;
+      const shouldMute = reelId !== nextUnmuted;
+      el.muted = shouldMute;
+      if (!shouldMute && el.paused) {
+        el.play().catch(() => {});
+      }
+    });
+  };
+
+  const handleSeekReel = (
+    id: string,
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     const target = videoRefs.current[id];
-    const nextMuted = !mutedReels[id];
-    if (target) {
-      target.muted = nextMuted;
+    if (!target || !target.duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    target.currentTime = ratio * target.duration;
+    setProgressMap((prev) => ({ ...prev, [id]: ratio * 100 }));
+  };
+
+  const handleFullscreen = (id: string) => {
+    const target = videoRefs.current[id];
+    if (!target) return;
+    if (target.requestFullscreen) {
+      target.requestFullscreen().catch(() => {});
     }
-    setMutedReels((prev) => ({ ...prev, [id]: nextMuted }));
   };
 
   const currentHusaiMedia =
@@ -292,7 +329,7 @@ export function InteractiveProofs() {
               02 // Interactive Proof Lab
             </p>
             <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-[var(--color-ink)]">
-              Real creative reels, live localhost captures, and system telemetry.
+              Live 9:16 ad playback, HusAI localhost captures, and system telemetry.
             </h2>
           </div>
 
@@ -327,25 +364,26 @@ export function InteractiveProofs() {
           </div>
         </div>
 
-        {/* TAB 01: Hackerlily HipSurfer 9:16 Real Video Reels */}
+        {/* TAB 01: Hackerlily HipSurfer 9:16 Real Autoplaying Video Reels */}
         {activeTab === "hackerlily" && (
           <div className="mt-8 border border-[var(--color-ink)] bg-[var(--color-paper)]">
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--color-ink)] bg-[var(--color-paper-alt)] px-4 sm:px-6 py-3 font-mono text-xs">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 bg-[var(--color-signal)]" />
                 <span className="font-medium text-[var(--color-ink)]">
-                  HACKERLILY HIPSURFER // 3 DIRECT-RESPONSE &amp; MINIMALIST 9:16 EDITS
+                  HACKERLILY HIPSURFER // LIVE 9:16 VIDEO PLAYBACK (AUTOPLAYING)
                 </span>
               </div>
               <span className="text-[var(--color-ink-muted)]">
-                CLICK ANY REEL TO PLAY · TOGGLE AUDIO FOR FOLEY &amp; BEAT SYNC
+                CLICK &ldquo;SOUND ON&rdquo; TO HEAR FOLEY &amp; BEAT SYNC · SCRUB BAR TO SEEK
               </span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-[var(--color-hairline)]">
               {HIPSURFER_REELS.map((reel) => {
-                const isPlaying = playingReelId === reel.id;
-                const isMuted = mutedReels[reel.id] ?? true;
+                const isPlaying = playingMap[reel.id] ?? true;
+                const isAudioOn = unmutedReelId === reel.id;
+                const progress = progressMap[reel.id] ?? 0;
 
                 return (
                   <article
@@ -372,91 +410,122 @@ export function InteractiveProofs() {
                         </p>
                       </div>
 
-                      {/* 9:16 Vertical Video Player Frame */}
-                      <div className="relative mx-auto w-full max-w-[280px] aspect-[9/16] border border-[var(--color-ink)] bg-[var(--color-ink)] overflow-hidden group">
+                      {/* 9:16 Vertical Video Player Frame — Autoplaying Muted Loop */}
+                      <div className="relative mx-auto w-full max-w-[285px] aspect-[9/16] border border-[var(--color-ink)] bg-[var(--color-ink)] overflow-hidden">
                         <video
                           ref={(el) => {
                             videoRefs.current[reel.id] = el;
                           }}
                           src={reel.videoSrc}
                           poster={reel.posterSrc}
+                          autoPlay
                           playsInline
                           loop
-                          muted={isMuted}
-                          preload="metadata"
+                          muted={!isAudioOn}
+                          preload="auto"
                           onClick={() => togglePlayReel(reel.id)}
-                          onPlay={() => setPlayingReelId(reel.id)}
-                          onPause={() => {
-                            if (playingReelId === reel.id) {
-                              setPlayingReelId(null);
+                          onPlay={() =>
+                            setPlayingMap((prev) => ({ ...prev, [reel.id]: true }))
+                          }
+                          onPause={() =>
+                            setPlayingMap((prev) => ({ ...prev, [reel.id]: false }))
+                          }
+                          onTimeUpdate={(e) => {
+                            const el = e.currentTarget;
+                            if (el.duration) {
+                              setProgressMap((prev) => ({
+                                ...prev,
+                                [reel.id]: (el.currentTime / el.duration) * 100,
+                              }));
                             }
                           }}
                           className="h-full w-full object-cover cursor-pointer"
                         />
 
-                        {/* Top status pill */}
-                        <div className="pointer-events-none absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between font-mono text-[10px] uppercase tracking-wider">
-                          <span className="border border-[var(--color-paper)]/30 bg-[var(--color-ink)]/80 px-2 py-0.5 text-[var(--color-paper)]">
-                            {isPlaying ? "● PLAYING" : "9:16 VERTICAL"}
+                        {/* Top status pill + prominent one-click Audio Toggle */}
+                        <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between font-mono text-[10px] uppercase tracking-wider">
+                          <span className="border border-[var(--color-paper)]/30 bg-[var(--color-ink)]/80 px-2 py-1 text-[var(--color-paper)] flex items-center gap-1.5">
+                            <span
+                              className={`h-1.5 w-1.5 ${
+                                isPlaying
+                                  ? "bg-[var(--color-signal)]"
+                                  : "bg-[var(--color-paper)]/50"
+                              }`}
+                            />
+                            {isPlaying ? "LIVE 9:16" : "PAUSED"}
                           </span>
-                          <span className="border border-[var(--color-paper)]/30 bg-[var(--color-ink)]/80 px-2 py-0.5 text-[var(--color-paper)] tabular-nums">
-                            {reel.duration}
-                          </span>
-                        </div>
-
-                        {/* Center play button overlay when paused */}
-                        {!isPlaying && (
-                          <button
-                            type="button"
-                            onClick={() => togglePlayReel(reel.id)}
-                            aria-label={`Play ${reel.title}`}
-                            className="absolute inset-0 flex items-center justify-center bg-[var(--color-ink)]/25 hover:bg-[var(--color-ink)]/10 transition-colors cursor-pointer"
-                          >
-                            <span className="inline-flex items-center gap-1.5 border border-[var(--color-paper)] bg-[var(--color-ink)]/90 px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-[var(--color-paper)]">
-                              <Play className="h-3.5 w-3.5 fill-current" />
-                              Play Reel
-                            </span>
-                          </button>
-                        )}
-
-                        {/* Bottom tactile control strip */}
-                        <div className="absolute bottom-0 inset-x-0 flex items-center justify-between border-t border-[var(--color-paper)]/20 bg-[var(--color-ink)]/90 px-3 py-2 font-mono text-[11px] text-[var(--color-paper)]">
-                          <button
-                            type="button"
-                            onClick={() => togglePlayReel(reel.id)}
-                            className="inline-flex items-center gap-1.5 hover:text-[var(--color-signal)] cursor-pointer"
-                          >
-                            {isPlaying ? (
-                              <>
-                                <Pause className="h-3.5 w-3.5" />
-                                <span>PAUSE</span>
-                              </>
-                            ) : (
-                              <>
-                                <Play className="h-3.5 w-3.5" />
-                                <span>PLAY</span>
-                              </>
-                            )}
-                          </button>
 
                           <button
                             type="button"
-                            onClick={() => toggleMuteReel(reel.id)}
-                            className="inline-flex items-center gap-1.5 hover:text-[var(--color-signal)] cursor-pointer"
-                            aria-label={isMuted ? "Unmute audio" : "Mute audio"}
+                            onClick={() => toggleAudioReel(reel.id)}
+                            className={`inline-flex items-center gap-1 border px-2.5 py-1 transition-colors cursor-pointer ${
+                              isAudioOn
+                                ? "border-[var(--color-signal)] bg-[var(--color-signal)] text-[var(--color-paper)]"
+                                : "border-[var(--color-paper)]/40 bg-[var(--color-ink)]/85 text-[var(--color-paper)] hover:border-[var(--color-paper)]"
+                            }`}
                           >
-                            {isMuted ? (
+                            {isAudioOn ? (
                               <>
-                                <VolumeX className="h-3.5 w-3.5 text-[var(--color-signal)]" />
-                                <span>MUTED</span>
-                              </>
-                            ) : (
-                              <>
-                                <Volume2 className="h-3.5 w-3.5 text-[var(--color-signal)]" />
+                                <Volume2 className="h-3 w-3" />
                                 <span>AUDIO ON</span>
                               </>
+                            ) : (
+                              <>
+                                <VolumeX className="h-3 w-3" />
+                                <span>SOUND ON</span>
+                              </>
                             )}
                           </button>
+                        </div>
+
+                        {/* Interactive Timeline Scrubber + Bottom Controls */}
+                        <div className="absolute bottom-0 inset-x-0 bg-[var(--color-ink)]/90 border-t border-[var(--color-paper)]/20">
+                          {/* Clickable seek bar */}
+                          <div
+                            onClick={(e) => handleSeekReel(reel.id, e)}
+                            className="h-2 w-full bg-[var(--color-paper)]/20 cursor-pointer relative"
+                            title="Click to seek video"
+                          >
+                            <div
+                              className="h-full bg-[var(--color-signal)] transition-all duration-75"
+                              style={{ width: `${progress}%` }}
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between px-3 py-2 font-mono text-[11px] text-[var(--color-paper)]">
+                            <button
+                              type="button"
+                              onClick={() => togglePlayReel(reel.id)}
+                              className="inline-flex items-center gap-1.5 hover:text-[var(--color-signal)] cursor-pointer"
+                            >
+                              {isPlaying ? (
+                                <>
+                                  <Pause className="h-3.5 w-3.5" />
+                                  <span>PAUSE</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Play className="h-3.5 w-3.5" />
+                                  <span>PLAY</span>
+                                </>
+                              )}
+                            </button>
+
+                            <div className="flex items-center gap-3">
+                              <span className="tabular-nums text-[10px] text-[var(--color-paper)]/70">
+                                {reel.duration}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleFullscreen(reel.id)}
+                                className="hover:text-[var(--color-signal)] cursor-pointer"
+                                title="Fullscreen video"
+                                aria-label="Fullscreen video"
+                              >
+                                <Maximize2 className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -477,7 +546,7 @@ export function InteractiveProofs() {
           </div>
         )}
 
-        {/* TAB 02: HusAI Localhost UI Captures + 60s Remotion Demo + Verbatim Repo Data */}
+        {/* TAB 02: HusAI Localhost UI Captures + Autoplaying 60s Remotion Demo + Verbatim Repo Data */}
         {activeTab === "husai" && (
           <div className="mt-8 border border-[var(--color-ink)] bg-[var(--color-paper)]">
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--color-ink)] bg-[var(--color-paper-alt)] px-4 sm:px-6 py-3 font-mono text-xs">
@@ -487,7 +556,7 @@ export function InteractiveProofs() {
                   HUSAI // LIVE CALL COACH FOR FILIPINO VAs
                 </span>
                 <span className="hidden sm:inline text-[var(--color-ink-muted)]">
-                  (Localhost :5173 Captures + 60s Remotion Reveal + Verbatim Repo Data)
+                  (60s Remotion Video Playback + Localhost :5173 Captures)
                 </span>
               </div>
               <div className="flex items-center gap-4">
@@ -513,7 +582,7 @@ export function InteractiveProofs() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12">
-              {/* Left Column: 60s Product Demo Video & Live Localhost Screenshots */}
+              {/* Left Column: Autoplaying 60s Product Demo Video & Live Localhost Screenshots */}
               <div className="lg:col-span-7 p-6 border-b lg:border-b-0 lg:border-r border-[var(--color-hairline)] flex flex-col justify-between gap-6">
                 <div className="space-y-4">
                   <div className="flex flex-wrap border-t border-l border-[var(--color-hairline)]">
@@ -536,16 +605,19 @@ export function InteractiveProofs() {
                     })}
                   </div>
 
-                  {/* 16:9 Media Viewport */}
+                  {/* 16:9 Media Viewport — Autoplaying 60s Demo Video */}
                   <div className="border border-[var(--color-ink)] bg-[var(--color-ink)] overflow-hidden">
                     {currentHusaiMedia.id === "video" ? (
                       <video
                         key="husai-demo-video"
                         src={currentHusaiMedia.src}
                         poster="/husai/husai-poster.jpg"
+                        autoPlay
+                        muted
+                        loop
                         controls
                         playsInline
-                        preload="metadata"
+                        preload="auto"
                         className="aspect-video w-full object-contain bg-[var(--color-ink)]"
                       />
                     ) : (
@@ -574,7 +646,10 @@ export function InteractiveProofs() {
 
                   <div className="space-y-2 border border-[var(--color-hairline)] bg-[var(--color-paper-alt)] p-3.5">
                     {HUSAI_TRANSCRIPT.map((turn, idx) => (
-                      <div key={idx} className="font-mono text-xs flex items-baseline gap-2">
+                      <div
+                        key={idx}
+                        className="font-mono text-xs flex items-baseline gap-2"
+                      >
                         <span
                           className={`shrink-0 px-1.5 py-0.5 text-[10px] ${
                             turn.speaker === "CLIENT"
@@ -619,7 +694,8 @@ export function InteractiveProofs() {
 
                   {simState === "listening" ? (
                     <div className="h-36 flex items-center justify-center border border-dashed border-[var(--color-hairline)] font-mono text-xs text-[var(--color-ink-muted)]">
-                      Measuring raw mic amplitude VAD ({(elapsedMs / 1000).toFixed(1)}s / 4.0s)...
+                      Measuring raw mic amplitude VAD (
+                      {(elapsedMs / 1000).toFixed(1)}s / 4.0s)...
                     </div>
                   ) : (
                     <div className="space-y-2">
@@ -681,7 +757,7 @@ export function InteractiveProofs() {
                         <div className="font-mono text-lg font-semibold tabular-nums text-[var(--color-ink)]">
                           {s.value}
                         </div>
-                        <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-ink-muted)]">
+                        <div className="font-mono text-[10px] uppercase tracking-tight text-[var(--color-ink-muted)] truncate">
                           {s.label}
                         </div>
                       </div>
