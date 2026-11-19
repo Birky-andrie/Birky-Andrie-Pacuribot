@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Preloader } from "./Preloader";
 import { Navbar } from "./Navbar";
 import { Hero } from "./Hero";
 import { WorkMatrix } from "./WorkMatrix";
@@ -8,6 +9,7 @@ import { InteractiveProofs } from "./InteractiveProofs";
 import { ServicesGrid } from "./ServicesGrid";
 import { EngagementModels } from "./EngagementModels";
 import { ToolkitSection } from "./ToolkitSection";
+import { SlidingGallery } from "./SlidingGallery";
 import { ContactSection } from "./ContactSection";
 import { CommandPalette } from "./CommandPalette";
 import type { FocusMode, ProofTab, WorkCategory } from "@/data/portfolio";
@@ -75,16 +77,19 @@ export function PortfolioShell() {
 
   return (
     <>
+      {/* 0. Dennis Snellenberg Multi-Word Curve Preloader */}
+      <Preloader />
+
       <Navbar
         focusMode={focusMode}
         onChangeFocusMode={(m) => applyFocusMode(m, true)}
         onOpenCommandPalette={() => setPaletteOpen(true)}
       />
       <main>
-        {/* 1. Dennis Snellenberg 100vh #999D9E Hero + Split Statement & Overlapping Circular Magnetic CTA */}
+        {/* 1. Dennis Snellenberg 100vh #999D9E Hero + Velocity Marquee + Word-Reveal Statement */}
         <Hero focusMode={focusMode} onJumpToProof={handleJumpToProof} />
 
-        {/* 2. Dennis Snellenberg "RECENT WORK" Oversized Project List + 340x340 Cursor Follower & Blue "View" Circle */}
+        {/* 2. Dennis Snellenberg "RECENT WORK" + 2-Layer Spring Lerp Vertical Reel Modal & Blue "View" Circle */}
         <WorkMatrix
           externalFilter={workFilter}
           onJumpToProof={handleJumpToProof}
@@ -97,9 +102,12 @@ export function PortfolioShell() {
         <ServicesGrid onSelectService={setSelectedService} />
         <EngagementModels onSelectModel={setSelectedService} />
         <ToolkitSection />
+
+        {/* 5. Dennis Snellenberg 2-Row Scroll-Driven Sliding Showcase + Morphing Curved Overhang */}
+        <SlidingGallery onJumpToProof={handleJumpToProof} />
       </main>
 
-      {/* 5. Dennis Snellenberg #1C1D20 "Let's work together" Footer with #455CE9 Circular "Get in touch" Button */}
+      {/* 6. Dennis Snellenberg #1C1D20 "Let's work together" Footer with Liquid-Fill Magnetic Buttons */}
       <ContactSection preselectedService={selectedService} />
 
       <CommandPalette

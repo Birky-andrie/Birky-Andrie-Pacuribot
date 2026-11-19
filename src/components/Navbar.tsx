@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Command, X } from "lucide-react";
 import { PROFILE, type FocusMode } from "@/data/portfolio";
+import { MagneticButton } from "./MagneticButton";
 
 const NAV_LINKS = [
   { label: "Work", href: "#work" },
@@ -73,7 +74,10 @@ export function Navbar({
 
         {/* Right: Clean Links with bottom dot indicator + Focus Switcher + ⌘K */}
         <div className="flex items-center gap-6 lg:gap-9">
-          <nav className="hidden md:flex items-center gap-7 lg:gap-9" aria-label="Primary">
+          <nav
+            className="hidden md:flex items-center gap-7 lg:gap-9"
+            aria-label="Primary"
+          >
             {NAV_LINKS.map((item) => (
               <a
                 key={item.href}
@@ -81,11 +85,13 @@ export function Navbar({
                 className="group relative py-1 text-sm sm:text-base font-normal text-white/95 hover:text-white transition-colors"
               >
                 <span>{item.label}</span>
-                <span className="
+                <span
+                  className="
                   pointer-events-none absolute -bottom-1.5 left-1/2 -translate-x-1/2
                   h-1.5 w-1.5 rounded-full bg-white scale-0 transition-transform duration-300 ease-out-expo
                   group-hover:scale-100
-                " />
+                "
+                />
               </a>
             ))}
           </nav>
@@ -139,117 +145,144 @@ export function Navbar({
         </div>
       </header>
 
-      {/* Dennis Snellenberg Floating Circular Hamburger Button (appears on scroll or when drawer is open) */}
-      <button
-        type="button"
-        onClick={() => setDrawerOpen((prev) => !prev)}
-        aria-label={drawerOpen ? "Close navigation drawer" : "Open navigation drawer"}
-        aria-expanded={drawerOpen}
-        className={`fixed top-5 right-5 sm:top-7 sm:right-7 z-50 h-16 w-16 sm:h-20 sm:w-20 rounded-full flex items-center justify-center transition-all duration-500 ease-out-expo cursor-pointer shadow-lg ${
-          drawerOpen
-            ? "bg-[#455CE9] text-white scale-100 opacity-100 visible"
-            : scrolled
-              ? "bg-[#1C1D20] hover:bg-[#455CE9] text-white scale-100 opacity-100 visible"
-              : "bg-[#1C1D20] text-white scale-0 opacity-0 invisible pointer-events-none"
+      {/* Dennis Snellenberg Floating Circular Liquid-Fill Magnetic Hamburger Button */}
+      <div
+        className={`fixed top-5 right-5 sm:top-7 sm:right-7 z-50 transition-all duration-500 ease-dennis ${
+          drawerOpen || scrolled
+            ? "scale-100 opacity-100 visible"
+            : "scale-0 opacity-0 invisible pointer-events-none"
         }`}
       >
-        {drawerOpen ? (
-          <X className="h-6 w-6 stroke-[1.5]" />
-        ) : (
-          <div className="flex flex-col gap-1.5 items-center justify-center">
-            <span className="block h-[1.5px] w-6 bg-white" />
-            <span className="block h-[1.5px] w-6 bg-white" />
-          </div>
-        )}
-      </button>
-
-      {/* Dennis Snellenberg Dark Side-Drawer Menu (#1C1D20) */}
-      {drawerOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px]"
-          onClick={() => setDrawerOpen(false)}
+        <MagneticButton
+          onClick={() => setDrawerOpen((prev) => !prev)}
+          ariaLabel={
+            drawerOpen ? "Close navigation drawer" : "Open navigation drawer"
+          }
+          className={`h-16 w-16 sm:h-20 sm:w-20 rounded-full flex items-center justify-center shadow-lg ${
+            drawerOpen ? "bg-[#455CE9] text-white" : "bg-[#1C1D20] text-white"
+          }`}
         >
-          <aside
-            onClick={(e) => e.stopPropagation()}
-            className="ml-auto h-full w-full max-w-md bg-[#1C1D20] text-white px-8 sm:px-14 py-12 flex flex-col justify-between"
+          {drawerOpen ? (
+            <X className="h-6 w-6 stroke-[1.5]" />
+          ) : (
+            <div className="flex flex-col gap-1.5 items-center justify-center">
+              <span className="block h-[1.5px] w-6 bg-white" />
+              <span className="block h-[1.5px] w-6 bg-white" />
+            </div>
+          )}
+        </MagneticButton>
+      </div>
+
+      {/* Dennis Snellenberg Animated Dark Side-Drawer Menu (#1C1D20) with Morphing SVG Left Curve */}
+      <div
+        className={`fixed inset-0 z-40 transition-opacity duration-500 ease-dennis ${
+          drawerOpen
+            ? "opacity-100 pointer-events-auto bg-black/40 backdrop-blur-[2px]"
+            : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setDrawerOpen(false)}
+      >
+        <aside
+          onClick={(e) => e.stopPropagation()}
+          className={`relative ml-auto h-full w-full max-w-md bg-[#1C1D20] text-white px-8 sm:px-14 py-12 flex flex-col justify-between transition-transform duration-700 ease-dennis ${
+            drawerOpen ? "translate-x-0" : "translate-x-[115%]"
+          }`}
+        >
+          {/* SVG Curved Left Arch Morph during Drawer Slide */}
+          <svg
+            aria-hidden="true"
+            className="pointer-events-none absolute top-0 -left-24 h-full w-24 fill-[#1C1D20]"
+            viewBox="0 0 100 800"
+            preserveAspectRatio="none"
           >
-            <div className="space-y-8 pt-8">
-              <div className="border-b border-white/15 pb-4 font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
-                Navigation
-              </div>
+            <path
+              className="transition-all duration-700 ease-dennis"
+              d={
+                drawerOpen
+                  ? "M100,0 L100,800 Q100,400 100,0 Z"
+                  : "M100,0 L100,800 Q0,400 100,0 Z"
+              }
+            />
+          </svg>
 
-              <nav className="flex flex-col gap-4" aria-label="Drawer">
-                {[
-                  { label: "Home", href: "#" },
-                  ...NAV_LINKS,
-                ].map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    onClick={() => setDrawerOpen(false)}
-                    className="group flex items-center justify-between text-3xl sm:text-4xl font-normal tracking-tight text-white/90 hover:text-white transition-transform duration-300 ease-out-expo hover:translate-x-2"
-                  >
-                    <span>{item.label}</span>
-                    <span className="h-2.5 w-2.5 rounded-full bg-[#455CE9] opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </a>
-                ))}
-              </nav>
-
-              <div className="pt-4 border-t border-white/15 space-y-2">
-                <div className="font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
-                  Focus Mode URL
-                </div>
-                <div className="inline-flex rounded-full bg-white/10 p-1">
-                  {FOCUS_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      onClick={() => onChangeFocusMode(opt.id)}
-                      className={`rounded-full px-3 py-1 font-mono text-xs uppercase cursor-pointer ${
-                        focusMode === opt.id
-                          ? "bg-[#455CE9] text-white"
-                          : "text-white/75 hover:text-white"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+          <div className="space-y-8 pt-8">
+            <div className="border-b border-white/15 pb-4 font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
+              Navigation
             </div>
 
-            <div className="border-t border-white/15 pt-6 space-y-2">
+            <nav className="flex flex-col gap-4" aria-label="Drawer">
+              {[{ label: "Home", href: "#" }, ...NAV_LINKS].map((item, idx) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setDrawerOpen(false)}
+                  style={{ transitionDelay: `${idx * 45}ms` }}
+                  className={`group flex items-center justify-between text-3xl sm:text-4xl font-normal tracking-tight text-white/90 hover:text-white transition-all duration-500 ease-out-expo hover:translate-x-2 ${
+                    drawerOpen
+                      ? "translate-x-0 opacity-100"
+                      : "translate-x-12 opacity-0"
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#455CE9] opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
+              ))}
+            </nav>
+
+            <div className="pt-4 border-t border-white/15 space-y-2">
               <div className="font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
-                Socials &amp; Direct
+                Focus Mode URL
               </div>
-              <div className="flex flex-wrap gap-5 text-sm text-white/90">
-                <a
-                  href={PROFILE.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-[#455CE9] transition-colors"
-                >
-                  GitHub
-                </a>
-                <a
-                  href="https://hus-ai-five.vercel.app"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-[#455CE9] transition-colors"
-                >
-                  HusAI Live
-                </a>
-                <a
-                  href={`mailto:${PROFILE.email}`}
-                  className="hover:text-[#455CE9] transition-colors"
-                >
-                  Email
-                </a>
+              <div className="inline-flex rounded-full bg-white/10 p-1">
+                {FOCUS_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => onChangeFocusMode(opt.id)}
+                    className={`rounded-full px-3 py-1 font-mono text-xs uppercase cursor-pointer ${
+                      focusMode === opt.id
+                        ? "bg-[#455CE9] text-white"
+                        : "text-white/75 hover:text-white"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
               </div>
             </div>
-          </aside>
-        </div>
-      )}
+          </div>
+
+          <div className="border-t border-white/15 pt-6 space-y-2">
+            <div className="font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
+              Socials &amp; Direct
+            </div>
+            <div className="flex flex-wrap gap-5 text-sm text-white/90">
+              <a
+                href={PROFILE.github}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#455CE9] transition-colors"
+              >
+                GitHub
+              </a>
+              <a
+                href="https://hus-ai-five.vercel.app"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#455CE9] transition-colors"
+              >
+                HusAI Live
+              </a>
+              <a
+                href={`mailto:${PROFILE.email}`}
+                className="hover:text-[#455CE9] transition-colors"
+              >
+                Email
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
     </>
   );
 }

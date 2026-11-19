@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ArrowDownLeft, ArrowUpRight, Check, Copy } from "lucide-react";
 import { PROFILE, SERVICES } from "@/data/portfolio";
+import { MagneticButton } from "./MagneticButton";
 
 interface ContactSectionProps {
   preselectedService: string;
@@ -21,8 +22,6 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "submitting" | "sent"
   >("idle");
-
-  const magneticRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     if (preselectedService) {
@@ -49,21 +48,6 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
     const timer = setInterval(updateTime, 30000);
     return () => clearInterval(timer);
   }, []);
-
-  const handleMagneticMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const btn = magneticRef.current;
-    if (!btn) return;
-    const rect = btn.getBoundingClientRect();
-    const x = (e.clientX - rect.left - rect.width / 2) * 0.28;
-    const y = (e.clientY - rect.top - rect.height / 2) * 0.28;
-    btn.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-  };
-
-  const handleMagneticLeave = () => {
-    const btn = magneticRef.current;
-    if (!btn) return;
-    btn.style.transform = "translate3d(0px, 0px, 0)";
-  };
 
   const buildBriefText = () => {
     return [
@@ -112,7 +96,7 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
   };
 
   return (
-    <footer id="contact" className="bg-[#1C1D20] text-white pt-20 sm:pt-32 pb-10">
+    <footer id="contact" className="bg-[#1C1D20] text-white pt-24 sm:pt-36 pb-10">
       <div className="mx-auto max-w-6xl px-6 sm:px-12">
         {/* Iconic Dennis Snellenberg "Let's work together" Header with Circular Portrait Badge */}
         <div className="flex items-end justify-between">
@@ -140,49 +124,57 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
           />
         </div>
 
-        {/* Horizontal Divider with Overlapping #455CE9 Blue Circular "Get in touch" Button */}
+        {/* Horizontal Divider with Overlapping #455CE9 Blue Circular Liquid-Fill Magnetic "Get in touch" Button */}
         <div className="relative mt-16 sm:mt-24 mb-16 sm:mb-20">
           <div className="h-[1px] w-full bg-white/20" />
           <div className="absolute right-6 sm:right-20 -top-20 sm:-top-24">
-            <button
-              ref={magneticRef}
-              type="button"
-              onMouseMove={handleMagneticMove}
-              onMouseLeave={handleMagneticLeave}
+            <MagneticButton
               onClick={() => setShowBriefForm((prev) => !prev)}
-              className="h-40 w-40 sm:h-48 sm:w-48 rounded-full bg-[#455CE9] hover:bg-[#334BD3] text-white flex flex-col items-center justify-center gap-1 transition-colors duration-300 ease-out-expo cursor-pointer shadow-lg"
+              fillColor="#334BD3"
+              className="h-40 w-40 sm:h-48 sm:w-48 rounded-full bg-[#455CE9] text-white flex items-center justify-center shadow-lg"
             >
               <span className="text-base sm:text-lg font-medium tracking-tight">
                 Get in touch
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-white/80">
+              <span className="mt-1 font-mono text-[10px] uppercase tracking-widest text-white/80">
                 {showBriefForm ? "Hide Brief" : "Scope Project"}
               </span>
-            </button>
+            </MagneticButton>
           </div>
         </div>
 
-        {/* Dennis Snellenberg Rounded Contact Pills */}
+        {/* Dennis Snellenberg Rounded Liquid-Fill Magnetic Contact Pills */}
         <div className="flex flex-wrap items-center gap-4">
-          <a
+          <MagneticButton
             href={`mailto:${PROFILE.email}`}
-            className="rounded-full border border-white/20 px-7 py-4 text-sm sm:text-base text-white hover:bg-[#455CE9] hover:border-[#455CE9] transition-colors duration-300"
+            strength={0.22}
+            textStrength={0.1}
+            className="rounded-full border border-white/20 px-7 py-4 text-sm sm:text-base text-white"
           >
-            {PROFILE.email}
-          </a>
-          <a
+            <span>{PROFILE.email}</span>
+          </MagneticButton>
+
+          <MagneticButton
             href={`tel:${PROFILE.phone.replace(/\s+/g, "")}`}
-            className="rounded-full border border-white/20 px-7 py-4 text-sm sm:text-base text-white hover:bg-[#455CE9] hover:border-[#455CE9] transition-colors duration-300 tabular-nums"
+            strength={0.22}
+            textStrength={0.1}
+            className="rounded-full border border-white/20 px-7 py-4 text-sm sm:text-base text-white tabular-nums"
           >
-            {PROFILE.phone}
-          </a>
-          <button
-            type="button"
+            <span>{PROFILE.phone}</span>
+          </MagneticButton>
+
+          <MagneticButton
             onClick={() => setShowBriefForm((prev) => !prev)}
-            className="rounded-full border border-white/20 px-7 py-4 text-sm sm:text-base text-white/80 hover:text-white hover:border-white transition-colors duration-300 cursor-pointer"
+            strength={0.22}
+            textStrength={0.1}
+            className="rounded-full border border-white/20 px-7 py-4 text-sm sm:text-base text-white/85"
           >
-            {showBriefForm ? "Close Brief Builder" : "+ Open Project Brief Builder"}
-          </button>
+            <span>
+              {showBriefForm
+                ? "Close Brief Builder"
+                : "+ Open Project Brief Builder"}
+            </span>
+          </MagneticButton>
         </div>
 
         {/* Expandable Project Brief Builder */}
@@ -297,7 +289,10 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
               >
                 {copiedBrief ? (
                   <>
-                    <Check className="h-3.5 w-3.5 text-[#455CE9]" aria-hidden="true" />
+                    <Check
+                      className="h-3.5 w-3.5 text-[#455CE9]"
+                      aria-hidden="true"
+                    />
                     <span>Brief Copied</span>
                   </>
                 ) : (

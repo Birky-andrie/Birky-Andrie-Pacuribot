@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Play } from "lucide-react";
 import {
   CASE_STUDIES,
-  type CaseStudy,
   type ProofTab,
   type WorkCategory,
 } from "@/data/portfolio";
+import { MagneticButton } from "./MagneticButton";
 
 const FILTERS: { id: WorkCategory; label: string }[] = [
   { id: "all", label: "All" },
@@ -15,6 +15,15 @@ const FILTERS: { id: WorkCategory; label: string }[] = [
   { id: "creative", label: "Creative" },
   { id: "leadership", label: "Leadership" },
   { id: "github", label: "GitHub" },
+];
+
+const STAGE_BG_PALETTE = [
+  "#1C1D20",
+  "#D6D7DC",
+  "#E2DCD5",
+  "#242730",
+  "#D9DFE4",
+  "#22252A",
 ];
 
 interface WorkMatrixProps {
@@ -28,29 +37,52 @@ export function WorkMatrix({
 }: WorkMatrixProps) {
   const [activeFilter, setActiveFilter] = useState<WorkCategory>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [hoveredStudy, setHoveredStudy] = useState<CaseStudy | null>(null);
+  const [hoveredIdx, setHoveredIdx] = useState<number>(0);
+  const [isHoveringList, setIsHoveringList] = useState(false);
 
-  // Dennis Snellenberg 340x340 cursor-centered floating preview + centered #455CE9 "View" circle
-  const previewRef = useRef<HTMLDivElement | null>(null);
-  const rafRef = useRef<number | null>(null);
+  // Two-layer spring lerp refs: Modal Box (0.14 lerp) + Blue "View" Circle (0.26 lerp)
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  const cursorCircleRef = useRef<HTMLDivElement | null>(null);
+  const targetPos = useRef({ x: 0, y: 0 });
+  const modalPos = useRef({ x: 0, y: 0 });
+  const circlePos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     if (externalFilter) {
       setActiveFilter(externalFilter);
+      setHoveredIdx(0);
     }
   }, [externalFilter]);
 
+  useEffect(() => {
+    let rafId: number;
+
+    const animateCursorFollower = () => {
+      // Layer 1: 350x350 Preview Modal lerps at 0.14
+      modalPos.current.x += (targetPos.current.x - modalPos.current.x) * 0.14;
+      modalPos.current.y += (targetPos.current.y - modalPos.current.y) * 0.14;
+
+      // Layer 2: 80x80 Blue "View" Circle lerps faster at 0.28 for signature physical separation
+      circlePos.current.x += (targetPos.current.x - circlePos.current.x) * 0.28;
+      circlePos.current.y += (targetPos.current.y - circlePos.current.y) * 0.28;
+
+      if (modalRef.current) {
+        modalRef.current.style.transform = `translate3d(${modalPos.current.x - 175}px, ${modalPos.current.y - 175}px, 0)`;
+      }
+      if (cursorCircleRef.current) {
+        cursorCircleRef.current.style.transform = `translate3d(${circlePos.current.x - 40}px, ${circlePos.current.y - 40}px, 0)`;
+      }
+
+      rafId = requestAnimationFrame(animateCursorFollower);
+    };
+
+    rafId = requestAnimationFrame(animateCursorFollower);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    if (!previewRef.current) return;
-    const clientX = e.clientX;
-    const clientY = e.clientY;
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(() => {
-      if (!previewRef.current) return;
-      const x = clientX - 170;
-      const y = clientY - 170;
-      previewRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    });
+    targetPos.current.x = e.clientX;
+    targetPos.current.y = e.clientY;
   };
 
   const filtered =
@@ -58,12 +90,13 @@ export function WorkMatrix({
       ? CASE_STUDIES
       : CASE_STUDIES.filter((item) => item.categories.includes(activeFilter));
 
+  const showFloatingPreview = isHoveringList && !expandedId;
+
   return (
     <section
       id="work"
       className="bg-white text-[#1C1D20] pb-24 sm:pb-32 relative"
       onMouseMove={handleMouseMove}
-      onMouseLeave={() => setHoveredStudy(null)}
     >
       <div className="mx-auto max-w-6xl px-6 sm:px-12">
         {/* Eyebrow + Filter Pills */}
@@ -94,7 +127,10 @@ export function WorkMatrix({
                   type="button"
                   role="tab"
                   aria-selected={isActive}
-                  onClick={() => setActiveFilter(filter.id)}
+                  onClick={() => {
+                    setActiveFilter(filter.id);
+                    setHoveredIdx(0);
+                  }}
                   className={`rounded-full px-4 py-1.5 text-xs font-normal transition-colors cursor-pointer border ${
                     isActive
                       ? "border-[#1C1D20] bg-[#1C1D20] text-white"
@@ -112,14 +148,26 @@ export function WorkMatrix({
         </div>
 
         {/* Dennis Snellenberg Oversized Project Rows */}
-        <div className="border-t border-[#E2E3E7] divide-y divide-[#E2E3E7] border-b">
-          {filtered.map((study) => {
+        <div
+          onMouseEnter={(e) => {
+            targetPos.current.x = e.clientX;
+            targetPos.current.y = e.clientY;
+            modalPos.current.x = e.clientX;
+            modalPos.current.y = e.clientY;
+            circlePos.current.x = e.clientX;
+            circlePos.current.y = e.clientY;
+            setIsHoveringList(true);
+          }}
+          onMouseLeave={() => setIsHoveringList(false)}
+          className="border-t border-[#E2E3E7] divide-y divide-[#E2E3E7] border-b"
+        >
+          {filtered.map((study, idx) => {
             const isExpanded = expandedId === study.id;
 
             return (
               <article
                 key={study.id}
-                onMouseEnter={() => setHoveredStudy(study)}
+                onMouseEnter={() => setHoveredIdx(idx)}
                 className="group transition-colors"
               >
                 <div
@@ -129,12 +177,12 @@ export function WorkMatrix({
                   className="py-9 sm:py-12 px-2 sm:px-6 cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4"
                 >
                   {/* Giant Project Title (slides left/fades slightly on hover like Dennis's rows) */}
-                  <h3 className="text-3xl sm:text-5xl lg:text-[3.6rem] font-normal tracking-[-0.025em] text-[#1C1D20] transition-all duration-300 ease-out-expo group-hover:-translate-x-2 group-hover:opacity-45">
+                  <h3 className="text-3xl sm:text-5xl lg:text-[3.6rem] font-normal tracking-[-0.025em] text-[#1C1D20] transition-all duration-500 ease-out-expo group-hover:-translate-x-3 group-hover:opacity-40">
                     {study.title.split(" — ")[0]}
                   </h3>
 
                   {/* Right Side: Role & Metric (slides right slightly on hover) */}
-                  <div className="flex items-center justify-between md:justify-end gap-6 transition-all duration-300 ease-out-expo group-hover:translate-x-2">
+                  <div className="flex items-center justify-between md:justify-end gap-6 transition-all duration-500 ease-out-expo group-hover:translate-x-3">
                     <div className="text-sm sm:text-base font-normal text-[#1C1D20]/80">
                       {study.role.split(" — ")[0]}
                     </div>
@@ -147,7 +195,7 @@ export function WorkMatrix({
                 {/* Expanded Case Study Drawer + Live Inline Video Players */}
                 {isExpanded && (
                   <div
-                    onMouseEnter={() => setHoveredStudy(null)}
+                    onMouseEnter={() => setIsHoveringList(false)}
                     className="px-4 sm:px-8 pb-10 pt-6 space-y-6 border-t border-[#E2E3E7] bg-[#F4F4F6]/60"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-4">
@@ -235,7 +283,6 @@ export function WorkMatrix({
                       </div>
                     </div>
 
-                    {/* Inline 9:16 Video Playback Strip for Hackerlily HipSurfer */}
                     {study.id === "hackerlily-hipsurfer" && (
                       <div className="bg-[#1C1D20] p-5 text-white">
                         <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider mb-4">
@@ -285,7 +332,6 @@ export function WorkMatrix({
                       </div>
                     )}
 
-                    {/* Inline 16:9 Demo Video Playback for HusAI */}
                     {study.id === "husai" && (
                       <div className="bg-[#1C1D20] p-5 text-white">
                         <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider mb-3">
@@ -320,75 +366,107 @@ export function WorkMatrix({
           })}
         </div>
 
-        {/* Dennis Snellenberg Centered Rounded Pill CTA Below Recent Work */}
+        {/* Dennis Snellenberg Centered Liquid-Fill Magnetic Pill CTA Below Recent Work */}
         <div className="mt-14 flex justify-center">
-          <a
+          <MagneticButton
             href="#proof-lab"
-            className="inline-flex items-center gap-2 rounded-full border border-[#1C1D20]/20 bg-white hover:bg-[#455CE9] hover:border-[#455CE9] hover:text-white px-9 py-4 text-sm sm:text-base font-normal text-[#1C1D20] transition-colors duration-300"
+            strength={0.25}
+            textStrength={0.12}
+            className="rounded-full border border-[#1C1D20]/20 bg-white px-9 py-4 text-sm sm:text-base font-normal text-[#1C1D20] hover:text-white"
           >
-            <span>Explore Live Proof Stage</span>
-            <sup className="font-mono text-xs opacity-75">
-              {CASE_STUDIES.length}
-            </sup>
-          </a>
+            <span className="inline-flex items-center gap-2">
+              <span>Explore Live Proof Stage</span>
+              <sup className="font-mono text-xs opacity-75">
+                {CASE_STUDIES.length}
+              </sup>
+            </span>
+          </MagneticButton>
         </div>
       </div>
 
-      {/* Dennis Snellenberg 340x340 Square Cursor-Tracked Preview Box + Centered Blue "View" Circle */}
+      {/* LAYER 1: Dennis Snellenberg 350x350 Vertical-Sliding Reel Preview Box (0.14 Spring Lerp) */}
       <div
-        ref={previewRef}
+        ref={modalRef}
         aria-hidden="true"
-        className={`hidden lg:flex pointer-events-none fixed top-0 left-0 z-40 h-[340px] w-[340px] bg-[#1C1D20] p-6 items-center justify-center transition-transform duration-150 ease-out ${
-          hoveredStudy && !expandedId ? "scale-100 opacity-100" : "scale-0 opacity-0"
-        }`}
+        className="hidden lg:block pointer-events-none fixed top-0 left-0 z-40 h-[350px] w-[350px] will-change-transform"
       >
-        {hoveredStudy && (
-          <div className="relative h-full w-full overflow-hidden bg-[#141517] flex items-center justify-center">
-            {hoveredStudy.previewMedia.type === "video" &&
-              hoveredStudy.previewMedia.src && (
-                <video
-                  key={hoveredStudy.previewMedia.src}
-                  src={hoveredStudy.previewMedia.src}
-                  poster={hoveredStudy.previewMedia.poster}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  className="h-full w-full object-cover"
-                />
-              )}
+        <div
+          className={`h-full w-full overflow-hidden shadow-2xl transition-transform duration-500 ease-dennis ${
+            showFloatingPreview ? "scale-100" : "scale-0"
+          }`}
+        >
+          {/* Vertical Filmstrip that slides smoothly (-hoveredIdx * 100%) across all filtered projects */}
+          <div
+            style={{
+              transform: `translate3d(0, -${hoveredIdx * 100}%, 0)`,
+            }}
+            className="h-full w-full transition-transform duration-500 ease-dennis"
+          >
+            {filtered.map((study, idx) => (
+              <div
+                key={study.id}
+                style={{
+                  backgroundColor:
+                    STAGE_BG_PALETTE[idx % STAGE_BG_PALETTE.length],
+                }}
+                className="h-[350px] w-[350px] p-6 flex items-center justify-center"
+              >
+                <div className="relative h-full w-full overflow-hidden bg-[#141517] flex items-center justify-center shadow-lg">
+                  {study.previewMedia.type === "video" &&
+                    study.previewMedia.src && (
+                      <video
+                        src={study.previewMedia.src}
+                        poster={study.previewMedia.poster}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="h-full w-full object-cover"
+                      />
+                    )}
 
-            {hoveredStudy.previewMedia.type === "image" &&
-              hoveredStudy.previewMedia.src && (
-                <img
-                  src={hoveredStudy.previewMedia.src}
-                  alt={hoveredStudy.title}
-                  className="h-full w-full object-cover object-top"
-                />
-              )}
+                  {study.previewMedia.type === "image" &&
+                    study.previewMedia.src && (
+                      <img
+                        src={study.previewMedia.src}
+                        alt={study.title}
+                        className="h-full w-full object-cover object-top"
+                      />
+                    )}
 
-            {hoveredStudy.previewMedia.type === "telemetry" && (
-              <div className="p-6 text-center space-y-2 text-white">
-                <div className="font-mono text-[10px] uppercase tracking-widest text-[#999D9E]">
-                  {hoveredStudy.previewMedia.badge}
-                </div>
-                <div className="font-mono text-4xl font-semibold tabular-nums">
-                  {hoveredStudy.primaryMetric}
-                </div>
-                <div className="text-xs text-white/80">
-                  {hoveredStudy.previewMedia.highlight}
+                  {study.previewMedia.type === "telemetry" && (
+                    <div className="p-6 text-center space-y-2 text-white">
+                      <div className="font-mono text-[10px] uppercase tracking-widest text-[#999D9E]">
+                        {study.previewMedia.badge}
+                      </div>
+                      <div className="font-mono text-4xl font-semibold tabular-nums">
+                        {study.primaryMetric}
+                      </div>
+                      <div className="text-xs text-white/80">
+                        {study.previewMedia.highlight}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
-
-            {/* Signature Centered #455CE9 Blue "View" Cursor Circle */}
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <div className="h-20 w-20 rounded-full bg-[#455CE9] text-white flex items-center justify-center text-sm font-medium shadow-md">
-                View
-              </div>
-            </div>
+            ))}
           </div>
-        )}
+        </div>
+      </div>
+
+      {/* LAYER 2: Independent Faster-Lerping #455CE9 Blue "View" Cursor Circle (0.28 Spring Lerp) */}
+      <div
+        ref={cursorCircleRef}
+        aria-hidden="true"
+        className="hidden lg:block pointer-events-none fixed top-0 left-0 z-50 h-20 w-20 will-change-transform"
+      >
+        <div
+          className={`h-full w-full rounded-full bg-[#455CE9] text-white flex items-center justify-center text-sm font-medium shadow-lg transition-transform duration-300 ease-dennis ${
+            showFloatingPreview ? "scale-100" : "scale-0"
+          }`}
+        >
+          View
+        </div>
       </div>
     </section>
   );
