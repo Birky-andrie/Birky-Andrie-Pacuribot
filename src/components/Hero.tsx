@@ -49,19 +49,20 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
         />
 
         {/* Center Portrait Subject rising from bottom-center */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 top-14 flex items-end justify-center">
-          <div className="relative h-[84%] sm:h-[88%] w-full max-w-[540px] flex items-end justify-center">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 top-16 flex items-end justify-center">
+          <div className="relative h-[82%] sm:h-[86%] w-full max-w-[460px] flex items-end justify-center overflow-hidden rounded-t-[220px]">
             <img
               src="/portrait.jpg"
               alt="Birky Andrie L. Pacuribot"
-              className="h-full w-full object-cover object-top grayscale-[12%] contrast-[1.05]"
+              className="h-full w-full object-cover object-top grayscale-[18%] contrast-[1.06]"
             />
-            {/* Bottom gradient fade so the white marquee reads with crisp contrast */}
+            {/* Soft studio edge vignette blending into #999D9E + bottom contrast for white marquee */}
             <div
-              className="absolute inset-x-0 bottom-0 h-36"
+              className="absolute inset-0"
               style={{
+                boxShadow: "inset 0 0 48px 18px #999D9E",
                 background:
-                  "linear-gradient(to top, rgba(120,124,125,0.55) 0%, rgba(153,157,158,0) 100%)",
+                  "linear-gradient(to top, rgba(110,114,115,0.6) 0%, rgba(153,157,158,0) 35%)",
               }}
             />
           </div>
@@ -79,13 +80,13 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
           </div>
         </div>
 
-        {/* Right-Aligned Diagonal Arrow & Role Title */}
-        <div className="absolute right-6 sm:right-12 lg:right-24 top-[24%] sm:top-[30%] z-20 max-w-xs sm:max-w-md text-left">
+        {/* Right-Aligned Diagonal Arrow & Role Title (Positioned cleanly in right margin) */}
+        <div className="absolute right-6 sm:right-10 lg:right-14 top-[24%] sm:top-[32%] z-20 max-w-[240px] sm:max-w-[285px] lg:max-w-[310px] text-left">
           <ArrowDownRight
             className="h-7 w-7 sm:h-8 sm:w-8 mb-4 sm:mb-6 text-white stroke-[1.75]"
             aria-hidden="true"
           />
-          <h1 className="text-2xl sm:text-3xl lg:text-[2.5rem] font-normal leading-[1.15] tracking-[-0.02em] text-white drop-shadow-xs">
+          <h1 className="text-2xl sm:text-3xl lg:text-[2.15rem] font-normal leading-[1.18] tracking-[-0.02em] text-white drop-shadow-xs">
             <span className="block">Freelance</span>
             <span className="block">CS Engineer &amp;</span>
             <span className="block">Creative Technologist</span>
@@ -128,7 +129,7 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
       {/* PART 2: Iconic Dennis Snellenberg Split Statement Section + Circular Magnetic Button */}
       <section
         id="about"
-        className="bg-white text-[#1C1D20] pt-20 pb-24 sm:pt-32 sm:pb-32"
+        className="bg-white text-[#1C1D20] pt-20 pb-36 sm:pt-32 sm:pb-48"
       >
         <div className="mx-auto max-w-6xl px-6 sm:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">

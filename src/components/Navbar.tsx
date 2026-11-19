@@ -147,10 +147,10 @@ export function Navbar({
         aria-expanded={drawerOpen}
         className={`fixed top-5 right-5 sm:top-7 sm:right-7 z-50 h-16 w-16 sm:h-20 sm:w-20 rounded-full flex items-center justify-center transition-all duration-500 ease-out-expo cursor-pointer shadow-lg ${
           drawerOpen
-            ? "bg-[#455CE9] text-white scale-100"
+            ? "bg-[#455CE9] text-white scale-100 opacity-100 visible"
             : scrolled
-              ? "bg-[#1C1D20] hover:bg-[#455CE9] text-white scale-100"
-              : "bg-[#1C1D20] text-white scale-0 pointer-events-none"
+              ? "bg-[#1C1D20] hover:bg-[#455CE9] text-white scale-100 opacity-100 visible"
+              : "bg-[#1C1D20] text-white scale-0 opacity-0 invisible pointer-events-none"
         }`}
       >
         {drawerOpen ? (
