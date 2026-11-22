@@ -6,7 +6,7 @@ export type WorkCategory =
   | "leadership"
   | "github";
 export type FocusMode = "all" | "va" | "creative" | "engineering";
-export type ProofTab = "hackerlily" | "husai" | "pacs";
+export type ProofTab = "hackerlily" | "husai" | "pacs" | "financify";
 
 export interface ServicePillar {
   id: string;
@@ -426,26 +426,27 @@ export const CASE_STUDIES: CaseStudy[] = [
     id: "financify",
     index: "07",
     code: "GH-03",
-    title: "Financify — Cross-Platform Finance Base",
-    clientOrContext: "GitHub Open Source · Flutter/C++",
-    locationTag: "6 OS TARGETS",
-    role: "Cross-Platform Developer",
+    title: "Financify — Cross-Platform Budget & Analysis App",
+    clientOrContext: "GitHub Open Source · Flutter / Dart",
+    locationTag: "6 OS TARGETS · LIVE TEST RUN",
+    role: "Flutter Cross-Platform Developer",
     period: "2025",
     categories: ["engineering", "github"],
-    primaryMetric: "6",
-    primaryMetricLabel: "Target Platforms (Web/Mobile/Desktop)",
+    primaryMetric: "6 OS",
+    primaryMetricLabel: "Weekly ₱ Budget & Spending Delta App",
     problem:
-      "Personal finance tools often lock users into a single OS ecosystem, requiring separate codebases for mobile and desktop.",
+      "Everyday personal budgeting tools often lock users into bloated subscriptions or a single OS ecosystem instead of offering fast offline weekly budget tracking and spending trend checks.",
     execution:
-      "Configured a unified Flutter/Dart and CMake/C++ project scaffold targeting Android, iOS, Web, Windows, macOS, and Linux from a single repository.",
+      "Built a 625-line Flutter/Dart application (lib/main.dart) targeting Android, iOS, Web, Windows, macOS, and Linux. Features a BudgetScreen (₱ weekly allowance editor, categorized Food/Gas/Misc logging, auto Reset Week trigger), AnalysisScreen (pull-to-refresh entry-to-entry spending delta comparison), and SettingsScreen (SharedPreferences JSON persistence + ImagePicker profile avatar).",
     impact:
-      "Provides a clean multi-platform foundation ready for rapid feature iteration across consumer finance workflows.",
-    stack: ["Flutter", "Dart", "C++", "CMake", "Cross-Platform"],
+      "Delivers instant local persistence and clear weekly spending accountability from one cross-platform codebase—available to test-run live inside Stage 04 of the Proof Stage.",
+    stack: ["Flutter", "Dart", "SharedPreferences", "ImagePicker", "6 OS Targets"],
     previewMedia: {
-      type: "telemetry",
-      badge: "MULTI-PLATFORM ARCHITECTURE",
-      highlight: "iOS · Android · Web · Win · macOS · Linux",
-      sublabel: "Unified Dart + C++ CMake Workspace",
+      type: "image",
+      src: "/financify/financify-preview.png",
+      badge: "FLUTTER LIVE MOBILE TEST RUN",
+      highlight: "₱ Weekly Budget · Delta Analysis · 6 OS",
+      sublabel: "Interactive lib/main.dart Runner in Proof Stage",
     },
     links: {
       repo: "https://github.com/Birky-andrie/Financify",

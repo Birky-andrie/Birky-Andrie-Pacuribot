@@ -120,6 +120,16 @@ export function CommandPalette({
         },
       },
       {
+        id: "proof-financify",
+        group: "Cinema Proof Stage",
+        label: "Launch Financify Live Flutter Mobile Test Run (Budget & Analysis)",
+        hint: "04 // FINANCIFY",
+        run: () => {
+          onClose();
+          onJumpToProof("financify");
+        },
+      },
+      {
         id: "focus-all",
         group: "Persona Focus URL",
         label: "Switch Focus: Best of Both Worlds (Creative + VA + Engineering)",

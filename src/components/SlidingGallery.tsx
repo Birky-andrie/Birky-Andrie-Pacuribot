@@ -72,11 +72,11 @@ const ROW_TWO = [
   },
   {
     id: "g8",
-    bg: "#D4D8DF",
+    bg: "#14161C",
     type: "image" as const,
-    src: "/videos/hipsurfer-02-poster.jpg",
-    tag: "META & TIKTOK // DIRECT RESPONSE",
-    tab: "hackerlily" as ProofTab,
+    src: "/financify/financify-preview.png",
+    tag: "FINANCIFY // FLUTTER LIVE TEST RUN",
+    tab: "financify" as ProofTab,
   },
 ];
 

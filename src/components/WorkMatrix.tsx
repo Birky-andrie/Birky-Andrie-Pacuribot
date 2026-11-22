@@ -240,6 +240,16 @@ export function WorkMatrix({
                             Run &lt;5s Audit Benchmark
                           </button>
                         )}
+                        {study.id === "financify" && (
+                          <button
+                            type="button"
+                            onClick={() => onJumpToProof("financify")}
+                            className="inline-flex items-center gap-1.5 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-4 py-2 font-mono text-xs uppercase tracking-wider text-white transition-colors cursor-pointer"
+                          >
+                            <Play className="h-3 w-3 fill-current" />
+                            Run Live Mobile Test
+                          </button>
+                        )}
                         {study.links?.live && (
                           <a
                             href={study.links.live}
@@ -347,6 +357,49 @@ export function WorkMatrix({
                           preload="metadata"
                           className="aspect-video w-full border border-white/15 bg-[#141517]"
                         />
+                      </div>
+                    )}
+
+                    {study.id === "financify" && (
+                      <div className="bg-[#1C1D20] p-5 text-white">
+                        <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-wider mb-4">
+                          <span>FINANCIFY LIVE TEST RUN CAPTURES (LIB/MAIN.DART)</span>
+                          <span className="text-[#999D9E]">
+                            BUDGET · ANALYSIS DELTA · SETTINGS
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                          {[
+                            {
+                              src: "/financify/screen-budget.png",
+                              label: "01 // BudgetScreen (Weekly ₱ Tracker)",
+                            },
+                            {
+                              src: "/financify/screen-analysis.png",
+                              label: "02 // AnalysisScreen (Spending Delta)",
+                            },
+                            {
+                              src: "/financify/screen-settings.png",
+                              label: "03 // SettingsScreen (ImagePicker Profile)",
+                            },
+                          ].map((shot) => (
+                            <div
+                              key={shot.src}
+                              className="border border-white/15 bg-[#0E1014] flex flex-col justify-between"
+                            >
+                              <div className="p-4 flex items-center justify-center">
+                                <img
+                                  src={shot.src}
+                                  alt={shot.label}
+                                  className="max-h-[340px] w-auto object-contain"
+                                />
+                              </div>
+                              <div className="border-t border-white/15 px-3 py-2 font-mono text-[10px] text-white/85">
+                                {shot.label}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
 

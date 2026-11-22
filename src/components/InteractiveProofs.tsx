@@ -13,6 +13,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import type { ProofTab } from "@/data/portfolio";
+import { FinancifySandbox } from "./FinancifySandbox";
 
 type HusaiMediaTab = "video" | "hero" | "solution" | "practice";
 type ReelCategory = "all" | "paid-ugc" | "campaigns" | "trends";
@@ -271,6 +272,13 @@ const STAGE_CARDS: {
     subtitle: "Manual Excel (~20m) vs. Role-Based Web App",
     metric: "< 5.0S AUDIT SLA",
   },
+  {
+    id: "financify",
+    number: "04",
+    title: "Financify — Live Flutter Test Run",
+    subtitle: "Interactive ₱ Budget, Analysis Delta & Settings App",
+    metric: "6 OS · LIVE SANDBOX",
+  },
 ];
 
 interface InteractiveProofsProps {
@@ -416,17 +424,17 @@ export function InteractiveProofs({
               02 // Dark Cinema Proof Stage
             </p>
             <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-[var(--color-cinema-text)]">
-              6 live 9:16 reels, HusAI localhost UI, and &lt;5s audit telemetry.
+              6 live 9:16 reels, HusAI localhost UI, &lt;5s audit telemetry, and Financify live runner.
             </h2>
           </div>
           <p className="max-w-md text-sm text-[var(--color-cinema-muted)]">
-            Switch between the 6-reel Hackerlily HipSurfer video vault, the HusAI live call coach (built for remote VAs), and the Pacs Builders workflow engine.
+            Switch between the 6-reel Hackerlily HipSurfer vault, HusAI live call coach, Pacs Builders audit engine, and the interactive Financify mobile test run.
           </p>
         </div>
 
-        {/* 3-Card Prominent System Selector Bar */}
+        {/* 4-Card Prominent System Selector Bar */}
         <div
-          className="mt-8 grid grid-cols-1 md:grid-cols-3 border-t border-l border-[var(--color-cinema-border)]"
+          className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-t border-l border-[var(--color-cinema-border)]"
           role="tablist"
           aria-label="Select interactive proof stage"
         >
@@ -1061,6 +1069,9 @@ export function InteractiveProofs({
             </div>
           </div>
         )}
+
+        {/* STAGE 04: FINANCIFY INTERACTIVE FLUTTER MOBILE TEST RUN */}
+        {activeTab === "financify" && <FinancifySandbox />}
       </div>
     </section>
   );
