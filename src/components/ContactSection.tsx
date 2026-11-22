@@ -173,6 +173,15 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
           </MagneticButton>
 
           <MagneticButton
+            href="/Birky_Andrie_Pacuribot_Harvard_CV.docx"
+            strength={0.22}
+            textStrength={0.1}
+            className="rounded-full border border-white/20 px-7 py-4 text-sm sm:text-base text-white"
+          >
+            <span>Download CV (Word)</span>
+          </MagneticButton>
+
+          <MagneticButton
             onClick={() => setShowBriefForm((prev) => !prev)}
             strength={0.22}
             textStrength={0.1}
