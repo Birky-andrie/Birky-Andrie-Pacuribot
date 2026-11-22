@@ -64,7 +64,7 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
 
       if (Math.abs(delta) > 0.5) {
         direction = delta > 0 ? -1 : 1;
-        velocityBoost = Math.min(0.32, Math.abs(delta) * 0.006);
+        velocityBoost = Math.min(0.06, Math.abs(delta) * 0.0012);
       }
 
       if (arrowRef.current) {
@@ -83,7 +83,8 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
     };
 
     const tick = () => {
-      const baseSpeed = 0.045;
+      // Slow, legible editorial pace so visitors can read every role clearly
+      const baseSpeed = 0.011;
       xPercent += (baseSpeed + velocityBoost) * direction;
       velocityBoost *= 0.92;
 
@@ -125,23 +126,38 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
           aria-hidden="true"
         />
 
-        {/* Center Background-Removed Cutout Portrait standing directly against hero backdrop */}
+        {/* Center High-Res Monochrome Studio Hero Portrait blending seamlessly into stage */}
         <div
           ref={portraitRef}
-          className="pointer-events-none absolute inset-x-0 bottom-0 top-12 flex items-end justify-center will-change-transform"
+          className="pointer-events-none absolute inset-x-0 bottom-0 top-0 flex items-end justify-center will-change-transform"
         >
-          <div className="relative h-[86%] sm:h-[90%] w-full max-w-[540px] flex items-end justify-center">
+          <div
+            className="relative h-full w-full max-w-[780px] flex items-end justify-center overflow-hidden"
+            style={{
+              WebkitMaskImage:
+                "linear-gradient(to right, transparent 0%, black 16%, black 84%, transparent 100%)",
+              maskImage:
+                "linear-gradient(to right, transparent 0%, black 16%, black 84%, transparent 100%)",
+            }}
+          >
             <img
-              src="/portrait-cutout.png"
+              src="/hero-portrait.jpg"
               alt="Birky Andrie L. Pacuribot"
-              className="h-full w-full object-contain object-bottom grayscale-[14%] contrast-[1.06] drop-shadow-[0_24px_48px_rgba(0,0,0,0.28)]"
+              className="h-full w-full object-cover object-center contrast-[1.04]"
             />
-            {/* Subtle lower-third gradient so the white marquee glides with crisp contrast */}
+            {/* Top & bottom atmospheric fades for crisp navbar & marquee legibility */}
             <div
-              className="absolute inset-x-0 bottom-0 h-32"
+              className="absolute inset-x-0 top-0 h-36"
               style={{
                 background:
-                  "linear-gradient(to top, var(--color-hero-fade) 0%, transparent 100%)",
+                  "linear-gradient(to bottom, rgba(20,22,26,0.38) 0%, transparent 100%)",
+              }}
+            />
+            <div
+              className="absolute inset-x-0 bottom-0 h-44"
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(16,18,22,0.72) 0%, transparent 100%)",
               }}
             />
           </div>
@@ -203,17 +219,17 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
           </div>
         </div>
 
-        {/* Giant Bottom-Bleeding Velocity-Driven Infinite Marquee ("Birky Andrie Pacuribot —") */}
-        <div className="pointer-events-none absolute bottom-3 sm:bottom-5 inset-x-0 z-20 overflow-hidden">
+        {/* Giant Bottom-Bleeding Slow-Pace Infinite Marquee */}
+        <div className="pointer-events-none absolute bottom-4 sm:bottom-6 inset-x-0 z-20 overflow-hidden">
           <div
             ref={marqueeTrackRef}
             className="flex w-max will-change-transform"
           >
-            <span className="font-[family-name:var(--font-display)] text-[14vw] sm:text-[12.5vw] font-normal leading-none tracking-[-0.03em] text-white pr-12 whitespace-nowrap">
-              Birky Andrie Pacuribot &mdash;
+            <span className="font-[family-name:var(--font-display)] text-[8.5vw] sm:text-[6.8vw] lg:text-[5.8vw] font-medium uppercase leading-none tracking-[-0.025em] text-white pr-14 whitespace-nowrap drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)]">
+              Full Stack CS Engineer &mdash; Tech VA &middot; Operations &middot; SMM Strategist &mdash;
             </span>
-            <span className="font-[family-name:var(--font-display)] text-[14vw] sm:text-[12.5vw] font-normal leading-none tracking-[-0.03em] text-white pr-12 whitespace-nowrap">
-              Birky Andrie Pacuribot &mdash;
+            <span className="font-[family-name:var(--font-display)] text-[8.5vw] sm:text-[6.8vw] lg:text-[5.8vw] font-medium uppercase leading-none tracking-[-0.025em] text-white pr-14 whitespace-nowrap drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)]">
+              Full Stack CS Engineer &mdash; Tech VA &middot; Operations &middot; SMM Strategist &mdash;
             </span>
           </div>
         </div>

@@ -104,7 +104,7 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
             <div className="flex items-center gap-4 sm:gap-6">
               <div className="h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden bg-[#999D9E] shrink-0">
                 <img
-                  src="/portrait.jpg"
+                  src="/portrait-avatar.jpg"
                   alt={PROFILE.name}
                   className="h-full w-full object-cover object-top"
                 />
