@@ -9,10 +9,13 @@ import {
   type ProofTab,
   type WorkCategory,
 } from "@/data/portfolio";
+import type { ThemeMode } from "./ThemeToggle";
 
 interface CommandPaletteProps {
   open: boolean;
   onClose: () => void;
+  theme: ThemeMode;
+  onToggleTheme: () => void;
   focusMode: FocusMode;
   onChangeFocusMode: (mode: FocusMode) => void;
   onJumpToProof: (tab: ProofTab) => void;
@@ -31,6 +34,8 @@ interface CommandAction {
 export function CommandPalette({
   open,
   onClose,
+  theme,
+  onToggleTheme,
   focusMode,
   onChangeFocusMode,
   onJumpToProof,
@@ -71,6 +76,19 @@ export function CommandPalette({
 
   const actions: CommandAction[] = useMemo(
     () => [
+      {
+        id: "toggle-theme",
+        group: "Appearance",
+        label:
+          theme === "light"
+            ? "Switch to Dark Mode (Pixel-Particle Morph)"
+            : "Switch to Light Mode (Pixel-Particle Morph)",
+        hint: theme === "light" ? "DARK" : "LIGHT",
+        run: () => {
+          onToggleTheme();
+          onClose();
+        },
+      },
       {
         id: "proof-husai",
         group: "Cinema Proof Stage",

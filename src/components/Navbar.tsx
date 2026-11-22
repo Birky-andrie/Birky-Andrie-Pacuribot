@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Command, Download, X } from "lucide-react";
 import { PROFILE, type FocusMode } from "@/data/portfolio";
 import { MagneticButton } from "./MagneticButton";
+import { ThemeToggle, type ThemeMode } from "./ThemeToggle";
 
 const NAV_LINKS = [
   { label: "Work", href: "#work" },
@@ -37,12 +38,16 @@ const FOCUS_OPTIONS: { id: FocusMode; label: string; title: string }[] = [
 ];
 
 interface NavbarProps {
+  theme: ThemeMode;
+  onToggleTheme: () => void;
   focusMode: FocusMode;
   onChangeFocusMode: (mode: FocusMode) => void;
   onOpenCommandPalette: () => void;
 }
 
 export function Navbar({
+  theme,
+  onToggleTheme,
   focusMode,
   onChangeFocusMode,
   onOpenCommandPalette,
@@ -61,9 +66,9 @@ export function Navbar({
 
   return (
     <>
-      {/* Top Transparent Dennis Snellenberg Header overlaid on #999D9E Hero */}
-      <header className="absolute top-0 inset-x-0 z-40 px-6 sm:px-12 py-7 flex items-center justify-between text-white">
-        {/* Left: © Code by Birky -> slides on hover to Birky Andrie Pacuribot */}
+      {/* Top Transparent Dennis Snellenberg Header overlaid on Hero */}
+      <header className="absolute top-0 inset-x-0 z-40 px-5 sm:px-10 py-6 flex items-center justify-between text-white">
+        {/* Left: © Code by Birky -> slides on hover to Birky Pacuribot */}
         <a
           href="#"
           className="group flex items-center gap-1.5 text-sm sm:text-base font-normal tracking-tight text-white"
@@ -81,17 +86,17 @@ export function Navbar({
           </span>
         </a>
 
-        {/* Right: Clean Links + Focus Switcher + 1-Click CV Download + ⌘K */}
-        <div className="flex items-center gap-4 lg:gap-7">
+        {/* Right: Clean Links + Focus Switcher + 3D Pixel-Particle Theme Toggle + CV + ⌘K */}
+        <div className="flex items-center gap-3.5 lg:gap-6">
           <nav
-            className="hidden xl:flex items-center gap-7"
+            className="hidden xl:flex items-center gap-6"
             aria-label="Primary"
           >
             {NAV_LINKS.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
-                className="group relative py-1 text-sm sm:text-base font-normal text-white/95 hover:text-white transition-colors"
+                className="group relative py-1 text-sm font-normal text-white/95 hover:text-white transition-colors"
               >
                 <span>{item.label}</span>
                 <span
@@ -107,7 +112,7 @@ export function Navbar({
 
           {/* 4-Mode Persona Focus Pills */}
           <div
-            className="hidden md:inline-flex items-center rounded-full bg-[#1C1D20]/35 backdrop-blur-sm p-1 border border-white/15"
+            className="hidden md:inline-flex items-center rounded-full bg-[#1C1D20]/40 backdrop-blur-sm p-1 border border-white/15"
             role="group"
             aria-label="Portfolio Focus Mode"
           >
@@ -131,6 +136,9 @@ export function Navbar({
             })}
           </div>
 
+          {/* 3D Soft-UI Pixel-Particle Dark/Light Mode Toggle */}
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} size="sm" />
+
           {/* 1-Click Top-Bar Download CV Pill */}
           <a
             href="/Birky_Andrie_Pacuribot_CV.pdf"
@@ -145,7 +153,7 @@ export function Navbar({
           <button
             type="button"
             onClick={onOpenCommandPalette}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20]/35 hover:bg-[#1C1D20] border border-white/20 px-3 py-1.5 font-mono text-xs text-white transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20]/40 hover:bg-[#1C1D20] border border-white/20 px-3 py-1.5 font-mono text-xs text-white transition-colors cursor-pointer"
             aria-label="Open command palette"
             title="Open Command Palette (Ctrl+K / ⌘K)"
           >
@@ -178,7 +186,7 @@ export function Navbar({
           ariaLabel={
             drawerOpen ? "Close navigation drawer" : "Open navigation drawer"
           }
-          className={`h-16 w-16 sm:h-20 sm:w-20 rounded-full flex items-center justify-center shadow-lg ${
+          className={`h-16 w-16 sm:h-20 sm:w-20 rounded-full flex items-center justify-center shadow-lg border border-white/10 ${
             drawerOpen ? "bg-[#455CE9] text-white" : "bg-[#1C1D20] text-white"
           }`}
         >
@@ -197,7 +205,7 @@ export function Navbar({
       <div
         className={`fixed inset-0 z-40 transition-opacity duration-500 ease-dennis ${
           drawerOpen
-            ? "opacity-100 pointer-events-auto bg-black/40 backdrop-blur-[2px]"
+            ? "opacity-100 pointer-events-auto bg-black/45 backdrop-blur-[2px]"
             : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setDrawerOpen(false)}
@@ -208,7 +216,6 @@ export function Navbar({
             drawerOpen ? "translate-x-0" : "translate-x-[115%]"
           }`}
         >
-          {/* SVG Curved Left Arch Morph during Drawer Slide */}
           <svg
             aria-hidden="true"
             className="pointer-events-none absolute top-0 -left-24 h-full w-24 fill-[#1C1D20]"
@@ -226,8 +233,11 @@ export function Navbar({
           </svg>
 
           <div className="space-y-7 pt-6">
-            <div className="border-b border-white/15 pb-3 font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
-              Navigation
+            <div className="flex items-center justify-between border-b border-white/15 pb-4">
+              <span className="font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
+                Navigation &amp; Theme
+              </span>
+              <ThemeToggle theme={theme} onToggle={onToggleTheme} size="md" />
             </div>
 
             <nav className="flex flex-col gap-3.5" aria-label="Drawer">

@@ -130,7 +130,7 @@ export function SlidingGallery({ onJumpToProof }: SlidingGalleryProps) {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-white pt-14 pb-20 overflow-hidden z-10"
+      className="theme-surface relative bg-[var(--color-paper)] pt-14 pb-20 overflow-hidden z-10"
       aria-label="Visual motion gallery"
     >
       <div className="space-y-6 sm:space-y-8">
@@ -213,7 +213,7 @@ export function SlidingGallery({ onJumpToProof }: SlidingGalleryProps) {
       <div
         ref={curveRef}
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-12 left-[-10%] w-[120%] h-24 bg-white rounded-b-[50%] shadow-[0_24px_40px_rgba(0,0,0,0.35)] origin-top will-change-transform"
+        className="theme-surface pointer-events-none absolute -bottom-12 left-[-10%] w-[120%] h-24 bg-[var(--color-paper)] rounded-b-[50%] shadow-[0_24px_40px_rgba(0,0,0,0.35)] origin-top will-change-transform"
       />
     </section>
   );

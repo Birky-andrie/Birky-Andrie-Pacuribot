@@ -96,13 +96,13 @@ export function WorkMatrix({
   return (
     <section
       id="work"
-      className="bg-white text-[#1C1D20] pb-24 sm:pb-32 relative"
+      className="theme-surface bg-[var(--color-paper)] text-[var(--color-ink)] pb-24 sm:pb-32 relative"
       onMouseMove={handleMouseMove}
     >
       <div className="mx-auto max-w-6xl px-6 sm:px-12">
         {/* Eyebrow + Filter Pills */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#999D9E]">
+          <p className="font-mono text-xs uppercase tracking-widest text-[var(--color-ink-muted)]">
             Recent Work
           </p>
 
@@ -134,8 +134,8 @@ export function WorkMatrix({
                   }}
                   className={`rounded-full px-4 py-1.5 text-xs font-normal transition-colors cursor-pointer border ${
                     isActive
-                      ? "border-[#1C1D20] bg-[#1C1D20] text-white"
-                      : "border-[#E2E3E7] bg-white text-[#1C1D20]/70 hover:border-[#1C1D20] hover:text-[#1C1D20]"
+                      ? "border-[var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-paper)]"
+                      : "border-[var(--color-hairline)] bg-[var(--color-paper)] text-[var(--color-ink-muted)] hover:border-[var(--color-ink)] hover:text-[var(--color-ink)]"
                   }`}
                 >
                   {filter.label}{" "}
@@ -160,7 +160,7 @@ export function WorkMatrix({
             setIsHoveringList(true);
           }}
           onMouseLeave={() => setIsHoveringList(false)}
-          className="border-t border-[#E2E3E7] divide-y divide-[#E2E3E7] border-b"
+          className="border-t border-[var(--color-hairline)] divide-y divide-[var(--color-hairline)] border-b"
         >
           {filtered.map((study, idx) => {
             const isExpanded = expandedId === study.id;
@@ -178,16 +178,16 @@ export function WorkMatrix({
                   className="py-9 sm:py-12 px-2 sm:px-6 cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4"
                 >
                   {/* Giant Project Title (slides left/fades slightly on hover like Dennis's rows) */}
-                  <h3 className="text-3xl sm:text-5xl lg:text-[3.6rem] font-normal tracking-[-0.025em] text-[#1C1D20] transition-all duration-500 ease-out-expo group-hover:-translate-x-3 group-hover:opacity-40">
+                  <h3 className="text-3xl sm:text-5xl lg:text-[3.6rem] font-normal tracking-[-0.025em] text-[var(--color-ink)] transition-all duration-500 ease-out-expo group-hover:-translate-x-3 group-hover:opacity-40">
                     {study.title.split(" — ")[0]}
                   </h3>
 
                   {/* Right Side: Role & Metric (slides right slightly on hover) */}
                   <div className="flex items-center justify-between md:justify-end gap-6 transition-all duration-500 ease-out-expo group-hover:translate-x-3">
-                    <div className="text-sm sm:text-base font-normal text-[#1C1D20]/80">
+                    <div className="text-sm sm:text-base font-normal text-[var(--color-ink-muted)]">
                       {study.role.split(" — ")[0]}
                     </div>
-                    <div className="font-mono text-xs sm:text-sm px-3 py-1 rounded-full bg-[#F4F4F6] text-[#1C1D20] tabular-nums">
+                    <div className="font-mono text-xs sm:text-sm px-3 py-1 rounded-full bg-[var(--color-paper-alt)] border border-[var(--color-hairline)] text-[var(--color-ink)] tabular-nums">
                       {study.primaryMetric} · {study.primaryMetricLabel}
                     </div>
                   </div>
@@ -197,14 +197,14 @@ export function WorkMatrix({
                 {isExpanded && (
                   <div
                     onMouseEnter={() => setIsHoveringList(false)}
-                    className="px-4 sm:px-8 pb-10 pt-6 space-y-6 border-t border-[#E2E3E7] bg-[#F4F4F6]/60"
+                    className="px-4 sm:px-8 pb-10 pt-6 space-y-6 border-t border-[var(--color-hairline)] bg-[var(--color-paper-alt)]"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-4">
                       <div>
                         <div className="font-mono text-xs uppercase tracking-wider text-[#455CE9]">
                           {study.code} // {study.clientOrContext} ({study.period})
                         </div>
-                        <p className="mt-1 max-w-3xl text-base sm:text-lg leading-relaxed text-[#1C1D20] font-medium">
+                        <p className="mt-1 max-w-3xl text-base sm:text-lg leading-relaxed text-[var(--color-ink)] font-medium">
                           {study.impact}
                         </p>
                       </div>
@@ -266,19 +266,19 @@ export function WorkMatrix({
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-white p-5 border border-[#E2E3E7]">
-                        <div className="font-mono text-[11px] uppercase tracking-wider text-[#999D9E] mb-1.5">
+                      <div className="bg-[var(--color-paper)] p-5 border border-[var(--color-hairline)]">
+                        <div className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">
                           The Problem
                         </div>
-                        <p className="text-sm leading-relaxed text-[#1C1D20]">
+                        <p className="text-sm leading-relaxed text-[var(--color-ink)]">
                           {study.problem}
                         </p>
                       </div>
-                      <div className="bg-white p-5 border border-[#E2E3E7]">
-                        <div className="font-mono text-[11px] uppercase tracking-wider text-[#999D9E] mb-1.5">
+                      <div className="bg-[var(--color-paper)] p-5 border border-[var(--color-hairline)]">
+                        <div className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">
                           Architecture &amp; Execution
                         </div>
-                        <p className="text-sm leading-relaxed text-[#1C1D20]">
+                        <p className="text-sm leading-relaxed text-[var(--color-ink)]">
                           {study.execution}
                         </p>
                       </div>
@@ -354,7 +354,7 @@ export function WorkMatrix({
                       {study.stack.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-full border border-[#E2E3E7] bg-white px-3 py-1 font-mono text-[11px] text-[#1C1D20]/75"
+                          className="rounded-full border border-[var(--color-hairline)] bg-[var(--color-paper)] px-3 py-1 font-mono text-[11px] text-[var(--color-ink-muted)]"
                         >
                           {tag}
                         </span>
@@ -373,7 +373,7 @@ export function WorkMatrix({
             href="#proof-lab"
             strength={0.25}
             textStrength={0.12}
-            className="rounded-full border border-[#1C1D20]/20 bg-white px-9 py-4 text-sm sm:text-base font-normal text-[#1C1D20] hover:text-white"
+            className="rounded-full border border-[var(--color-hairline)] bg-[var(--color-paper)] px-9 py-4 text-sm sm:text-base font-normal text-[var(--color-ink)] hover:text-white"
           >
             <span className="inline-flex items-center gap-2">
               <span>Explore Live Proof Stage</span>

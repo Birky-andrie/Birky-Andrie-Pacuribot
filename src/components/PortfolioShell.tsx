@@ -12,14 +12,34 @@ import { ToolkitSection } from "./ToolkitSection";
 import { SlidingGallery } from "./SlidingGallery";
 import { ContactSection } from "./ContactSection";
 import { CommandPalette } from "./CommandPalette";
+import type { ThemeMode } from "./ThemeToggle";
 import type { FocusMode, ProofTab, WorkCategory } from "@/data/portfolio";
 
 export function PortfolioShell() {
+  const [theme, setTheme] = useState<ThemeMode>("light");
   const [focusMode, setFocusMode] = useState<FocusMode>("all");
   const [proofTab, setProofTab] = useState<ProofTab>("hackerlily");
   const [selectedService, setSelectedService] = useState("");
   const [workFilter, setWorkFilter] = useState<WorkCategory>("all");
   const [paletteOpen, setPaletteOpen] = useState(false);
+
+  const applyTheme = (next: ThemeMode, persist = true) => {
+    setTheme(next);
+    if (typeof document !== "undefined") {
+      document.documentElement.setAttribute("data-theme", next);
+    }
+    if (persist && typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem("birky-theme", next);
+      } catch {
+        // ignore storage errors
+      }
+    }
+  };
+
+  const toggleTheme = () => {
+    applyTheme(theme === "light" ? "dark" : "light", true);
+  };
 
   const applyFocusMode = (mode: FocusMode, updateUrl = true) => {
     setFocusMode(mode);
@@ -50,6 +70,17 @@ export function PortfolioShell() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      try {
+        const saved = window.localStorage.getItem("birky-theme");
+        if (saved === "dark" || saved === "light") {
+          applyTheme(saved, false);
+        } else {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      } catch {
+        // ignore
+      }
+
       const params = new URLSearchParams(window.location.search);
       const focusParam = params.get("focus");
       if (
@@ -87,6 +118,8 @@ export function PortfolioShell() {
       <Preloader />
 
       <Navbar
+        theme={theme}
+        onToggleTheme={toggleTheme}
         focusMode={focusMode}
         onChangeFocusMode={(m) => applyFocusMode(m, true)}
         onOpenCommandPalette={() => setPaletteOpen(true)}
@@ -113,6 +146,8 @@ export function PortfolioShell() {
       <CommandPalette
         open={paletteOpen}
         onClose={() => setPaletteOpen(false)}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         focusMode={focusMode}
         onChangeFocusMode={(m) => applyFocusMode(m, true)}
         onJumpToProof={handleJumpToProof}

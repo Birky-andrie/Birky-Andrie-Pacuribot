@@ -113,19 +113,19 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
 
   return (
     <>
-      {/* PART 1: Iconic Dennis Snellenberg 100vh #999D9E Full-Screen Hero */}
-      <section className="relative h-screen min-h-[680px] max-h-[1080px] w-full overflow-hidden bg-[#999D9E] text-white select-none">
+      {/* PART 1: Iconic Dennis Snellenberg 100vh Full-Screen Hero (Theme-Reactive) */}
+      <section className="theme-surface relative h-screen min-h-[680px] max-h-[1080px] w-full overflow-hidden bg-[var(--color-hero-bg)] text-white select-none">
         {/* Studio radial lighting behind the cutout subject */}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(circle at 48% 45%, rgba(255,255,255,0.22) 0%, rgba(153,157,158,0) 58%)",
+              "radial-gradient(circle at 48% 45%, var(--color-hero-glow) 0%, transparent 58%)",
           }}
           aria-hidden="true"
         />
 
-        {/* Center Background-Removed Cutout Portrait standing directly against #999D9E */}
+        {/* Center Background-Removed Cutout Portrait standing directly against hero backdrop */}
         <div
           ref={portraitRef}
           className="pointer-events-none absolute inset-x-0 bottom-0 top-12 flex items-end justify-center will-change-transform"
@@ -134,21 +134,21 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
             <img
               src="/portrait-cutout.png"
               alt="Birky Andrie L. Pacuribot"
-              className="h-full w-full object-contain object-bottom grayscale-[14%] contrast-[1.06] drop-shadow-[0_24px_48px_rgba(28,29,32,0.22)]"
+              className="h-full w-full object-contain object-bottom grayscale-[14%] contrast-[1.06] drop-shadow-[0_24px_48px_rgba(0,0,0,0.28)]"
             />
             {/* Subtle lower-third gradient so the white marquee glides with crisp contrast */}
             <div
               className="absolute inset-x-0 bottom-0 h-32"
               style={{
                 background:
-                  "linear-gradient(to top, rgba(122,126,127,0.48) 0%, rgba(153,157,158,0) 100%)",
+                  "linear-gradient(to top, var(--color-hero-fade) 0%, transparent 100%)",
               }}
             />
           </div>
         </div>
 
         {/* Left-Docked Location Pill ("Located in the Philippines" + Spinning Globe Circle) */}
-        <div className="hidden sm:flex absolute left-0 top-[36%] z-20 items-center gap-6 rounded-r-full bg-[#1C1D20] text-white pl-8 lg:pl-12 pr-3.5 py-3.5">
+        <div className="hidden sm:flex absolute left-0 top-[36%] z-20 items-center gap-6 rounded-r-full bg-[var(--color-hero-pill)] border border-l-0 border-white/10 text-white pl-8 lg:pl-12 pr-3.5 py-3.5">
           <div className="text-sm lg:text-base leading-[1.2] font-normal tracking-tight">
             <div>Located</div>
             <div>in the</div>
@@ -223,18 +223,18 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
       <section
         id="about"
         ref={aboutRef}
-        className="bg-white text-[#1C1D20] pt-12 pb-36 sm:pt-16 sm:pb-48"
+        className="theme-surface bg-[var(--color-paper)] text-[var(--color-ink)] pt-12 pb-36 sm:pt-16 sm:pb-48"
       >
         <div className="mx-auto max-w-6xl px-6 sm:px-12">
           {/* Remote Readiness & Global Shift Overlap Spec Bar (For Hiring Managers & Recruiters) */}
-          <div className="mb-14 sm:mb-20 border border-[#E2E3E7] bg-[#F4F4F6]/70 p-4 sm:p-6">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 mb-4 border-b border-[#E2E3E7]">
-              <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#1C1D20]">
+          <div className="theme-surface mb-14 sm:mb-20 border border-[var(--color-hairline)] bg-[var(--color-paper-alt)] p-4 sm:p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 mb-4 border-b border-[var(--color-hairline)]">
+              <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[var(--color-ink)]">
                 <span className="h-2 w-2 rounded-full bg-[#455CE9]" />
                 <span className="font-semibold">
                   REMOTE HIRING &amp; SHIFT READINESS
                 </span>
-                <span className="hidden sm:inline text-[#7E8085]">
+                <span className="hidden sm:inline text-[var(--color-ink-muted)]">
                   // CAGAYAN DE ORO, PH (UTC+8)
                 </span>
               </div>
@@ -243,7 +243,7 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
                 <a
                   href="/Birky_Andrie_Pacuribot_CV.pdf"
                   download
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20] hover:bg-[#455CE9] px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-ink)] text-[var(--color-paper)] hover:bg-[#455CE9] hover:text-white px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors"
                 >
                   <Download className="h-3 w-3" />
                   <span>Download CV (PDF)</span>
@@ -251,7 +251,7 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
                 <a
                   href="/Birky_Andrie_Pacuribot_Harvard_CV.docx"
                   download
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#1C1D20]/25 bg-white hover:bg-[#1C1D20] hover:text-white px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[#1C1D20] transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-hairline)] bg-[var(--color-paper)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink)] transition-colors"
                 >
                   <Download className="h-3 w-3" />
                   <span>Harvard Word (.docx)</span>
@@ -271,13 +271,13 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {REMOTE_READINESS_SPECS.map((spec) => (
                 <div key={spec.label} className="space-y-0.5">
-                  <div className="font-mono text-[10px] uppercase tracking-widest text-[#7E8085]">
+                  <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-ink-muted)]">
                     {spec.label}
                   </div>
-                  <div className="text-xs sm:text-sm font-semibold text-[#1C1D20]">
+                  <div className="text-xs sm:text-sm font-semibold text-[var(--color-ink)]">
                     {spec.value}
                   </div>
-                  <div className="font-mono text-[11px] text-[#7E8085]">
+                  <div className="font-mono text-[11px] text-[var(--color-ink-muted)]">
                     {spec.detail}
                   </div>
                 </div>
@@ -288,10 +288,10 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
             {/* Left 7 Cols: Word-by-Word Staggered Scroll-Reveal Statement */}
             <div className="lg:col-span-7 space-y-4">
-              <div className="font-mono text-xs uppercase tracking-widest text-[#999D9E]">
+              <div className="font-mono text-xs uppercase tracking-widest text-[var(--color-ink-muted)]">
                 {copy.badge}
               </div>
-              <h2 className="text-2xl sm:text-4xl lg:text-[2.45rem] font-normal leading-[1.3] tracking-[-0.015em] text-[#1C1D20] flex flex-wrap gap-x-[0.28em] gap-y-1">
+              <h2 className="text-2xl sm:text-4xl lg:text-[2.45rem] font-normal leading-[1.3] tracking-[-0.015em] text-[var(--color-ink)] flex flex-wrap gap-x-[0.28em] gap-y-1">
                 {words.map((word, idx) => (
                   <span
                     key={`${word}-${idx}`}
@@ -318,18 +318,18 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
                   : "opacity-0 translate-y-6"
               }`}
             >
-              <p className="text-base sm:text-lg leading-relaxed text-[#1C1D20]/75">
+              <p className="text-base sm:text-lg leading-relaxed text-[var(--color-ink-muted)]">
                 {copy.subheadline}
               </p>
 
               {/* Verified Metrics Row */}
-              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[#E2E3E7]">
+              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[var(--color-hairline)]">
                 {HERO_METRICS.map((m) => (
                   <div key={m.label}>
-                    <div className="font-mono text-xl sm:text-2xl font-semibold tabular-nums text-[#1C1D20]">
+                    <div className="font-mono text-xl sm:text-2xl font-semibold tabular-nums text-[var(--color-ink)]">
                       {m.value}
                     </div>
-                    <div className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-[#999D9E]">
+                    <div className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-[var(--color-ink-muted)]">
                       {m.label}
                     </div>
                   </div>
@@ -340,11 +340,11 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
 
           {/* Horizontal Divider Line with Overlapping Dual-Layer Liquid Magnetic Button */}
           <div className="relative mt-20 sm:mt-28">
-            <div className="h-[1px] w-full bg-[#E2E3E7]" />
+            <div className="h-[1px] w-full bg-[var(--color-hairline)]" />
             <div className="absolute right-6 sm:right-20 -top-20 sm:-top-24">
               <MagneticButton
                 onClick={() => onJumpToProof("hackerlily")}
-                className="h-40 w-40 sm:h-48 sm:w-48 rounded-full bg-[#1C1D20] text-white flex items-center justify-center shadow-md"
+                className="h-40 w-40 sm:h-48 sm:w-48 rounded-full bg-[#1C1D20] border border-white/15 text-white flex items-center justify-center shadow-md"
               >
                 <span className="text-base sm:text-lg font-medium tracking-tight">
                   Proof Stage
