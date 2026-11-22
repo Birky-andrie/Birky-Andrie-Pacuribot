@@ -132,33 +132,33 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
           className="pointer-events-none absolute inset-x-0 bottom-0 top-0 flex items-end justify-center will-change-transform"
         >
           <div
-            className="relative h-full w-full max-w-[780px] flex items-end justify-center overflow-hidden"
+            className="relative h-full w-full max-w-[920px] flex items-end justify-center overflow-hidden"
             style={{
               WebkitMaskImage:
-                "linear-gradient(to right, transparent 0%, black 16%, black 84%, transparent 100%)",
+                "radial-gradient(ellipse 64% 92% at 50% 58%, black 42%, rgba(0,0,0,0.58) 70%, transparent 98%)",
               maskImage:
-                "linear-gradient(to right, transparent 0%, black 16%, black 84%, transparent 100%)",
+                "radial-gradient(ellipse 64% 92% at 50% 58%, black 42%, rgba(0,0,0,0.58) 70%, transparent 98%)",
             }}
           >
             <img
               src="/hero-portrait.jpg"
               alt="Birky Andrie L. Pacuribot"
-              className="h-full w-full object-cover object-center contrast-[1.04]"
+              className="h-full w-full object-cover object-center transition-[filter] duration-500 ease-dennis"
+              style={{ filter: "var(--hero-portrait-filter)" }}
+            />
+            {/* Theme-matched elliptical studio vignette to dissolve background seamlessly in both Light & Dark modes */}
+            <div
+              className="absolute inset-0"
+              style={{ background: "var(--hero-portrait-vignette)" }}
             />
             {/* Top & bottom atmospheric fades for crisp navbar & marquee legibility */}
             <div
-              className="absolute inset-x-0 top-0 h-36"
-              style={{
-                background:
-                  "linear-gradient(to bottom, rgba(20,22,26,0.38) 0%, transparent 100%)",
-              }}
+              className="absolute inset-x-0 top-0 h-40"
+              style={{ background: "var(--hero-top-fade)" }}
             />
             <div
-              className="absolute inset-x-0 bottom-0 h-44"
-              style={{
-                background:
-                  "linear-gradient(to top, rgba(16,18,22,0.72) 0%, transparent 100%)",
-              }}
+              className="absolute inset-x-0 bottom-0 h-48"
+              style={{ background: "var(--hero-bottom-fade)" }}
             />
           </div>
         </div>
