@@ -125,11 +125,11 @@ export const FOCUS_COPY: Record<
       "Technical VA &",
       "Workflow Builder",
     ],
-    badge: "HYBRID ADVANTAGE // CREATIVE + TECHNICAL VA + WORKFLOW ENGINEERING",
+    badge: "01 // HYBRID EXECUTION",
     headline:
-      "Helping global founders and brands scale faster—combining high-converting 9:16 video ads, executive remote operations, and sub-5-second web automation.",
+      "High-converting 9:16 video ads, executive remote operations, and sub-5-second web systems.",
     subheadline:
-      "Why hire three separate specialists? I pair Alpha VA Certified remote operations (ClickUp, Google Workspace, SMM calendars) with international D2C paid social production (Hackerlily Germany) and custom CS engineering (HusAI & Pacs Builders).",
+      "One technical partner pairing Alpha VA operations and international D2C ad production with full-stack CS engineering.",
   },
   va: {
     heroRoleLines: [
@@ -137,11 +137,11 @@ export const FOCUS_COPY: Record<
       "Operations &",
       "Social Media Strategist",
     ],
-    badge: "TECHNICAL VA & REMOTE OPS // ALPHA VA CERTIFIED · FREELANCE MOVEMENT",
+    badge: "01 // TECHNICAL VA & REMOTE OPS",
     headline:
-      "Your 1-person remote operations, social media growth, and technical automation partner.",
+      "Executive remote operations, multi-platform social growth, and workflow automation.",
     subheadline:
-      "Trained across Alpha VA and Freelance Movement with a Computer Science foundation—I manage executive schedules, ClickUp workflows, and multi-platform social growth while automating repetitive Excel bottlenecks and editing agency-grade 9:16 reels.",
+      "Alpha VA Certified and Freelance Movement trained—running ClickUp sprints, content calendars, and 9:16 reels.",
   },
   creative: {
     heroRoleLines: [
@@ -149,11 +149,11 @@ export const FOCUS_COPY: Record<
       "Video Editor &",
       "Creative Strategist",
     ],
-    badge: "CREATIVE FOCUS // 9:16 PAID SOCIAL VIDEO & MOTION",
+    badge: "01 // 9:16 PAID SOCIAL VIDEO",
     headline:
-      "I engineer high-retention 9:16 paid social video ads and visual systems that convert cold traffic.",
+      "High-retention 9:16 paid social video ads engineered to convert cold traffic.",
     subheadline:
-      "Combining mobile UI/UX typography hierarchy, beat-synced CapCut Pro editing, Foley sound design, and rapid A/B hook testing (Skeptic UGC, Competitor Switchers, Campaign Launches, Meme Reels) for international D2C brands.",
+      "Beat-synced CapCut Pro cuts, sound-off typography, Foley audio, and rapid A/B hook testing for D2C brands.",
   },
   engineering: {
     heroRoleLines: [
@@ -161,11 +161,11 @@ export const FOCUS_COPY: Record<
       "CS Engineer &",
       "AI Product Builder",
     ],
-    badge: "ENGINEERING FOCUS // FULL-STACK SYSTEMS & AI PROTOTYPING",
+    badge: "01 // FULL-STACK & AI SYSTEMS",
     headline:
-      "I build sub-5-second internal web platforms, real-time AI coaching tools, and full-SDLC software.",
+      "Sub-5-second internal web platforms, real-time AI voice tools, and 6-OS apps.",
     subheadline:
-      "Specializing in React/Next.js, TypeScript/Express, Electron, and Groq/Gemini AI pipelines—replacing manual Excel workflows with role-based audit systems and shipping production prototypes with 1.00-grade SDLC rigor.",
+      "React/Next.js, TypeScript, Electron, Flutter, and Groq/Gemini pipelines built with 1.00-grade SDLC rigor.",
   },
 };
 
@@ -240,13 +240,13 @@ export const CASE_STUDIES: CaseStudy[] = [
     period: "FEB 2026 – SEP 2026",
     categories: ["creative", "va"],
     primaryMetric: "45+ Cuts",
-    primaryMetricLabel: "15–40s A/B-Tested Paid Social Reels",
+    primaryMetricLabel: "15–40s A/B Paid Social Reels",
     problem:
-      "International D2C paid acquisition on Meta, TikTok, and Pinterest requires rapid creative iteration across multiple marketing angles to prevent ad fatigue and capture sound-off mobile scrollers.",
+      "Cold D2C traffic on Meta, TikTok, and Pinterest requires rapid A/B hook variation to beat ad fatigue.",
     execution:
-      "Engineered beat-synced 9:16 video ads across Skeptic UGC, Competitor Switchers, EOFY Campaign Launches, Father's Day promos, and Viral Meme Reels. Applied mobile UI/UX typography hierarchy, Foley sound design, and dynamic review/award badge overlays.",
+      "Cut 45+ beat-synced 9:16 reels across Skeptic UGC, Switchers, EOFY Launches, and Trends with Foley sound design.",
     impact:
-      "Delivered a complete library of high-retention 9:16 paid and organic video assets aligned directly with brand stakeholders in Germany.",
+      "Shipped a complete high-retention 9:16 ad library directly with brand stakeholders in Germany.",
     stack: [
       "CapCut Pro",
       "A/B Hook Testing",
@@ -276,11 +276,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     primaryMetric: "4.0s VAD",
     primaryMetricLabel: "Live VA Call Coaching & 69/100 Review",
     problem:
-      "Filipino Virtual Assistants taking live international client calls (US/UK/AU) on Meet or Zoom work solo without a supervisor—most call tools only analyze recordings after the call has already gone wrong.",
+      "Remote VAs take high-stakes international client calls solo without real-time supervisor support.",
     execution:
-      "Built a dual-channel React (Vite) web app, Electron desktop shell, and Express/TypeScript backend. Uses an STT-independent Web Audio AnalyserNode amplitude VAD (4s silence, 8s debounce) to trigger 'The Lifeline' (3 live Smart Replies via Groq llama-3.1-8b-instant) alongside dual-channel transcription and post-call pattern scoring ('The Review' via Gemini Flash).",
+      "Built a React + Electron + Express app using a 4.0s Web Audio silence VAD to fire 3 Groq LLaMA 3.1 Smart Replies.",
     impact:
-      "Directly solves remote VA call confidence and client retention—shipping as both a web app and Windows/macOS desktop build with a 60s Remotion product reveal.",
+      "Ships as both a web app and desktop shell with dual-channel transcription and post-call Gemini scoring.",
     stack: [
       "React (Vite)",
       "TypeScript / Express",
@@ -314,11 +314,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     primaryMetric: "3+ Yrs",
     primaryMetricLabel: "Remote VA, SMM & Brand Direction",
     problem:
-      "Founders and growing brands get bogged down by fragmented content calendars, manual administrative tasks, inbox/file chaos, and inconsistent social media execution.",
+      "Founders lose hours to fragmented content calendars, manual admin tasks, and inconsistent social publishing.",
     execution:
-      "Executed end-to-end social media management (content scheduling, trend/hashtag optimization, dialogue scripting), clothing brand creative direction, and executive virtual assistance across Google Workspace, ClickUp, and MS Office—augmented by AI workflows (ChatGPT, Claude, Gemini).",
+      "Managed multi-platform SMM calendars, clothing brand art direction, and ClickUp/Workspace ops with AI workflows.",
     impact:
-      "Provided reliable, culturally adaptable remote operations and multi-platform social growth for global clients while maintaining a 1.00 academic leadership track.",
+      "Delivered reliable UTC+8 global remote operations alongside a 1.00 academic leadership track.",
     stack: [
       "Alpha VA Certified",
       "Freelance Movement",
@@ -349,11 +349,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     primaryMetric: "< 5s",
     primaryMetricLabel: "Complex Audit Report Generation",
     problem:
-      "Material receipts, site usage, and inventory movements were tracked across fragmented manual Excel sheets, causing human entry errors and slow audit reconciliation.",
+      "Fragmented manual Excel sheets caused data entry errors and 20-minute audit reconciliations.",
     execution:
-      "Built the frontend interface and workflow automation for a centralized web platform with role-based permissions (Admin, Auditor, Staff), automated transaction trails, and optimized reporting queries.",
+      "Built a role-based web platform (Admin, Auditor, Staff) with immutable transaction trails and fast queries.",
     impact:
-      "Eliminated manual spreadsheet reconciliation for non-technical staff and cut data-heavy audit and inventory report generation from ~20 minutes to under 5 seconds.",
+      "Cut material audit report generation from ~20 minutes of manual Excel work to under 5 seconds.",
     stack: ["Python", "HTML/CSS", "Role-Based Auth", "Excel Migration", "Audit Reporting"],
     previewMedia: {
       type: "telemetry",
@@ -375,11 +375,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     primaryMetric: "1.00",
     primaryMetricLabel: "Final Grade (Highest Distinction)",
     problem:
-      "Translating an early-stage startup concept into a documented, testable, and deployable software product under strict academic and incubation milestones.",
+      "Turning an early startup concept into a documented, QA-verified, and deployed software build on deadline.",
     execution:
-      "Led technical scoping, system architecture documentation, ClickUp task prioritization, and end-to-end SDLC coordination from initial design specs to final deployment.",
+      "Led system architecture specs, ClickUp sprint backlogs, and full-SDLC delivery through Demo Day.",
     impact:
-      "Delivered the complete incubation milestone on schedule and earned a Final Grade of 1.00—the highest possible academic distinction at USTP.",
+      "Earned a Final Grade of 1.00—the highest possible academic distinction at USTP.",
     stack: [
       "Technical Leadership",
       "SDLC Documentation",
@@ -406,11 +406,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     primaryMetric: "100%",
     primaryMetricLabel: "SDLC & QA Traceability",
     problem:
-      "Early-stage web builds often ship without real-time architecture, CI/CD discipline, or formal QA defect tracking.",
+      "Early web builds often ship without real-time synchronization, CI/CD pipelines, or formal defect logs.",
     execution:
-      "Implemented a Node.js, Express, and Socket.IO client-server application paired with structured Agile sprint backlogs, CI/CD pipeline configs, QA testing defect logs, and risk registers.",
+      "Built a Node.js + Express + Socket.IO application backed by Agile sprint logs, CI/CD, and risk registers.",
     impact:
-      "Demonstrates production-minded engineering and documentation rigor—linking live Socket.IO features with formal verification and release logs.",
+      "Links live bidirectional Socket.IO events with verifiable QA defect and release tracking.",
     stack: ["Node.js", "Express", "Socket.IO", "CI/CD", "QA Defect Logs"],
     previewMedia: {
       type: "telemetry",
@@ -435,11 +435,11 @@ export const CASE_STUDIES: CaseStudy[] = [
     primaryMetric: "6 OS",
     primaryMetricLabel: "Weekly ₱ Budget & Spending Delta App",
     problem:
-      "Everyday personal budgeting tools often lock users into bloated subscriptions or a single OS ecosystem instead of offering fast offline weekly budget tracking and spending trend checks.",
+      "Personal finance trackers often require bloated subscriptions instead of fast offline weekly ₱ budgeting.",
     execution:
-      "Built a 625-line Flutter/Dart application (lib/main.dart) targeting Android, iOS, Web, Windows, macOS, and Linux. Features a BudgetScreen (₱ weekly allowance editor, categorized Food/Gas/Misc logging, auto Reset Week trigger), AnalysisScreen (pull-to-refresh entry-to-entry spending delta comparison), and SettingsScreen (SharedPreferences JSON persistence + ImagePicker profile avatar).",
+      "Built a 625-line Flutter app (lib/main.dart) with BudgetScreen, AnalysisScreen delta trends, and SharedPreferences.",
     impact:
-      "Delivers instant local persistence and clear weekly spending accountability from one cross-platform codebase—available to test-run live inside Stage 04 of the Proof Stage.",
+      "Targets 6 OS platforms from one Dart codebase—available to test-run live in Stage 04 of the Proof Stage.",
     stack: ["Flutter", "Dart", "SharedPreferences", "ImagePicker", "6 OS Targets"],
     previewMedia: {
       type: "image",

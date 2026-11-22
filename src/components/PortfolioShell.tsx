@@ -6,9 +6,7 @@ import { Navbar } from "./Navbar";
 import { Hero } from "./Hero";
 import { WorkMatrix } from "./WorkMatrix";
 import { InteractiveProofs } from "./InteractiveProofs";
-import { ServicesGrid } from "./ServicesGrid";
-import { EngagementModels } from "./EngagementModels";
-import { ToolkitSection } from "./ToolkitSection";
+import { AppleBentoSection } from "./AppleBentoSection";
 import { SlidingGallery } from "./SlidingGallery";
 import { ContactSection } from "./ContactSection";
 import { CommandPalette } from "./CommandPalette";
@@ -134,9 +132,10 @@ export function PortfolioShell() {
 
         <InteractiveProofs activeTab={proofTab} onChangeTab={setProofTab} />
 
-        <ServicesGrid onSelectService={setSelectedService} />
-        <EngagementModels onSelectModel={setSelectedService} />
-        <ToolkitSection />
+        <AppleBentoSection
+          onJumpToProof={handleJumpToProof}
+          onSelectService={setSelectedService}
+        />
 
         <SlidingGallery onJumpToProof={handleJumpToProof} />
       </main>

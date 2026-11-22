@@ -275,21 +275,29 @@ export function WorkMatrix({
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-[var(--color-paper)] p-5 border border-[var(--color-hairline)]">
-                        <div className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">
-                          The Problem
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div className="rounded-2xl bg-[var(--color-paper)] p-4 border border-[var(--color-hairline)]">
+                        <div className="font-mono text-[10px] uppercase tracking-widest text-[#455CE9] mb-1">
+                          01 // Challenge
                         </div>
-                        <p className="text-sm leading-relaxed text-[var(--color-ink)]">
+                        <p className="text-xs sm:text-sm leading-relaxed text-[var(--color-ink)]">
                           {study.problem}
                         </p>
                       </div>
-                      <div className="bg-[var(--color-paper)] p-5 border border-[var(--color-hairline)]">
-                        <div className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-ink-muted)] mb-1.5">
-                          Architecture &amp; Execution
+                      <div className="rounded-2xl bg-[var(--color-paper)] p-4 border border-[var(--color-hairline)]">
+                        <div className="font-mono text-[10px] uppercase tracking-widest text-[#455CE9] mb-1">
+                          02 // System Built
                         </div>
-                        <p className="text-sm leading-relaxed text-[var(--color-ink)]">
+                        <p className="text-xs sm:text-sm leading-relaxed text-[var(--color-ink)]">
                           {study.execution}
+                        </p>
+                      </div>
+                      <div className="rounded-2xl bg-[var(--color-paper)] p-4 border border-[var(--color-hairline)]">
+                        <div className="font-mono text-[10px] uppercase tracking-widest text-[#455CE9] mb-1">
+                          03 // Verified Outcome
+                        </div>
+                        <p className="text-xs sm:text-sm leading-relaxed text-[var(--color-ink)]">
+                          {study.impact}
                         </p>
                       </div>
                     </div>
