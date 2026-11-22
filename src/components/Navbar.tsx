@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Command, X } from "lucide-react";
+import { Command, Download, X } from "lucide-react";
 import { PROFILE, type FocusMode } from "@/data/portfolio";
 import { MagneticButton } from "./MagneticButton";
 
@@ -14,16 +14,25 @@ const NAV_LINKS = [
 ];
 
 const FOCUS_OPTIONS: { id: FocusMode; label: string; title: string }[] = [
-  { id: "all", label: "ALL", title: "Full Hybrid View (Engineering + Creative)" },
   {
-    id: "engineering",
-    label: "ENG",
-    title: "Engineering & AI Systems Focus (?focus=engineering)",
+    id: "all",
+    label: "ALL",
+    title: "Best of Both Worlds (Creative + Technical VA + Engineering)",
+  },
+  {
+    id: "va",
+    label: "VA & OPS",
+    title: "Technical VA, Operations & SMM Focus (?focus=va)",
   },
   {
     id: "creative",
     label: "CREATIVE",
     title: "Direct-Response 9:16 Video Focus (?focus=creative)",
+  },
+  {
+    id: "engineering",
+    label: "ENG",
+    title: "Software Engineering & AI Systems Focus (?focus=engineering)",
   },
 ];
 
@@ -72,10 +81,10 @@ export function Navbar({
           </span>
         </a>
 
-        {/* Right: Clean Links with bottom dot indicator + Focus Switcher + ⌘K */}
-        <div className="flex items-center gap-6 lg:gap-9">
+        {/* Right: Clean Links + Focus Switcher + 1-Click CV Download + ⌘K */}
+        <div className="flex items-center gap-4 lg:gap-7">
           <nav
-            className="hidden md:flex items-center gap-7 lg:gap-9"
+            className="hidden xl:flex items-center gap-7"
             aria-label="Primary"
           >
             {NAV_LINKS.map((item) => (
@@ -96,9 +105,9 @@ export function Navbar({
             ))}
           </nav>
 
-          {/* Persona Focus Pills */}
+          {/* 4-Mode Persona Focus Pills */}
           <div
-            className="hidden sm:inline-flex items-center rounded-full bg-[#1C1D20]/35 backdrop-blur-sm p-1 border border-white/15"
+            className="hidden md:inline-flex items-center rounded-full bg-[#1C1D20]/35 backdrop-blur-sm p-1 border border-white/15"
             role="group"
             aria-label="Portfolio Focus Mode"
           >
@@ -122,6 +131,17 @@ export function Navbar({
             })}
           </div>
 
+          {/* 1-Click Top-Bar Download CV Pill */}
+          <a
+            href="/Birky_Andrie_Pacuribot_CV.pdf"
+            download
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-white text-[#1C1D20] hover:bg-[#455CE9] hover:text-white px-3.5 py-1.5 font-mono text-xs font-medium transition-colors"
+            title="Download Updated CV (PDF)"
+          >
+            <Download className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>CV</span>
+          </a>
+
           <button
             type="button"
             onClick={onOpenCommandPalette}
@@ -137,7 +157,7 @@ export function Navbar({
           <button
             type="button"
             onClick={() => setDrawerOpen(true)}
-            className="md:hidden inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20]/40 border border-white/20 px-3.5 py-1.5 text-xs text-white cursor-pointer"
+            className="xl:hidden inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20]/40 border border-white/20 px-3.5 py-1.5 text-xs text-white cursor-pointer"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-white" />
             <span>Menu</span>
@@ -184,7 +204,7 @@ export function Navbar({
       >
         <aside
           onClick={(e) => e.stopPropagation()}
-          className={`relative ml-auto h-full w-full max-w-md bg-[#1C1D20] text-white px-8 sm:px-14 py-12 flex flex-col justify-between transition-transform duration-700 ease-dennis ${
+          className={`relative ml-auto h-full w-full max-w-md bg-[#1C1D20] text-white px-8 sm:px-14 py-10 flex flex-col justify-between transition-transform duration-700 ease-dennis overflow-y-auto ${
             drawerOpen ? "translate-x-0" : "translate-x-[115%]"
           }`}
         >
@@ -205,12 +225,12 @@ export function Navbar({
             />
           </svg>
 
-          <div className="space-y-8 pt-8">
-            <div className="border-b border-white/15 pb-4 font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
+          <div className="space-y-7 pt-6">
+            <div className="border-b border-white/15 pb-3 font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
               Navigation
             </div>
 
-            <nav className="flex flex-col gap-4" aria-label="Drawer">
+            <nav className="flex flex-col gap-3.5" aria-label="Drawer">
               {[{ label: "Home", href: "#" }, ...NAV_LINKS].map((item, idx) => (
                 <a
                   key={item.label}
@@ -229,11 +249,36 @@ export function Navbar({
               ))}
             </nav>
 
+            {/* Instant Resume Downloads inside Drawer */}
+            <div className="pt-4 border-t border-white/15 space-y-2.5">
+              <div className="font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
+                Instant Resume Download
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <a
+                  href="/Birky_Andrie_Pacuribot_CV.pdf"
+                  download
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-4 py-2 font-mono text-xs text-white transition-colors"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  <span>PDF Resume</span>
+                </a>
+                <a
+                  href="/Birky_Andrie_Pacuribot_Harvard_CV.docx"
+                  download
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/25 hover:bg-white hover:text-[#1C1D20] px-4 py-2 font-mono text-xs text-white transition-colors"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  <span>Harvard Word (.docx)</span>
+                </a>
+              </div>
+            </div>
+
             <div className="pt-4 border-t border-white/15 space-y-2">
               <div className="font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
-                Focus Mode URL
+                Tailored Application View
               </div>
-              <div className="inline-flex rounded-full bg-white/10 p-1">
+              <div className="flex flex-wrap rounded-2xl bg-white/10 p-1 gap-1">
                 {FOCUS_OPTIONS.map((opt) => (
                   <button
                     key={opt.id}
@@ -252,11 +297,25 @@ export function Navbar({
             </div>
           </div>
 
-          <div className="border-t border-white/15 pt-6 space-y-2">
+          <div className="border-t border-white/15 pt-5 space-y-2">
             <div className="font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
-              Socials &amp; Direct
+              Direct Contact &amp; Links
             </div>
             <div className="flex flex-wrap gap-5 text-sm text-white/90">
+              <a
+                href={PROFILE.whatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#455CE9] transition-colors"
+              >
+                WhatsApp
+              </a>
+              <a
+                href={`mailto:${PROFILE.email}`}
+                className="hover:text-[#455CE9] transition-colors"
+              >
+                Email
+              </a>
               <a
                 href={PROFILE.github}
                 target="_blank"
@@ -272,12 +331,6 @@ export function Navbar({
                 className="hover:text-[#455CE9] transition-colors"
               >
                 HusAI Live
-              </a>
-              <a
-                href={`mailto:${PROFILE.email}`}
-                className="hover:text-[#455CE9] transition-colors"
-              >
-                Email
               </a>
             </div>
           </div>

@@ -16,7 +16,7 @@ import type { FocusMode, ProofTab, WorkCategory } from "@/data/portfolio";
 
 export function PortfolioShell() {
   const [focusMode, setFocusMode] = useState<FocusMode>("all");
-  const [proofTab, setProofTab] = useState<ProofTab>("husai");
+  const [proofTab, setProofTab] = useState<ProofTab>("hackerlily");
   const [selectedService, setSelectedService] = useState("");
   const [workFilter, setWorkFilter] = useState<WorkCategory>("all");
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -29,8 +29,11 @@ export function PortfolioShell() {
     } else if (mode === "creative") {
       setProofTab("hackerlily");
       setWorkFilter("creative");
+    } else if (mode === "va") {
+      setProofTab("hackerlily");
+      setWorkFilter("va");
     } else {
-      setProofTab("husai");
+      setProofTab("hackerlily");
       setWorkFilter("all");
     }
 
@@ -49,7 +52,11 @@ export function PortfolioShell() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const focusParam = params.get("focus");
-      if (focusParam === "engineering" || focusParam === "creative") {
+      if (
+        focusParam === "va" ||
+        focusParam === "engineering" ||
+        focusParam === "creative"
+      ) {
         applyFocusMode(focusParam, false);
       }
     }
@@ -77,7 +84,6 @@ export function PortfolioShell() {
 
   return (
     <>
-      {/* 0. Dennis Snellenberg Multi-Word Curve Preloader */}
       <Preloader />
 
       <Navbar
@@ -86,28 +92,22 @@ export function PortfolioShell() {
         onOpenCommandPalette={() => setPaletteOpen(true)}
       />
       <main>
-        {/* 1. Dennis Snellenberg 100vh #999D9E Hero + Velocity Marquee + Word-Reveal Statement */}
         <Hero focusMode={focusMode} onJumpToProof={handleJumpToProof} />
 
-        {/* 2. Dennis Snellenberg "RECENT WORK" + 2-Layer Spring Lerp Vertical Reel Modal & Blue "View" Circle */}
         <WorkMatrix
           externalFilter={workFilter}
           onJumpToProof={handleJumpToProof}
         />
 
-        {/* 3. Dark Cinema Proof Stage (HusAI 60s Remotion Demo + Localhost :5173 + 3 Autoplaying HipSurfer 9:16 Reels + Pacs <5s Audit) */}
         <InteractiveProofs activeTab={proofTab} onChangeTab={setProofTab} />
 
-        {/* 4. Services, Engagement Models & Toolkit */}
         <ServicesGrid onSelectService={setSelectedService} />
         <EngagementModels onSelectModel={setSelectedService} />
         <ToolkitSection />
 
-        {/* 5. Dennis Snellenberg 2-Row Scroll-Driven Sliding Showcase + Morphing Curved Overhang */}
         <SlidingGallery onJumpToProof={handleJumpToProof} />
       </main>
 
-      {/* 6. Dennis Snellenberg #1C1D20 "Let's work together" Footer with Liquid-Fill Magnetic Buttons */}
       <ContactSection preselectedService={selectedService} />
 
       <CommandPalette

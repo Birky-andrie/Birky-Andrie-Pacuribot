@@ -11,8 +11,9 @@ import { MagneticButton } from "./MagneticButton";
 
 const FILTERS: { id: WorkCategory; label: string }[] = [
   { id: "all", label: "All" },
-  { id: "engineering", label: "Engineering" },
+  { id: "va", label: "VA & Ops" },
   { id: "creative", label: "Creative" },
+  { id: "engineering", label: "Engineering" },
   { id: "leadership", label: "Leadership" },
   { id: "github", label: "GitHub" },
 ];

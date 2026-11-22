@@ -104,10 +104,20 @@ export function CommandPalette({
       {
         id: "focus-all",
         group: "Persona Focus URL",
-        label: "Switch Focus: Hybrid View (Engineering + Creative)",
+        label: "Switch Focus: Best of Both Worlds (Creative + VA + Engineering)",
         hint: focusMode === "all" ? "ACTIVE" : "?focus=all",
         run: () => {
           onChangeFocusMode("all");
+          onClose();
+        },
+      },
+      {
+        id: "focus-va",
+        group: "Persona Focus URL",
+        label: "Switch Focus: Technical VA, SMM & Remote Operations",
+        hint: focusMode === "va" ? "ACTIVE" : "?focus=va",
+        run: () => {
+          onChangeFocusMode("va");
           onClose();
         },
       },

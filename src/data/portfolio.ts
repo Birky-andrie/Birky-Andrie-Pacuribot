@@ -1,6 +1,12 @@
-export type WorkCategory = "all" | "engineering" | "creative" | "leadership" | "github";
-export type FocusMode = "all" | "engineering" | "creative";
-export type ProofTab = "husai" | "hackerlily" | "pacs";
+export type WorkCategory =
+  | "all"
+  | "va"
+  | "creative"
+  | "engineering"
+  | "leadership"
+  | "github";
+export type FocusMode = "all" | "va" | "creative" | "engineering";
+export type ProofTab = "hackerlily" | "husai" | "pacs";
 
 export interface ServicePillar {
   id: string;
@@ -57,177 +63,190 @@ export const PROFILE = {
   timezone: "UTC+8 (Global Remote)",
   email: "pacuribot.birkyandrie@gmail.com",
   phone: "+63 966 704 3646",
+  whatsappUrl: "https://wa.me/639667043646",
   github: "https://github.com/Birky-andrie",
   education: "BS Computer Science, USTP CDO (2023–2027)",
   distinction: "Project Lead, Trailblazer Startup Lab (Final Grade: 1.00)",
 } as const;
 
+export const REMOTE_READINESS_SPECS = [
+  {
+    label: "GLOBAL SHIFT OVERLAP",
+    value: "AU / APAC · EU (Germany) · UK / US",
+    detail: "UTC+8 Base · Flexible Shift Alignment",
+  },
+  {
+    label: "VA & TECH CREDENTIALS",
+    value: "Alpha VA Certified · 1.00 Lab Lead",
+    detail: "Freelance Movement · USTP BS CS '27",
+  },
+  {
+    label: "CREATIVE & DEV OUTPUT",
+    value: "45+ Paid Ad Cuts · <5s Web Systems",
+    detail: "CapCut Pro · React/Next.js · AI/Groq",
+  },
+  {
+    label: "AVAILABILITY & COMMS",
+    value: "Immediate Start · English (Fluent)",
+    detail: "Full-Time · Part-Time · Retainer",
+  },
+] as const;
+
 export const HERO_METRICS = [
+  {
+    value: "45+",
+    label: "9:16 Paid Social Cuts",
+    source: "Hackerlily HipSurfer (Germany/AU)",
+  },
   {
     value: "< 5s",
     label: "Audit Report Latency",
-    source: "Pacs Builders Material System",
+    source: "Pacs Builders Web Automation",
   },
   {
     value: "1.00",
-    label: "Final Leadership Grade",
-    source: "Trailblazer Startup Lab, USTP",
-  },
-  {
-    value: "20–40s",
-    label: "Direct-Response Ad Cuts",
-    source: "Hackerlily HipSurfer (Germany)",
+    label: "Startup Lab Distinction",
+    source: "Trailblazer Project Lead (HusAI)",
   },
 ] as const;
 
 export const FOCUS_COPY: Record<
   FocusMode,
   {
+    heroRoleLines: [string, string, string];
     badge: string;
     headline: string;
     subheadline: string;
   }
 > = {
   all: {
-    badge: "HYBRID MODE // CS ENGINEER + CREATIVE TECHNOLOGIST",
+    heroRoleLines: [
+      "Creative Technologist,",
+      "Technical VA &",
+      "Workflow Builder",
+    ],
+    badge: "HYBRID ADVANTAGE // CREATIVE + TECHNICAL VA + WORKFLOW ENGINEERING",
     headline:
-      "I engineer fast internal web systems and direct-response video assets that drive measurable revenue.",
+      "Helping global founders and brands scale faster—combining high-converting 9:16 video ads, executive remote operations, and sub-5-second web automation.",
     subheadline:
-      "I replace manual spreadsheet bottlenecks with role-based web applications (<5s audit reporting), build real-time AI call-coaching software (HusAI), and produce A/B-tested 9:16 Meta & TikTok ad creatives for international brands.",
+      "Why hire three separate specialists? I pair Alpha VA Certified remote operations (ClickUp, Google Workspace, SMM calendars) with international D2C paid social production (Hackerlily Germany) and custom CS engineering (HusAI & Pacs Builders).",
+  },
+  va: {
+    heroRoleLines: [
+      "Technical VA,",
+      "Operations &",
+      "Social Media Strategist",
+    ],
+    badge: "TECHNICAL VA & REMOTE OPS // ALPHA VA CERTIFIED · FREELANCE MOVEMENT",
+    headline:
+      "Your 1-person remote operations, social media growth, and technical automation partner.",
+    subheadline:
+      "Trained across Alpha VA and Freelance Movement with a Computer Science foundation—I manage executive schedules, ClickUp workflows, and multi-platform social growth while automating repetitive Excel bottlenecks and editing agency-grade 9:16 reels.",
+  },
+  creative: {
+    heroRoleLines: [
+      "Direct-Response",
+      "Video Editor &",
+      "Creative Strategist",
+    ],
+    badge: "CREATIVE FOCUS // 9:16 PAID SOCIAL VIDEO & MOTION",
+    headline:
+      "I engineer high-retention 9:16 paid social video ads and visual systems that convert cold traffic.",
+    subheadline:
+      "Combining mobile UI/UX typography hierarchy, beat-synced CapCut Pro editing, Foley sound design, and rapid A/B hook testing (Skeptic UGC, Competitor Switchers, Campaign Launches, Meme Reels) for international D2C brands.",
   },
   engineering: {
+    heroRoleLines: [
+      "Full-Stack",
+      "CS Engineer &",
+      "AI Product Builder",
+    ],
     badge: "ENGINEERING FOCUS // FULL-STACK SYSTEMS & AI PROTOTYPING",
     headline:
       "I build sub-5-second internal web platforms, real-time AI coaching tools, and full-SDLC software.",
     subheadline:
       "Specializing in React/Next.js, TypeScript/Express, Electron, and Groq/Gemini AI pipelines—replacing manual Excel workflows with role-based audit systems and shipping production prototypes with 1.00-grade SDLC rigor.",
   },
-  creative: {
-    badge: "CREATIVE FOCUS // DIRECT-RESPONSE 9:16 VIDEO & MOTION",
-    headline:
-      "I engineer high-retention 9:16 paid social video ads and visual systems that convert cold traffic.",
-    subheadline:
-      "Combining UI/UX typography hierarchy, beat-synced CapCut Pro editing, Foley sound design, and rapid A/B hook testing (Skeptic UGC, Competitor Switchers, Minimalist Lifestyle) for international D2C brands.",
-  },
 };
 
 export const SERVICES: ServicePillar[] = [
   {
-    id: "workflow-engineering",
+    id: "direct-response-creative",
     number: "01",
+    title: "Direct-Response Video & Social Media Growth",
+    audience: "D2C brands, founders & marketing teams",
+    outcome:
+      "Produce 15–40s Meta, TikTok, IG Reels, and Pinterest video ads engineered with A/B-tested hooks, kinetic typography, Foley audio, and consistent content calendars.",
+    deliverables: [
+      "UGC, Switcher, Launch & Meme Reel Cuts",
+      "Sound-Off Mobile Typography Hierarchy",
+      "Foley Sound Design & Commercial Mixing",
+      "Multi-Platform SMM Scheduling & Trend Research",
+    ],
+  },
+  {
+    id: "technical-va-operations",
+    number: "02",
+    title: "Technical VA & Executive Remote Operations",
+    audience: "Busy founders & remote international teams",
+    outcome:
+      "Run day-to-day executive operations, ClickUp sprint boards, and documentation while using technical automation to eliminate repetitive admin work.",
+    deliverables: [
+      "Alpha VA Certified Executive Support",
+      "ClickUp, Google Workspace & Excel Systems",
+      "AI-Assisted Research, Scripting & SOPs",
+      "Cross-Timezone Stakeholder Coordination",
+    ],
+  },
+  {
+    id: "workflow-engineering",
+    number: "03",
     title: "Custom Web & Workflow Engineering",
     audience: "Operations-heavy teams outgrowing spreadsheets",
     outcome:
       "Replace error-prone manual Excel tracking with centralized, role-based web applications and sub-5-second audit reporting.",
     deliverables: [
       "Role-Based Access (Admin / Auditor / Staff)",
-      "Automated Audit Trails",
-      "Real-Time Inventory & Reporting Modules",
-      "Non-Technical Staff UX",
+      "Automated Audit Trails & Inventory Logs",
+      "Sub-5-Second Reporting Dashboards",
+      "Intuitive Non-Technical Staff UX",
     ],
   },
   {
     id: "ai-prototyping",
-    number: "02",
-    title: "AI Integration & Rapid Prototyping",
-    audience: "Founders & remote service teams validating products",
-    outcome:
-      "Ship working AI-assisted web and desktop tools—from live call coaching to LLM-backed transcript analysis—in compressed sprint cycles.",
-    deliverables: [
-      "LLM & Speech-to-Text Pipelines (Groq / Gemini)",
-      "React, Next.js & Electron Frontends",
-      "Rapid UI Iteration & Component Systems",
-      "Vercel / Render Deployment",
-    ],
-  },
-  {
-    id: "direct-response-creative",
-    number: "03",
-    title: "Direct-Response Video & Creative Production",
-    audience: "International D2C & e-commerce brands",
-    outcome:
-      "Produce 20–40s Meta, TikTok, and Pinterest video ads engineered with A/B-tested hooks, kinetic typography, and sound-off readability.",
-    deliverables: [
-      "UGC & Text-Driven Ad Variations",
-      "A/B Hook & Social Proof Testing",
-      "Mobile UI/UX Typography Hierarchy",
-      "Foley Sound Design & Audio Mixing",
-    ],
-  },
-  {
-    id: "technical-leadership",
     number: "04",
-    title: "Technical Project Leadership",
-    audience: "Early-stage startups & engineering cohorts",
+    title: "AI Integration & Technical Project Leadership",
+    audience: "Startups validating AI tools & software products",
     outcome:
-      "Guide product concepts from initial system documentation through Agile sprint execution, QA defect logging, and production launch.",
+      "Guide product concepts from initial SDLC architecture documentation through Groq/Gemini AI integration, QA defect logging, and Vercel/Render launch.",
     deliverables: [
-      "Full SDLC & Architecture Docs",
-      "Agile Backlog & ClickUp Workflows",
-      "QA Test Plans & Risk Registers",
-      "Cross-Functional Stakeholder Alignment",
+      "LLM & Whisper Voice Pipelines (Groq / Gemini)",
+      "React, Next.js & Electron Frontends",
+      "Full SDLC Docs, QA Logs & Risk Registers",
+      "1.00-Grade Incubation Delivery Discipline",
     ],
   },
 ];
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
-    id: "husai",
-    index: "01",
-    code: "GH-01",
-    title: "HusAI — Real-Time AI Call Coach",
-    clientOrContext: "USTP Startup Incubation · Open Source",
-    locationTag: "CDO, PH // VERCEL + ELECTRON",
-    role: "Creator & Full-Stack Builder",
-    period: "2026",
-    categories: ["engineering", "github"],
-    primaryMetric: "4.0s",
-    primaryMetricLabel: "Web Audio VAD Silence Trigger",
-    problem:
-      "Filipino Virtual Assistants taking live international client calls (US/UK/AU) on Meet or Zoom work solo without a supervisor—most call tools only analyze recordings after the call has already gone wrong.",
-    execution:
-      "Engineered a dual-channel React (Vite) web app, Electron desktop shell, and Express/TypeScript backend. Uses an STT-independent Web Audio AnalyserNode amplitude VAD (4s silence, 8s debounce) to trigger 'The Lifeline' (3 live Smart Replies via Groq llama-3.1-8b-instant) alongside dual-channel transcription (Web Speech API + Groq whisper-large-v3-turbo) and post-call pattern scoring ('The Review' via Gemini 2.5 Flash).",
-    impact:
-      "Ships as both a web client with a floating Picture-in-Picture coach window and a Windows/macOS Electron desktop build, scoring calls across Confidence, Clarity, Conciseness, and Professionalism.",
-    stack: [
-      "React (Vite)",
-      "TypeScript / Express",
-      "Electron",
-      "Web Audio VAD",
-      "Groq LLaMA 3.1 & Whisper",
-      "Gemini Flash",
-      "Prisma",
-    ],
-    previewMedia: {
-      type: "image",
-      src: "/husai/screen-solution.png",
-      badge: "HUSAI // LIVE CALL COACH",
-      highlight: "4.0s Silence VAD -> 3 Instant Smart Replies",
-      sublabel: "Localhost :5173 UI + 60s Remotion Reveal",
-    },
-    links: {
-      repo: "https://github.com/Birky-andrie/HusAI",
-      live: "https://hus-ai-five.vercel.app",
-    },
-  },
-  {
     id: "hackerlily-hipsurfer",
-    index: "02",
-    code: "CS-02",
+    index: "01",
+    code: "CS-01",
     title: "Hackerlily HipSurfer — 9:16 Ad System",
-    clientOrContext: "Hackerlily (International Client)",
-    locationTag: "GERMANY / AU // META & TIKTOK",
-    role: "Freelance Video Editor & Creative Strategist",
-    period: "FEB 2026 – PRESENT",
-    categories: ["creative"],
-    primaryMetric: "20–40s",
-    primaryMetricLabel: "High-Retention Ad Variations",
+    clientOrContext: "Hackerlily (Germany / International Client)",
+    locationTag: "META · TIKTOK · PINTEREST · IG",
+    role: "Direct-Response Video Editor & Creative Strategist",
+    period: "FEB 2026 – SEP 2026",
+    categories: ["creative", "va"],
+    primaryMetric: "45+ Cuts",
+    primaryMetricLabel: "15–40s A/B-Tested Paid Social Reels",
     problem:
-      "International D2C paid acquisition on Meta, TikTok, and Pinterest requires rapid creative iteration to prevent ad fatigue and capture sound-off mobile scrollers.",
+      "International D2C paid acquisition on Meta, TikTok, and Pinterest requires rapid creative iteration across multiple marketing angles to prevent ad fatigue and capture sound-off mobile scrollers.",
     execution:
-      "Engineered beat-synced UGC and text-led video ads targeting pain points, social proof, and competitor switching. Applied mobile UI/UX typography hierarchy, Foley sound design, and rapid A/B hook testing.",
+      "Engineered beat-synced 9:16 video ads across Skeptic UGC, Competitor Switchers, EOFY Campaign Launches, Father's Day promos, and Viral Meme Reels. Applied mobile UI/UX typography hierarchy, Foley sound design, and dynamic review/award badge overlays.",
     impact:
-      "Delivered multi-variant top-of-funnel ad assets (Skeptic UGC, Competitor Switcher, and Minimalist Lifestyle cuts) aligned directly with international brand stakeholders.",
+      "Delivered a complete library of high-retention 9:16 paid and organic video assets aligned directly with brand stakeholders in Germany.",
     stack: [
       "CapCut Pro",
       "A/B Hook Testing",
@@ -239,21 +258,94 @@ export const CASE_STUDIES: CaseStudy[] = [
       type: "video",
       src: "/videos/hipsurfer-02.mp4",
       poster: "/videos/hipsurfer-02-poster.jpg",
-      badge: "9:16 PAID SOCIAL // 3 REELS",
+      badge: "9:16 PAID SOCIAL // 6 REELS",
       highlight: "Beat-Synced Direct-Response Cuts",
       sublabel: "Meta, TikTok & Pinterest Paid Acquisition",
     },
   },
   {
-    id: "pacs-builders",
+    id: "husai",
+    index: "02",
+    code: "GH-01",
+    title: "HusAI — Real-Time AI Call Coach",
+    clientOrContext: "USTP Startup Incubation · Open Source",
+    locationTag: "REACT + ELECTRON + GROQ AI",
+    role: "Creator & Project Lead (Final Grade: 1.00)",
+    period: "2026",
+    categories: ["engineering", "va", "github", "leadership"],
+    primaryMetric: "4.0s VAD",
+    primaryMetricLabel: "Live VA Call Coaching & 69/100 Review",
+    problem:
+      "Filipino Virtual Assistants taking live international client calls (US/UK/AU) on Meet or Zoom work solo without a supervisor—most call tools only analyze recordings after the call has already gone wrong.",
+    execution:
+      "Built a dual-channel React (Vite) web app, Electron desktop shell, and Express/TypeScript backend. Uses an STT-independent Web Audio AnalyserNode amplitude VAD (4s silence, 8s debounce) to trigger 'The Lifeline' (3 live Smart Replies via Groq llama-3.1-8b-instant) alongside dual-channel transcription and post-call pattern scoring ('The Review' via Gemini Flash).",
+    impact:
+      "Directly solves remote VA call confidence and client retention—shipping as both a web app and Windows/macOS desktop build with a 60s Remotion product reveal.",
+    stack: [
+      "React (Vite)",
+      "TypeScript / Express",
+      "Electron",
+      "Web Audio VAD",
+      "Groq LLaMA 3.1 & Whisper",
+      "Gemini Flash",
+    ],
+    previewMedia: {
+      type: "image",
+      src: "/husai/screen-solution.png",
+      badge: "HUSAI // BUILT FOR REMOTE VAs",
+      highlight: "4.0s Silence VAD -> 3 Instant Smart Replies",
+      sublabel: "Localhost :5173 UI + 60s Remotion Reveal",
+    },
+    links: {
+      repo: "https://github.com/Birky-andrie/HusAI",
+      live: "https://hus-ai-five.vercel.app",
+    },
+  },
+  {
+    id: "remote-va-ops",
     index: "03",
-    code: "CS-01",
+    code: "VA-01",
+    title: "Global Remote Operations & SMM Growth",
+    clientOrContext: "Alpha VA Certified · Freelance Movement · Clothing Brand",
+    locationTag: "REMOTE // GLOBAL CLIENTS",
+    role: "Technical Virtual Assistant, SMM & Creative Director",
+    period: "JAN 2023 – PRESENT",
+    categories: ["va", "creative"],
+    primaryMetric: "3+ Yrs",
+    primaryMetricLabel: "Remote VA, SMM & Brand Direction",
+    problem:
+      "Founders and growing brands get bogged down by fragmented content calendars, manual administrative tasks, inbox/file chaos, and inconsistent social media execution.",
+    execution:
+      "Executed end-to-end social media management (content scheduling, trend/hashtag optimization, dialogue scripting), clothing brand creative direction, and executive virtual assistance across Google Workspace, ClickUp, and MS Office—augmented by AI workflows (ChatGPT, Claude, Gemini).",
+    impact:
+      "Provided reliable, culturally adaptable remote operations and multi-platform social growth for global clients while maintaining a 1.00 academic leadership track.",
+    stack: [
+      "Alpha VA Certified",
+      "Freelance Movement",
+      "ClickUp",
+      "Google Workspace",
+      "Canva / Adobe",
+      "AI Workflows",
+    ],
+    previewMedia: {
+      type: "video",
+      src: "/videos/hipsurfer-04.mp4",
+      poster: "/videos/hipsurfer-04-poster.jpg",
+      badge: "ALPHA VA + SMM + BRAND OPS",
+      highlight: "Executive Ops · Content Calendars · AI Speed",
+      sublabel: "ClickUp · Google Workspace · Multi-Platform SMM",
+    },
+  },
+  {
+    id: "pacs-builders",
+    index: "04",
+    code: "CS-02",
     title: "Pacs Builders — Material Audit Engine",
     clientOrContext: "Pacs Builders (Engineering Firm)",
-    locationTag: "CDO, PH // INTERNAL WEB APP",
+    locationTag: "CDO, PH // WORKFLOW AUTOMATION",
     role: "Contract Programmer — Frontend & Workflow Automation",
     period: "AUG 2025 – DEC 2025",
-    categories: ["engineering"],
+    categories: ["engineering", "va"],
     primaryMetric: "< 5s",
     primaryMetricLabel: "Complex Audit Report Generation",
     problem:
@@ -262,30 +354,30 @@ export const CASE_STUDIES: CaseStudy[] = [
       "Built the frontend interface and workflow automation for a centralized web platform with role-based permissions (Admin, Auditor, Staff), automated transaction trails, and optimized reporting queries.",
     impact:
       "Eliminated manual spreadsheet reconciliation for non-technical staff and cut data-heavy audit and inventory report generation from ~20 minutes to under 5 seconds.",
-    stack: ["Python", "HTML/CSS", "Role-Based Auth", "SDLC", "Audit Reporting"],
+    stack: ["Python", "HTML/CSS", "Role-Based Auth", "Excel Migration", "Audit Reporting"],
     previewMedia: {
       type: "telemetry",
-      badge: "RBAC AUDIT // < 5.0S SLA",
+      badge: "EXCEL -> WEB AUTOMATION // < 5.0S",
       highlight: "1.84s Avg Query vs. ~20m Manual Excel",
       sublabel: "Admin · Auditor · Staff Permission Trails",
     },
   },
   {
     id: "trailblazer-startup-lab",
-    index: "04",
+    index: "05",
     code: "CS-03",
     title: "Trailblazer Startup Lab — Incubation Lead",
     clientOrContext: "Trailblazer Startup Lab, USTP",
     locationTag: "USTP CDO // FULL SDLC",
     role: "Project Lead",
     period: "JUN 2026 – AUG 2026",
-    categories: ["leadership"],
+    categories: ["leadership", "va"],
     primaryMetric: "1.00",
     primaryMetricLabel: "Final Grade (Highest Distinction)",
     problem:
       "Translating an early-stage startup concept into a documented, testable, and deployable software product under strict academic and incubation milestones.",
     execution:
-      "Led technical scoping, system architecture documentation, task prioritization, and end-to-end SDLC coordination from initial design specs to final deployment.",
+      "Led technical scoping, system architecture documentation, ClickUp task prioritization, and end-to-end SDLC coordination from initial design specs to final deployment.",
     impact:
       "Delivered the complete incubation milestone on schedule and earned a Final Grade of 1.00—the highest possible academic distinction at USTP.",
     stack: [
@@ -303,22 +395,22 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: "siam-cs3b",
-    index: "05",
+    index: "06",
     code: "GH-02",
     title: "SIAM_CS3B — Real-Time App & QA Suite",
     clientOrContext: "GitHub Open Source · Render",
-    locationTag: "NODE.JS + SOCKET.IO",
+    locationTag: "NODE.JS + SOCKET.IO + QA",
     role: "Systems & QA Contributor",
     period: "2026",
     categories: ["engineering", "leadership", "github"],
     primaryMetric: "100%",
     primaryMetricLabel: "SDLC & QA Traceability",
     problem:
-      "Student and early-stage web builds often ship without real-time architecture, CI/CD discipline, or formal QA defect tracking.",
+      "Early-stage web builds often ship without real-time architecture, CI/CD discipline, or formal QA defect tracking.",
     execution:
       "Implemented a Node.js, Express, and Socket.IO client-server application paired with structured Agile sprint backlogs, CI/CD pipeline configs, QA testing defect logs, and risk registers.",
     impact:
-      "Demonstrates production-minded engineering rigor—linking live Socket.IO features with formal verification and release documentation.",
+      "Demonstrates production-minded engineering and documentation rigor—linking live Socket.IO features with formal verification and release logs.",
     stack: ["Node.js", "Express", "Socket.IO", "CI/CD", "QA Defect Logs"],
     previewMedia: {
       type: "telemetry",
@@ -332,7 +424,7 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: "financify",
-    index: "06",
+    index: "07",
     code: "GH-03",
     title: "Financify — Cross-Platform Finance Base",
     clientOrContext: "GitHub Open Source · Flutter/C++",
@@ -364,48 +456,46 @@ export const CASE_STUDIES: CaseStudy[] = [
 export const TOOLKIT_GROUPS: ToolkitGroup[] = [
   {
     code: "TK-01",
-    functionName: "Engineering & Systems",
-    summary:
-      "Frontend interfaces, workflow automation, and AI-assisted full-stack builds.",
+    functionName: "Creative & Direct-Response Video",
+    summary: "High-retention 9:16 paid social video production, branding, and visual hierarchy.",
     items: [
-      { name: "React / Next.js", role: "Production UI & App Router" },
-      { name: "Tailwind CSS", role: "Design systems & responsive grids" },
-      { name: "TypeScript / JavaScript", role: "Type-safe client & Express APIs" },
-      { name: "Python", role: "Backend logic & parallel processing" },
-      { name: "C++", role: "Systems & CS foundations" },
-      { name: "HTML / CSS", role: "Semantic markup & precision layout" },
-      { name: "Node.js / Socket.IO", role: "Real-time client-server apps" },
-      { name: "Groq / Gemini APIs", role: "LLM & Whisper voice pipelines" },
+      { name: "CapCut Pro", role: "Beat-synced 9:16 ad & reel editing" },
+      { name: "Foley & Sound Mixing", role: "Audio polish, VO & pacing retention" },
+      { name: "A/B Creative Testing", role: "UGC, Switcher, Launch & Meme hooks" },
+      { name: "Figma", role: "UI/UX wireframes & layout systems" },
+      { name: "Adobe Ecosystem", role: "Graphic design & brand assets" },
+      { name: "Canva", role: "Rapid static ad & social templates" },
+      { name: "Remotion", role: "Code-driven React motion graphics" },
     ],
   },
   {
     code: "TK-02",
-    functionName: "Creative & Direct-Response",
-    summary: "High-retention paid social video production and visual hierarchy.",
+    functionName: "Technical VA & Remote Operations",
+    summary:
+      "Executive support, multi-platform SMM management, and structured sprint delivery.",
     items: [
-      { name: "CapCut Pro", role: "Beat-synced short-form ad editing" },
-      { name: "Adobe Ecosystem", role: "Graphic design & brand assets" },
-      { name: "Figma", role: "UI/UX wireframes & layout systems" },
-      { name: "Canva", role: "Rapid static ad & social templates" },
-      { name: "Foley & Sound Mixing", role: "Audio polish & pacing retention" },
-      { name: "A/B Creative Testing", role: "Hook, angle & social proof variants" },
+      { name: "ClickUp", role: "Sprint, task & SOP workflow management" },
+      { name: "Google Workspace", role: "Inbox, calendar, Drive & docs ops" },
+      { name: "MS Office & Excel", role: "Legacy spreadsheet auditing & migration" },
+      { name: "Multi-Platform SMM", role: "Meta, TikTok, IG & Pinterest scheduling" },
+      { name: "AI Operations (Claude/GPT/Gemini)", role: "Vibe coding, scripting & research" },
+      { name: "SDLC & QA Documentation", role: "Specs, defect logs & risk registers" },
+      { name: "English / Filipino / Cebuano", role: "Global & local stakeholder comms" },
     ],
   },
   {
     code: "TK-03",
-    functionName: "Operations & Leadership",
+    functionName: "Web, AI & Workflow Engineering",
     summary:
-      "Structured delivery from initial documentation to remote client execution.",
+      "Frontend interfaces, internal workflow automation, and AI-assisted full-stack builds.",
     items: [
-      { name: "ClickUp", role: "Sprint & task workflow management" },
-      { name: "SDLC Documentation", role: "Specs, architecture & QA logs" },
-      { name: "Agile / Sprint Planning", role: "Backlog & milestone execution" },
-      { name: "Google Workspace", role: "Remote team & client operations" },
-      { name: "MS Excel", role: "Legacy workflow auditing & migration" },
-      {
-        name: "English / Filipino / Cebuano",
-        role: "Global & local stakeholder comms",
-      },
+      { name: "React / Next.js", role: "Production UI & App Router" },
+      { name: "Tailwind CSS", role: "Design systems & responsive grids" },
+      { name: "TypeScript / JavaScript", role: "Type-safe client & Express APIs" },
+      { name: "Python & C++", role: "Backend logic & parallel processing" },
+      { name: "Groq / Gemini / Whisper APIs", role: "Real-time LLM & voice pipelines" },
+      { name: "Electron & Node.js", role: "Desktop shells & Socket.IO servers" },
+      { name: "Vercel / Render / GitHub", role: "CI/CD & cloud deployment" },
     ],
   },
 ];

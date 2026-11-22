@@ -15,6 +15,7 @@ import {
 import type { ProofTab } from "@/data/portfolio";
 
 type HusaiMediaTab = "video" | "hero" | "solution" | "practice";
+type ReelCategory = "all" | "paid-ugc" | "campaigns" | "trends";
 
 const HUSAI_TRANSCRIPT = [
   {
@@ -102,6 +103,7 @@ const HUSAI_MEDIA_ITEMS: {
 interface HipSurferReel {
   id: string;
   code: string;
+  category: Exclude<ReelCategory, "all">;
   title: string;
   angle: string;
   duration: string;
@@ -116,6 +118,7 @@ const HIPSURFER_REELS: HipSurferReel[] = [
   {
     id: "reel-01",
     code: "REEL-01",
+    category: "paid-ugc",
     title: "Skeptic UGC — Cart Conversion",
     angle: "Social Proof / Impulse Hook",
     duration: "0:20",
@@ -129,6 +132,7 @@ const HIPSURFER_REELS: HipSurferReel[] = [
   {
     id: "reel-02",
     code: "REEL-02",
+    category: "paid-ugc",
     title: "Competitor Switcher — Travel Cut",
     angle: "Contrarian Hook / Ergonomic Proof",
     duration: "0:20",
@@ -142,16 +146,66 @@ const HIPSURFER_REELS: HipSurferReel[] = [
   {
     id: "reel-03",
     code: "REEL-03",
+    category: "trends",
     title: "Minimalist Aesthetic — Lifestyle Cut",
     angle: "Visual-First / Zero-Clutter Pacing",
     duration: "0:18",
-    platform: "Pinterest & IG Organic/Paid",
+    platform: "Pinterest & IG Paid",
     videoSrc: "/videos/hipsurfer-03.mp4",
     posterSrc: "/videos/hipsurfer-03-poster.jpg",
     hookText: "Clean visual-first café & daily carry showcase",
     editBreakdown:
       "Beat-synced lifestyle edit highlighting colorway texture, buckle hardware, and effortless bottle-feeding posture without heavy text clutter.",
   },
+  {
+    id: "reel-04",
+    code: "REEL-04",
+    category: "campaigns",
+    title: "EOFY26 Launch — Quick Shop Trip",
+    angle: "Promotional Offer + Pain-Point Hook",
+    duration: "0:18",
+    platform: "Meta & IG Campaign Launch",
+    videoSrc: "/videos/hipsurfer-04.mp4",
+    posterSrc: "/videos/hipsurfer-04-poster.jpg",
+    hookText: '"A 5-minute shop trip should not need this much gear"',
+    editBreakdown:
+      "Pairs a top-pinned promotional pill ('Up to 70% off sitewide now') with a relatable gear-overload visual hook and rapid bum-bag storage payoff.",
+  },
+  {
+    id: "reel-05",
+    code: "REEL-05",
+    category: "campaigns",
+    title: "Father's Day — Dad Duty Upgrade",
+    angle: "Seasonal Gift Angle / Relatable UGC",
+    duration: "0:15",
+    platform: "Meta & TikTok Seasonal",
+    videoSrc: "/videos/hipsurfer-05.mp4",
+    posterSrc: "/videos/hipsurfer-05-poster.jpg",
+    hookText: "15s High-Velocity Father's Day Angle",
+    editBreakdown:
+      "Fast-paced 15-second seasonal campaign edit positioning HipSurfer as an everyday dad upgrade for travel, cafés, and errands.",
+  },
+  {
+    id: "reel-06",
+    code: "REEL-06",
+    category: "trends",
+    title: "Viral Trend — Tell Me You're a Mum",
+    angle: "Organic Meme / Trend Adaptation",
+    duration: "0:15",
+    platform: "IG Reels & TikTok Organic",
+    videoSrc: "/videos/hipsurfer-06.mp4",
+    posterSrc: "/videos/hipsurfer-06-poster.jpg",
+    hookText: '"Tell me you\'re a mum without telling me..."',
+    editBreakdown:
+      "Translates a viral social audio trend into a brand-safe top-of-funnel organic reel to drive low-CPM reach and comment engagement.",
+  },
+];
+
+const REEL_FILTERS: { id: ReelCategory; label: string }[] = [
+  { id: "all", label: "ALL REELS (06)" },
+  { id: "paid-ugc", label: "PAID ADS & UGC (02)" },
+  { id: "campaigns", label: "CAMPAIGN LAUNCHES (02)" },
+  { id: "trends", label: "TRENDS & MINIMALIST (02)" },
 ];
 
 const AUDIT_ROWS = [
@@ -197,18 +251,18 @@ const STAGE_CARDS: {
   metric: string;
 }[] = [
   {
-    id: "husai",
+    id: "hackerlily",
     number: "01",
-    title: "HusAI — Live AI Call Coach",
-    subtitle: "60s Remotion Demo + Localhost :5173 Captures",
-    metric: "4.0s VAD // 69/100 REVIEW",
+    title: "Hackerlily HipSurfer — 6-Reel Vault",
+    subtitle: "Paid UGC, Switchers, EOFY Launch, Father's Day & Meme Cuts",
+    metric: "6 LIVE 9:16 REELS",
   },
   {
-    id: "hackerlily",
+    id: "husai",
     number: "02",
-    title: "Hackerlily HipSurfer — 9:16 Ad Reels",
-    subtitle: "3 Autoplaying Direct-Response & Minimalist Cuts",
-    metric: "3 LIVE MP4 CUTS",
+    title: "HusAI — Live AI Call Coach for VAs",
+    subtitle: "60s Remotion Demo + Localhost :5173 Captures",
+    metric: "4.0s VAD // 69/100 REVIEW",
   },
   {
     id: "pacs",
@@ -239,23 +293,21 @@ export function InteractiveProofs({
   const [runningAudit, setRunningAudit] = useState(false);
   const [auditLatency, setAuditLatency] = useState("1.84s");
 
-  // HipSurfer video reel playback state
+  // HipSurfer 6-Reel filter & playback state
+  const [reelFilter, setReelFilter] = useState<ReelCategory>("all");
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
-  const [playingMap, setPlayingMap] = useState<Record<string, boolean>>({
-    "reel-01": true,
-    "reel-02": true,
-    "reel-03": true,
-  });
+  const [playingMap, setPlayingMap] = useState<Record<string, boolean>>({});
   const [unmutedReelId, setUnmutedReelId] = useState<string | null>(null);
-  const [progressMap, setProgressMap] = useState<Record<string, number>>({
-    "reel-01": 0,
-    "reel-02": 0,
-    "reel-03": 0,
-  });
+  const [progressMap, setProgressMap] = useState<Record<string, number>>({});
+
+  const visibleReels =
+    reelFilter === "all"
+      ? HIPSURFER_REELS
+      : HIPSURFER_REELS.filter((r) => r.category === reelFilter);
 
   useEffect(() => {
     if (activeTab !== "hackerlily") return;
-    HIPSURFER_REELS.forEach((reel) => {
+    visibleReels.forEach((reel) => {
       const el = videoRefs.current[reel.id];
       if (el) {
         el.muted = unmutedReelId !== reel.id;
@@ -268,7 +320,7 @@ export function InteractiveProofs({
           });
       }
     });
-  }, [activeTab, unmutedReelId]);
+  }, [activeTab, reelFilter, unmutedReelId, visibleReels]);
 
   useEffect(() => {
     if (simState !== "listening") return;
@@ -364,15 +416,15 @@ export function InteractiveProofs({
               02 // Dark Cinema Proof Stage
             </p>
             <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-[var(--color-cinema-text)]">
-              Live systems, localhost captures, and 9:16 reels.
+              6 live 9:16 reels, HusAI localhost UI, and &lt;5s audit telemetry.
             </h2>
           </div>
           <p className="max-w-md text-sm text-[var(--color-cinema-muted)]">
-            Select any of the three proof systems below—inspect HusAI&apos;s live 60s Remotion reveal and localhost UI, watch the 3 HipSurfer 9:16 reels, or benchmark the Pacs Builders audit engine.
+            Switch between the 6-reel Hackerlily HipSurfer video vault, the HusAI live call coach (built for remote VAs), and the Pacs Builders workflow engine.
           </p>
         </div>
 
-        {/* 3-Card Prominent System Selector Bar — Both HusAI and HipSurfer are always visible */}
+        {/* 3-Card Prominent System Selector Bar */}
         <div
           className="mt-8 grid grid-cols-1 md:grid-cols-3 border-t border-l border-[var(--color-cinema-border)]"
           role="tablist"
@@ -390,7 +442,7 @@ export function InteractiveProofs({
                 className={`border-r border-b border-[var(--color-cinema-border)] p-5 text-left transition-colors cursor-pointer flex flex-col justify-between gap-3 ${
                   active
                     ? "bg-[var(--color-cinema-text)] text-[var(--color-cinema)]"
-                    : "bg-[var(--color-cinema-alt)] text-[var(--color-cinema-text)] hover:bg-[#1E1E1C]"
+                    : "bg-[var(--color-cinema-alt)] text-[var(--color-cinema-text)] hover:bg-[#23252A]"
                 }`}
               >
                 <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider">
@@ -433,265 +485,41 @@ export function InteractiveProofs({
           })}
         </div>
 
-        {/* STAGE 01: HusAI Localhost UI Captures + Autoplaying 60s Remotion Demo + Verbatim Repo Data */}
-        {activeTab === "husai" && (
-          <div className="mt-6 border border-[var(--color-cinema-border)] bg-[var(--color-cinema-alt)]">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--color-cinema-border)] bg-[var(--color-cinema)] px-4 sm:px-6 py-3 font-mono text-xs">
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 bg-[var(--color-signal)]" />
-                <span className="font-medium text-[var(--color-cinema-text)]">
-                  HUSAI // LIVE CALL COACH FOR FILIPINO VAs
-                </span>
-                <span className="hidden sm:inline text-[var(--color-cinema-muted)]">
-                  (60s Remotion Video Playback + Localhost :5173 Captures)
-                </span>
-              </div>
-              <div className="flex items-center gap-4">
-                <a
-                  href="https://github.com/Birky-andrie/HusAI"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1 text-[var(--color-cinema-muted)] hover:text-[var(--color-cinema-text)]"
-                >
-                  GitHub Repo
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                </a>
-                <a
-                  href="https://hus-ai-five.vercel.app"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1 text-[var(--color-cinema-text)] hover:text-[var(--color-signal)] underline underline-offset-4"
-                >
-                  Live Vercel App
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                </a>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12">
-              {/* Left Column: Autoplaying 60s Product Demo Video & Live Localhost Screenshots */}
-              <div className="lg:col-span-7 p-6 border-b lg:border-b-0 lg:border-r border-[var(--color-cinema-border)] flex flex-col justify-between gap-6">
-                <div className="space-y-4">
-                  <div className="flex flex-wrap border-t border-l border-[var(--color-cinema-border)]">
-                    {HUSAI_MEDIA_ITEMS.map((item) => {
-                      const active = husaiMedia === item.id;
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => setHusaiMedia(item.id)}
-                          className={`border-r border-b border-[var(--color-cinema-border)] px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors cursor-pointer ${
-                            active
-                              ? "bg-[var(--color-cinema-text)] text-[var(--color-cinema)] font-semibold"
-                              : "bg-[var(--color-cinema)] text-[var(--color-cinema-muted)] hover:text-[var(--color-cinema-text)]"
-                          }`}
-                        >
-                          {item.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* 16:9 Media Viewport — Autoplaying 60s Demo Video */}
-                  <div className="border border-[var(--color-cinema-border)] bg-[var(--color-cinema)] overflow-hidden">
-                    {currentHusaiMedia.id === "video" ? (
-                      <video
-                        key="husai-demo-video"
-                        src={currentHusaiMedia.src}
-                        poster="/husai/husai-poster.jpg"
-                        autoPlay
-                        muted
-                        loop
-                        controls
-                        playsInline
-                        preload="auto"
-                        className="aspect-video w-full object-contain bg-[var(--color-cinema)]"
-                      />
-                    ) : (
-                      <img
-                        src={currentHusaiMedia.src}
-                        alt={currentHusaiMedia.caption}
-                        className="aspect-video w-full object-cover object-top"
-                      />
-                    )}
-                    <div className="border-t border-[var(--color-cinema-border)] bg-[var(--color-cinema)] px-3.5 py-2 font-mono text-[11px] text-[var(--color-cinema-muted)]">
-                      {currentHusaiMedia.caption}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Verbatim Dual-Channel Live Transcript & 4.0s Web Audio VAD Trigger */}
-                <div className="space-y-3 pt-4 border-t border-[var(--color-cinema-border)]">
-                  <div className="flex items-center justify-between font-mono text-xs">
-                    <span className="uppercase tracking-wider text-[var(--color-cinema-text)] font-medium">
-                      Live Dual-Channel Transcript (TranscriptPanel.jsx)
-                    </span>
-                    <span className="tabular-nums text-[var(--color-signal)]">
-                      VAD SILENCE: {(elapsedMs / 1000).toFixed(1)}s / 4.0s
-                    </span>
-                  </div>
-
-                  <div className="space-y-2 border border-[var(--color-cinema-border)] bg-[var(--color-cinema)] p-3.5">
-                    {HUSAI_TRANSCRIPT.map((turn, idx) => (
-                      <div
-                        key={idx}
-                        className="font-mono text-xs flex items-baseline gap-2"
-                      >
-                        <span
-                          className={`shrink-0 px-1.5 py-0.5 text-[10px] ${
-                            turn.speaker === "CLIENT"
-                              ? "bg-[var(--color-cinema-text)] text-[var(--color-cinema)]"
-                              : "border border-[var(--color-cinema-border)] text-[var(--color-cinema-text)]"
-                          }`}
-                        >
-                          {turn.speaker}
-                        </span>
-                        <span className="font-sans text-xs sm:text-sm text-[var(--color-cinema-text)]">
-                          &ldquo;{turn.text}&rdquo;
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={triggerLifeline}
-                    className="w-full inline-flex items-center justify-center gap-2 border border-[var(--color-cinema-text)] bg-[var(--color-cinema-text)] px-4 py-2.5 font-mono text-xs uppercase tracking-wider text-[var(--color-cinema)] hover:bg-[var(--color-signal)] hover:border-[var(--color-signal)] hover:text-[var(--color-cinema-text)] transition-colors cursor-pointer"
-                  >
-                    <RotateCcw className="h-3.5 w-3.5" />
-                    Trigger 4.0s Silence Detector (Web Audio VAD)
-                  </button>
-                </div>
-              </div>
-
-              {/* Right Column: Verbatim Lifeline Smart Replies & Post-Call Review Scores */}
-              <div className="lg:col-span-5 p-6 flex flex-col justify-between gap-6">
-                {/* Surface 1: LifelineCard.jsx */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between font-mono text-xs">
-                    <span className="uppercase tracking-wider text-[var(--color-cinema-text)] font-medium">
-                      01 // Smart Replies (LifelineCard.jsx)
-                    </span>
-                    <span className="text-[var(--color-signal)] tabular-nums">
-                      {simState === "listening"
-                        ? "LISTENING..."
-                        : "llama-3.1-8b-instant"}
-                    </span>
-                  </div>
-
-                  {simState === "listening" ? (
-                    <div className="h-36 flex items-center justify-center border border-dashed border-[var(--color-cinema-border)] font-mono text-xs text-[var(--color-cinema-muted)]">
-                      Measuring raw mic amplitude VAD (
-                      {(elapsedMs / 1000).toFixed(1)}s / 4.0s)...
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {HUSAI_LIFELINE_BULLETS.map((line, i) => (
-                        <div
-                          key={line}
-                          className="border border-[var(--color-cinema-border)] bg-[var(--color-cinema)] p-3 flex items-start justify-between gap-3"
-                        >
-                          <div className="space-y-1">
-                            <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-signal)]">
-                              OPTION 0{i + 1}
-                            </span>
-                            <p className="text-xs sm:text-sm leading-relaxed text-[var(--color-cinema-text)]">
-                              &ldquo;{line}&rdquo;
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={async () => {
-                              try {
-                                await navigator.clipboard.writeText(line);
-                                setCopiedIdx(i);
-                                setTimeout(() => setCopiedIdx(null), 1500);
-                              } catch {
-                                // ignore
-                              }
-                            }}
-                            className="shrink-0 border border-[var(--color-cinema-border)] bg-[var(--color-cinema-alt)] px-2 py-1 font-mono text-[10px] text-[var(--color-cinema-muted)] hover:border-[var(--color-cinema-text)] hover:text-[var(--color-cinema-text)] cursor-pointer"
-                          >
-                            {copiedIdx === i ? (
-                              <Check className="h-3 w-3 text-[var(--color-signal)]" />
-                            ) : (
-                              <Copy className="h-3 w-3" />
-                            )}
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Surface 2: ReviewDashboard.jsx Verbatim Scores & Insights */}
-                <div className="space-y-3 pt-4 border-t border-[var(--color-cinema-border)]">
-                  <div className="flex items-center justify-between font-mono text-xs">
-                    <span className="uppercase tracking-wider text-[var(--color-cinema-text)] font-medium">
-                      02 // Call Review (ReviewDashboard.jsx)
-                    </span>
-                    <span className="bg-[var(--color-signal)] text-[var(--color-cinema-text)] px-2 py-0.5 tabular-nums">
-                      OVERALL: {HUSAI_OVERALL_SCORE}/100
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-l border-[var(--color-cinema-border)]">
-                    {HUSAI_SCORES.map((s) => (
-                      <div
-                        key={s.label}
-                        className="border-r border-b border-[var(--color-cinema-border)] bg-[var(--color-cinema)] p-2.5"
-                      >
-                        <div className="font-mono text-lg font-semibold tabular-nums text-[var(--color-cinema-text)]">
-                          {s.value}
-                        </div>
-                        <div className="font-mono text-[10px] uppercase tracking-tight text-[var(--color-cinema-muted)] truncate">
-                          {s.label}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="space-y-2">
-                    {HUSAI_INSIGHTS.map((insight) => (
-                      <div
-                        key={insight.pattern}
-                        className="border border-[var(--color-cinema-border)] bg-[var(--color-cinema)] p-3 space-y-1"
-                      >
-                        <div className="font-mono text-[11px] font-semibold text-[var(--color-signal)] uppercase">
-                          Pattern: {insight.pattern}
-                        </div>
-                        <p className="font-mono text-[11px] text-[var(--color-cinema-muted)]">
-                          Evidence: &ldquo;{insight.evidence}&rdquo;
-                        </p>
-                        <p className="text-xs text-[var(--color-cinema-text)]">
-                          Fix: {insight.explanation}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* STAGE 02: Hackerlily HipSurfer 9:16 Real Autoplaying Video Reels */}
+        {/* STAGE 01: Hackerlily HipSurfer 6-Reel Filterable 9:16 Video Vault */}
         {activeTab === "hackerlily" && (
           <div className="mt-6 border border-[var(--color-cinema-border)] bg-[var(--color-cinema-alt)]">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--color-cinema-border)] bg-[var(--color-cinema)] px-4 sm:px-6 py-3 font-mono text-xs">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--color-cinema-border)] bg-[var(--color-cinema)] px-4 sm:px-6 py-3.5 font-mono text-xs">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 bg-[var(--color-signal)]" />
                 <span className="font-medium text-[var(--color-cinema-text)]">
-                  HACKERLILY HIPSURFER // LIVE 9:16 VIDEO PLAYBACK (AUTOPLAYING)
+                  HACKERLILY HIPSURFER // 6-REEL 9:16 DIRECT-RESPONSE &amp; SOCIAL VAULT
                 </span>
               </div>
-              <span className="text-[var(--color-cinema-muted)]">
-                CLICK &ldquo;SOUND ON&rdquo; TO HEAR FOLEY &amp; BEAT SYNC · SCRUB BAR TO SEEK
-              </span>
+
+              {/* Category Filter Pills for the 6 Reels */}
+              <div className="flex flex-wrap gap-1.5">
+                {REEL_FILTERS.map((rf) => {
+                  const isSelected = reelFilter === rf.id;
+                  return (
+                    <button
+                      key={rf.id}
+                      type="button"
+                      onClick={() => setReelFilter(rf.id)}
+                      className={`px-3 py-1 font-mono text-[11px] uppercase transition-colors cursor-pointer border ${
+                        isSelected
+                          ? "border-[var(--color-signal)] bg-[var(--color-signal)] text-white"
+                          : "border-[var(--color-cinema-border)] bg-[var(--color-cinema-alt)] text-[var(--color-cinema-muted)] hover:text-white"
+                      }`}
+                    >
+                      {rf.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-[var(--color-cinema-border)]">
-              {HIPSURFER_REELS.map((reel) => {
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-y md:divide-y-0 md: gap-px bg-[var(--color-cinema-border)]">
+              {visibleReels.map((reel) => {
                 const isPlaying = playingMap[reel.id] ?? true;
                 const isAudioOn = unmutedReelId === reel.id;
                 const progress = progressMap[reel.id] ?? 0;
@@ -720,7 +548,7 @@ export function InteractiveProofs({
                         </p>
                       </div>
 
-                      <div className="relative mx-auto w-full max-w-[285px] aspect-[9/16] border border-[var(--color-cinema-border)] bg-[var(--color-cinema)] overflow-hidden">
+                      <div className="relative mx-auto w-full max-w-[270px] aspect-[9/16] border border-[var(--color-cinema-border)] bg-[var(--color-cinema)] overflow-hidden">
                         <video
                           ref={(el) => {
                             videoRefs.current[reel.id] = el;
@@ -731,7 +559,7 @@ export function InteractiveProofs({
                           playsInline
                           loop
                           muted={!isAudioOn}
-                          preload="auto"
+                          preload="metadata"
                           onClick={() => togglePlayReel(reel.id)}
                           onPlay={() =>
                             setPlayingMap((prev) => ({ ...prev, [reel.id]: true }))
@@ -847,6 +675,242 @@ export function InteractiveProofs({
                   </article>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {/* STAGE 02: HusAI Localhost UI Captures + Autoplaying 60s Remotion Demo + Verbatim Repo Data */}
+        {activeTab === "husai" && (
+          <div className="mt-6 border border-[var(--color-cinema-border)] bg-[var(--color-cinema-alt)]">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--color-cinema-border)] bg-[var(--color-cinema)] px-4 sm:px-6 py-3 font-mono text-xs">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 bg-[var(--color-signal)]" />
+                <span className="font-medium text-[var(--color-cinema-text)]">
+                  HUSAI // LIVE CALL COACH FOR FILIPINO VAs
+                </span>
+                <span className="hidden sm:inline text-[var(--color-cinema-muted)]">
+                  (60s Remotion Video Playback + Localhost :5173 Captures)
+                </span>
+              </div>
+              <div className="flex items-center gap-4">
+                <a
+                  href="https://github.com/Birky-andrie/HusAI"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-[var(--color-cinema-muted)] hover:text-[var(--color-cinema-text)]"
+                >
+                  GitHub Repo
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </a>
+                <a
+                  href="https://hus-ai-five.vercel.app"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-[var(--color-cinema-text)] hover:text-[var(--color-signal)] underline underline-offset-4"
+                >
+                  Live Vercel App
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12">
+              <div className="lg:col-span-7 p-6 border-b lg:border-b-0 lg:border-r border-[var(--color-cinema-border)] flex flex-col justify-between gap-6">
+                <div className="space-y-4">
+                  <div className="flex flex-wrap border-t border-l border-[var(--color-cinema-border)]">
+                    {HUSAI_MEDIA_ITEMS.map((item) => {
+                      const active = husaiMedia === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setHusaiMedia(item.id)}
+                          className={`border-r border-b border-[var(--color-cinema-border)] px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors cursor-pointer ${
+                            active
+                              ? "bg-[var(--color-cinema-text)] text-[var(--color-cinema)] font-semibold"
+                              : "bg-[var(--color-cinema)] text-[var(--color-cinema-muted)] hover:text-[var(--color-cinema-text)]"
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="border border-[var(--color-cinema-border)] bg-[var(--color-cinema)] overflow-hidden">
+                    {currentHusaiMedia.id === "video" ? (
+                      <video
+                        key="husai-demo-video"
+                        src={currentHusaiMedia.src}
+                        poster="/husai/husai-poster.jpg"
+                        autoPlay
+                        muted
+                        loop
+                        controls
+                        playsInline
+                        preload="auto"
+                        className="aspect-video w-full object-contain bg-[var(--color-cinema)]"
+                      />
+                    ) : (
+                      <img
+                        src={currentHusaiMedia.src}
+                        alt={currentHusaiMedia.caption}
+                        className="aspect-video w-full object-cover object-top"
+                      />
+                    )}
+                    <div className="border-t border-[var(--color-cinema-border)] bg-[var(--color-cinema)] px-3.5 py-2 font-mono text-[11px] text-[var(--color-cinema-muted)]">
+                      {currentHusaiMedia.caption}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3 pt-4 border-t border-[var(--color-cinema-border)]">
+                  <div className="flex items-center justify-between font-mono text-xs">
+                    <span className="uppercase tracking-wider text-[var(--color-cinema-text)] font-medium">
+                      Live Dual-Channel Transcript (TranscriptPanel.jsx)
+                    </span>
+                    <span className="tabular-nums text-[var(--color-signal)]">
+                      VAD SILENCE: {(elapsedMs / 1000).toFixed(1)}s / 4.0s
+                    </span>
+                  </div>
+
+                  <div className="space-y-2 border border-[var(--color-cinema-border)] bg-[var(--color-cinema)] p-3.5">
+                    {HUSAI_TRANSCRIPT.map((turn, idx) => (
+                      <div
+                        key={idx}
+                        className="font-mono text-xs flex items-baseline gap-2"
+                      >
+                        <span
+                          className={`shrink-0 px-1.5 py-0.5 text-[10px] ${
+                            turn.speaker === "CLIENT"
+                              ? "bg-[var(--color-cinema-text)] text-[var(--color-cinema)]"
+                              : "border border-[var(--color-cinema-border)] text-[var(--color-cinema-text)]"
+                          }`}
+                        >
+                          {turn.speaker}
+                        </span>
+                        <span className="font-sans text-xs sm:text-sm text-[var(--color-cinema-text)]">
+                          &ldquo;{turn.text}&rdquo;
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={triggerLifeline}
+                    className="w-full inline-flex items-center justify-center gap-2 border border-[var(--color-cinema-text)] bg-[var(--color-cinema-text)] px-4 py-2.5 font-mono text-xs uppercase tracking-wider text-[var(--color-cinema)] hover:bg-[var(--color-signal)] hover:border-[var(--color-signal)] hover:text-[var(--color-cinema-text)] transition-colors cursor-pointer"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    Trigger 4.0s Silence Detector (Web Audio VAD)
+                  </button>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5 p-6 flex flex-col justify-between gap-6">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between font-mono text-xs">
+                    <span className="uppercase tracking-wider text-[var(--color-cinema-text)] font-medium">
+                      01 // Smart Replies (LifelineCard.jsx)
+                    </span>
+                    <span className="text-[var(--color-signal)] tabular-nums">
+                      {simState === "listening"
+                        ? "LISTENING..."
+                        : "llama-3.1-8b-instant"}
+                    </span>
+                  </div>
+
+                  {simState === "listening" ? (
+                    <div className="h-36 flex items-center justify-center border border-dashed border-[var(--color-cinema-border)] font-mono text-xs text-[var(--color-cinema-muted)]">
+                      Measuring raw mic amplitude VAD (
+                      {(elapsedMs / 1000).toFixed(1)}s / 4.0s)...
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {HUSAI_LIFELINE_BULLETS.map((line, i) => (
+                        <div
+                          key={line}
+                          className="border border-[var(--color-cinema-border)] bg-[var(--color-cinema)] p-3 flex items-start justify-between gap-3"
+                        >
+                          <div className="space-y-1">
+                            <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-signal)]">
+                              OPTION 0{i + 1}
+                            </span>
+                            <p className="text-xs sm:text-sm leading-relaxed text-[var(--color-cinema-text)]">
+                              &ldquo;{line}&rdquo;
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              try {
+                                await navigator.clipboard.writeText(line);
+                                setCopiedIdx(i);
+                                setTimeout(() => setCopiedIdx(null), 1500);
+                              } catch {
+                                // ignore
+                              }
+                            }}
+                            className="shrink-0 border border-[var(--color-cinema-border)] bg-[var(--color-cinema-alt)] px-2 py-1 font-mono text-[10px] text-[var(--color-cinema-muted)] hover:border-[var(--color-cinema-text)] hover:text-[var(--color-cinema-text)] cursor-pointer"
+                          >
+                            {copiedIdx === i ? (
+                              <Check className="h-3 w-3 text-[var(--color-signal)]" />
+                            ) : (
+                              <Copy className="h-3 w-3" />
+                            )}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-3 pt-4 border-t border-[var(--color-cinema-border)]">
+                  <div className="flex items-center justify-between font-mono text-xs">
+                    <span className="uppercase tracking-wider text-[var(--color-cinema-text)] font-medium">
+                      02 // Call Review (ReviewDashboard.jsx)
+                    </span>
+                    <span className="bg-[var(--color-signal)] text-[var(--color-cinema-text)] px-2 py-0.5 tabular-nums">
+                      OVERALL: {HUSAI_OVERALL_SCORE}/100
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-l border-[var(--color-cinema-border)]">
+                    {HUSAI_SCORES.map((s) => (
+                      <div
+                        key={s.label}
+                        className="border-r border-b border-[var(--color-cinema-border)] bg-[var(--color-cinema)] p-2.5"
+                      >
+                        <div className="font-mono text-lg font-semibold tabular-nums text-[var(--color-cinema-text)]">
+                          {s.value}
+                        </div>
+                        <div className="font-mono text-[10px] uppercase tracking-tight text-[var(--color-cinema-muted)] truncate">
+                          {s.label}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="space-y-2">
+                    {HUSAI_INSIGHTS.map((insight) => (
+                      <div
+                        key={insight.pattern}
+                        className="border border-[var(--color-cinema-border)] bg-[var(--color-cinema)] p-3 space-y-1"
+                      >
+                        <div className="font-mono text-[11px] font-semibold text-[var(--color-signal)] uppercase">
+                          Pattern: {insight.pattern}
+                        </div>
+                        <p className="font-mono text-[11px] text-[var(--color-cinema-muted)]">
+                          Evidence: &ldquo;{insight.evidence}&rdquo;
+                        </p>
+                        <p className="text-xs text-[var(--color-cinema-text)]">
+                          Fix: {insight.explanation}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}

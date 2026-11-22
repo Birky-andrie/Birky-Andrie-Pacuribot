@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowDownRight, Globe, Play } from "lucide-react";
+import { ArrowDownRight, Download, Globe, MessageCircle, Play } from "lucide-react";
 import {
   FOCUS_COPY,
   HERO_METRICS,
+  PROFILE,
+  REMOTE_READINESS_SPECS,
   type FocusMode,
   type ProofTab,
 } from "@/data/portfolio";
@@ -18,13 +20,11 @@ interface HeroProps {
 export function Hero({ focusMode, onJumpToProof }: HeroProps) {
   const copy = FOCUS_COPY[focusMode];
 
-  // Scroll-velocity & direction physics refs for the infinite marquee + parallax
   const marqueeTrackRef = useRef<HTMLDivElement | null>(null);
   const portraitRef = useRef<HTMLDivElement | null>(null);
   const roleBlockRef = useRef<HTMLDivElement | null>(null);
   const arrowRef = useRef<SVGSVGElement | null>(null);
 
-  // Word-by-word scroll reveal for the #about statement
   const aboutRef = useRef<HTMLElement | null>(null);
   const [aboutVisible, setAboutVisible] = useState(false);
 
@@ -37,7 +37,7 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
           setAboutVisible(true);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.15 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -52,7 +52,7 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
     }
 
     let xPercent = 0;
-    let direction = -1; // -1 = left, +1 = right
+    let direction = -1;
     let velocityBoost = 0;
     let lastScrollY = window.scrollY;
     let rafId: number;
@@ -115,33 +115,33 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
     <>
       {/* PART 1: Iconic Dennis Snellenberg 100vh #999D9E Full-Screen Hero */}
       <section className="relative h-screen min-h-[680px] max-h-[1080px] w-full overflow-hidden bg-[#999D9E] text-white select-none">
-        {/* Subtle studio radial backdrop glow behind subject */}
+        {/* Studio radial lighting behind the cutout subject */}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(circle at 50% 42%, rgba(255,255,255,0.16) 0%, rgba(153,157,158,0) 62%)",
+              "radial-gradient(circle at 48% 45%, rgba(255,255,255,0.22) 0%, rgba(153,157,158,0) 58%)",
           }}
           aria-hidden="true"
         />
 
-        {/* Center Portrait Subject rising from bottom-center with scroll parallax */}
+        {/* Center Background-Removed Cutout Portrait standing directly against #999D9E */}
         <div
           ref={portraitRef}
-          className="pointer-events-none absolute inset-x-0 bottom-0 top-16 flex items-end justify-center will-change-transform"
+          className="pointer-events-none absolute inset-x-0 bottom-0 top-12 flex items-end justify-center will-change-transform"
         >
-          <div className="relative h-[82%] sm:h-[86%] w-full max-w-[460px] flex items-end justify-center overflow-hidden rounded-t-[220px]">
+          <div className="relative h-[86%] sm:h-[90%] w-full max-w-[540px] flex items-end justify-center">
             <img
-              src="/portrait.jpg"
+              src="/portrait-cutout.png"
               alt="Birky Andrie L. Pacuribot"
-              className="h-full w-full object-cover object-top grayscale-[18%] contrast-[1.06]"
+              className="h-full w-full object-contain object-bottom grayscale-[14%] contrast-[1.06] drop-shadow-[0_24px_48px_rgba(28,29,32,0.22)]"
             />
+            {/* Subtle lower-third gradient so the white marquee glides with crisp contrast */}
             <div
-              className="absolute inset-0"
+              className="absolute inset-x-0 bottom-0 h-32"
               style={{
-                boxShadow: "inset 0 0 48px 18px #999D9E",
                 background:
-                  "linear-gradient(to top, rgba(110,114,115,0.6) 0%, rgba(153,157,158,0) 35%)",
+                  "linear-gradient(to top, rgba(122,126,127,0.48) 0%, rgba(153,157,158,0) 100%)",
               }}
             />
           </div>
@@ -159,24 +159,36 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
           </div>
         </div>
 
-        {/* Right-Aligned Diagonal Arrow (rotates with scroll direction) & Role Title */}
+        {/* Right-Aligned Diagonal Arrow & Dynamic Hybrid Role Title */}
         <div
           ref={roleBlockRef}
-          className="absolute right-6 sm:right-10 lg:right-14 top-[24%] sm:top-[32%] z-20 max-w-[240px] sm:max-w-[285px] lg:max-w-[310px] text-left will-change-transform"
+          className="absolute right-6 sm:right-10 lg:right-14 top-[22%] sm:top-[30%] z-20 max-w-[250px] sm:max-w-[300px] lg:max-w-[330px] text-left will-change-transform"
         >
           <ArrowDownRight
             ref={arrowRef}
-            className="h-7 w-7 sm:h-8 sm:w-8 mb-4 sm:mb-6 text-white stroke-[1.75] transition-transform duration-500 ease-out-expo"
+            className="h-7 w-7 sm:h-8 sm:w-8 mb-4 sm:mb-5 text-white stroke-[1.75] transition-transform duration-500 ease-out-expo"
             aria-hidden="true"
           />
-          <h1 className="text-2xl sm:text-3xl lg:text-[2.15rem] font-normal leading-[1.18] tracking-[-0.02em] text-white drop-shadow-xs">
-            <span className="block">Freelance</span>
-            <span className="block">CS Engineer &amp;</span>
-            <span className="block">Creative Technologist</span>
+          <h1 className="text-2xl sm:text-3xl lg:text-[2.15rem] font-normal leading-[1.16] tracking-[-0.02em] text-white drop-shadow-xs">
+            <span className="block">{copy.heroRoleLines[0]}</span>
+            <span className="block">{copy.heroRoleLines[1]}</span>
+            <span className="block">{copy.heroRoleLines[2]}</span>
           </h1>
 
-          {/* Magnetic Quick-Launch Pills to HusAI & HipSurfer 9:16 Reels */}
+          {/* Magnetic Quick-Launch Pills to 6-Reel Showcase & HusAI */}
           <div className="mt-5 flex flex-wrap gap-2">
+            <MagneticButton
+              onClick={() => onJumpToProof("hackerlily")}
+              strength={0.22}
+              textStrength={0.1}
+              className="rounded-full bg-[#1C1D20]/85 border border-white/20 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-white"
+            >
+              <span className="inline-flex items-center gap-1.5">
+                <Play className="h-3 w-3 fill-current" />
+                <span>6 Ad Reels (9:16)</span>
+              </span>
+            </MagneticButton>
+
             <MagneticButton
               onClick={() => onJumpToProof("husai")}
               strength={0.22}
@@ -186,18 +198,6 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
               <span className="inline-flex items-center gap-1.5">
                 <Play className="h-3 w-3 fill-current" />
                 <span>HusAI Demo</span>
-              </span>
-            </MagneticButton>
-
-            <MagneticButton
-              onClick={() => onJumpToProof("hackerlily")}
-              strength={0.22}
-              textStrength={0.1}
-              className="rounded-full bg-[#1C1D20]/85 border border-white/20 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-white"
-            >
-              <span className="inline-flex items-center gap-1.5">
-                <Play className="h-3 w-3 fill-current" />
-                <span>9:16 Ad Reels</span>
               </span>
             </MagneticButton>
           </div>
@@ -219,13 +219,72 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
         </div>
       </section>
 
-      {/* PART 2: Iconic Dennis Snellenberg Split Statement Section + Staggered Word Reveal + Liquid Magnetic Button */}
+      {/* PART 2: Remote Readiness Bar + Dennis Snellenberg Split Statement + Liquid Magnetic Button */}
       <section
         id="about"
         ref={aboutRef}
-        className="bg-white text-[#1C1D20] pt-20 pb-36 sm:pt-32 sm:pb-48"
+        className="bg-white text-[#1C1D20] pt-12 pb-36 sm:pt-16 sm:pb-48"
       >
         <div className="mx-auto max-w-6xl px-6 sm:px-12">
+          {/* Remote Readiness & Global Shift Overlap Spec Bar (For Hiring Managers & Recruiters) */}
+          <div className="mb-14 sm:mb-20 border border-[#E2E3E7] bg-[#F4F4F6]/70 p-4 sm:p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 mb-4 border-b border-[#E2E3E7]">
+              <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#1C1D20]">
+                <span className="h-2 w-2 rounded-full bg-[#455CE9]" />
+                <span className="font-semibold">
+                  REMOTE HIRING &amp; SHIFT READINESS
+                </span>
+                <span className="hidden sm:inline text-[#7E8085]">
+                  // CAGAYAN DE ORO, PH (UTC+8)
+                </span>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href="/Birky_Andrie_Pacuribot_CV.pdf"
+                  download
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20] hover:bg-[#455CE9] px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-white transition-colors"
+                >
+                  <Download className="h-3 w-3" />
+                  <span>Download CV (PDF)</span>
+                </a>
+                <a
+                  href="/Birky_Andrie_Pacuribot_Harvard_CV.docx"
+                  download
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#1C1D20]/25 bg-white hover:bg-[#1C1D20] hover:text-white px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[#1C1D20] transition-colors"
+                >
+                  <Download className="h-3 w-3" />
+                  <span>Harvard Word (.docx)</span>
+                </a>
+                <a
+                  href={PROFILE.whatsappUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-white transition-colors"
+                >
+                  <MessageCircle className="h-3 w-3" />
+                  <span>WhatsApp Direct</span>
+                </a>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {REMOTE_READINESS_SPECS.map((spec) => (
+                <div key={spec.label} className="space-y-0.5">
+                  <div className="font-mono text-[10px] uppercase tracking-widest text-[#7E8085]">
+                    {spec.label}
+                  </div>
+                  <div className="text-xs sm:text-sm font-semibold text-[#1C1D20]">
+                    {spec.value}
+                  </div>
+                  <div className="font-mono text-[11px] text-[#7E8085]">
+                    {spec.detail}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
             {/* Left 7 Cols: Word-by-Word Staggered Scroll-Reveal Statement */}
             <div className="lg:col-span-7 space-y-4">
@@ -284,14 +343,14 @@ export function Hero({ focusMode, onJumpToProof }: HeroProps) {
             <div className="h-[1px] w-full bg-[#E2E3E7]" />
             <div className="absolute right-6 sm:right-20 -top-20 sm:-top-24">
               <MagneticButton
-                onClick={() => onJumpToProof("husai")}
+                onClick={() => onJumpToProof("hackerlily")}
                 className="h-40 w-40 sm:h-48 sm:w-48 rounded-full bg-[#1C1D20] text-white flex items-center justify-center shadow-md"
               >
                 <span className="text-base sm:text-lg font-medium tracking-tight">
                   Proof Stage
                 </span>
                 <span className="mt-1 font-mono text-[10px] uppercase tracking-widest text-white/75">
-                  HusAI &amp; 9:16 Reels
+                  6 Reels &amp; HusAI
                 </span>
               </MagneticButton>
             </div>
