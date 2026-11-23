@@ -64,14 +64,22 @@ export function Navbar({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const isLight = theme === "light";
+
   return (
     <>
-      {/* Top Transparent Dennis Snellenberg Header overlaid on Hero */}
-      <header className="absolute top-0 inset-x-0 z-40 px-5 sm:px-10 py-6 flex items-center justify-between text-white">
+      {/* Top Transparent Header dynamically matched to Light (#F7F6F2) & Dark (#080A0F) */}
+      <header
+        className={`theme-surface absolute top-0 inset-x-0 z-40 px-5 sm:px-10 py-6 flex items-center justify-between ${
+          isLight ? "text-[#16171B]" : "text-white"
+        }`}
+      >
         {/* Left: © Code by Birky -> slides on hover to Birky Pacuribot */}
         <a
           href="#"
-          className="group flex items-center gap-1.5 text-sm sm:text-base font-normal tracking-tight text-white"
+          className={`group flex items-center gap-1.5 text-sm sm:text-base font-normal tracking-tight ${
+            isLight ? "text-[#16171B]" : "text-white"
+          }`}
         >
           <span className="inline-block transition-transform duration-500 ease-out-expo group-hover:rotate-[360deg]">
             &copy;
@@ -96,15 +104,19 @@ export function Navbar({
               <a
                 key={item.href}
                 href={item.href}
-                className="group relative py-1 text-sm font-normal text-white/95 hover:text-white transition-colors"
+                className={`group relative py-1 text-sm font-normal transition-colors ${
+                  isLight
+                    ? "text-[#16171B]/80 hover:text-[#16171B]"
+                    : "text-white/90 hover:text-white"
+                }`}
               >
                 <span>{item.label}</span>
                 <span
-                  className="
+                  className={`
                   pointer-events-none absolute -bottom-1.5 left-1/2 -translate-x-1/2
-                  h-1.5 w-1.5 rounded-full bg-white scale-0 transition-transform duration-300 ease-out-expo
-                  group-hover:scale-100
-                "
+                  h-1.5 w-1.5 rounded-full scale-0 transition-transform duration-300 ease-out-expo
+                  group-hover:scale-100 ${isLight ? "bg-[#16171B]" : "bg-white"}
+                `}
                 />
               </a>
             ))}
@@ -112,7 +124,11 @@ export function Navbar({
 
           {/* 4-Mode Persona Focus Pills */}
           <div
-            className="hidden md:inline-flex items-center rounded-full bg-[#1C1D20]/40 backdrop-blur-sm p-1 border border-white/15"
+            className={`hidden md:inline-flex items-center rounded-full backdrop-blur-md p-1 border transition-colors ${
+              isLight
+                ? "bg-black/[0.05] border-black/10"
+                : "bg-white/[0.06] border-white/15"
+            }`}
             role="group"
             aria-label="Portfolio Focus Mode"
           >
@@ -126,8 +142,12 @@ export function Navbar({
                   onClick={() => onChangeFocusMode(opt.id)}
                   className={`rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors cursor-pointer ${
                     active
-                      ? "bg-white text-[#1C1D20] font-semibold"
-                      : "text-white/80 hover:text-white"
+                      ? isLight
+                        ? "bg-[#16171B] text-white font-semibold"
+                        : "bg-white text-[#16171B] font-semibold"
+                      : isLight
+                        ? "text-[#16171B]/70 hover:text-[#16171B]"
+                        : "text-white/80 hover:text-white"
                   }`}
                 >
                   {opt.label}
@@ -143,7 +163,11 @@ export function Navbar({
           <a
             href="/Birky_Andrie_Pacuribot_CV.pdf"
             download
-            className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-white text-[#1C1D20] hover:bg-[#455CE9] hover:text-white px-3.5 py-1.5 font-mono text-xs font-medium transition-colors"
+            className={`hidden sm:inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-mono text-xs font-medium transition-colors ${
+              isLight
+                ? "bg-[#16171B] text-white hover:bg-[#455CE9]"
+                : "bg-white text-[#16171B] hover:bg-[#455CE9] hover:text-white"
+            }`}
             title="Download Updated CV (PDF)"
           >
             <Download className="h-3.5 w-3.5" aria-hidden="true" />
@@ -153,7 +177,11 @@ export function Navbar({
           <button
             type="button"
             onClick={onOpenCommandPalette}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20]/40 hover:bg-[#1C1D20] border border-white/20 px-3 py-1.5 font-mono text-xs text-white transition-colors cursor-pointer"
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-mono text-xs transition-colors cursor-pointer ${
+              isLight
+                ? "bg-black/[0.05] hover:bg-[#16171B] hover:text-white border-black/15 text-[#16171B]"
+                : "bg-white/[0.08] hover:bg-white hover:text-[#16171B] border-white/20 text-white"
+            }`}
             aria-label="Open command palette"
             title="Open Command Palette (Ctrl+K / ⌘K)"
           >
@@ -165,9 +193,17 @@ export function Navbar({
           <button
             type="button"
             onClick={() => setDrawerOpen(true)}
-            className="xl:hidden inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20]/40 border border-white/20 px-3.5 py-1.5 text-xs text-white cursor-pointer"
+            className={`xl:hidden inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs cursor-pointer ${
+              isLight
+                ? "bg-black/[0.05] border-black/15 text-[#16171B]"
+                : "bg-white/[0.08] border-white/20 text-white"
+            }`}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${
+                isLight ? "bg-[#16171B]" : "bg-white"
+              }`}
+            />
             <span>Menu</span>
           </button>
         </div>

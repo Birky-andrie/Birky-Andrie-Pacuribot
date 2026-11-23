@@ -3,15 +3,19 @@
 import { useEffect, useRef, type MutableRefObject } from "react";
 
 export interface PointCloudCameraState {
-  morph: number; // 0 = dispersed/hidden (4K photo visible), 1 = solid 3D Kin OS point cloud
-  zoom: number; // 1.0 hero -> 0.90 beat 1 -> 2.55 beat 2 -> 2.45 beat 3
-  panX: number; // NDC X offset (-0.36..+0.36)
+  morph: number; // 0 = cutout photo visible, 1 = solid 3D point-cloud
+  zoom: number; // 1.0 -> 2.65
+  panX: number; // NDC X offset
   panY: number; // NDC Y offset
-  rotY: number; // Y-axis 3D rotation (radians)
-  rotX: number; // X-axis 3D tilt (radians)
-  mouseX: number; // -1..1 normalized pointer X
-  mouseY: number; // -1..1 normalized pointer Y
-  swirlPulse: number; // 0..1 extra organic swirl turbulence
+  rotY: number; // Y-axis 3D rotation
+  rotX: number; // X-axis 3D tilt
+  mouseX: number; // normalized pointer X (-1..1)
+  mouseY: number; // normalized pointer Y (-1..1)
+  swirlPulse: number; // 0..1 organic turbulence during morphs
+  themeMix: number; // 0 = Light Mode (Pristine Light Yellow + Gold-Amber Depth), 1 = Dark Mode (Dark Neon)
+  dofStrength: number; // 0..1 optical Z-depth-of-field bokeh strength
+  focusDepth: number; // Z focal plane (~0.13 on Birky's face)
+  exitFade: number; // 1 -> 0 soft scatter fade at runway end
 }
 
 interface HeroPointCloudProps {
@@ -44,12 +48,17 @@ const VERTEX_SHADER_SRC = `
   uniform float uViewportH;
   uniform vec2 uMouse;
   uniform float uSwirlPulse;
+  uniform float uThemeMix;
+  uniform float uDofStrength;
+  uniform float uFocusDepth;
+  uniform float uExitFade;
 
   varying float vLum;
   varying float vAccent;
   varying float vAlpha;
   varying float vDepth;
   varying float vEdgeGlow;
+  varying float vCoc;
 
   void main() {
     float lum = aMeta.x;
@@ -58,17 +67,17 @@ const VERTEX_SHADER_SRC = `
 
     vec3 p = aPos;
 
-    // Gentle living breathing + Kin-OS wind dispersion during transitions & swirl pulses
-    float scatterAmp = (1.0 - uMorph) * 0.36 + uSwirlPulse * 0.085;
-    float phase = seed * 6.2831853 + uTime * 1.35;
-    float waveX = sin(p.y * 7.5 + phase) * cos(p.x * 5.0 - uTime * 0.9);
+    // Gentle living breathing + dispersion wave on transition and exit
+    float exitDisp = (1.0 - uExitFade) * 0.42;
+    float scatterAmp = (1.0 - uMorph) * 0.34 + uSwirlPulse * 0.08 + exitDisp;
+    float phase = seed * 6.2831853 + uTime * 1.25;
+    float waveX = sin(p.y * 7.2 + phase) * cos(p.x * 5.0 - uTime * 0.85);
     float waveY = cos(p.x * 6.5 + phase * 0.85) * 0.7;
     float waveZ = sin((p.x + p.y) * 8.0 + uTime * 1.15);
 
-    // Subtle organic idle motion even at morph = 1
-    p.x += waveX * (0.0022 + scatterAmp * (0.35 + seed * 0.65));
-    p.y += waveY * (0.0022 + scatterAmp * (0.28 + seed * 0.55));
-    p.z += waveZ * (0.0045 + scatterAmp * 0.42);
+    p.x += waveX * (0.002 + scatterAmp * (0.34 + seed * 0.6));
+    p.y += waveY * (0.002 + scatterAmp * (0.28 + seed * 0.5)) + exitDisp * (0.18 + seed * 0.25);
+    p.z += waveZ * (0.004 + scatterAmp * 0.38);
 
     // 3D Rotation around Y then X
     float cy = cos(uRotY);
@@ -79,21 +88,24 @@ const VERTEX_SHADER_SRC = `
     float sx = sin(uRotX);
     vec3 rYX = vec3(rY.x, rY.y * cx - rY.z * sx, rY.y * sx + rY.z * cx);
 
-    // Cursor proximity repulsion swirl
+    // Subtle cursor repulsion swirl
     float projBase = 2.0 * uCoverFactor * uZoom;
     vec2 preNdc = vec2((rYX.x * projBase) / uAspect + uPanX, rYX.y * projBase + uPanY);
     vec2 mouseVec = preNdc - uMouse;
     mouseVec.x *= uAspect;
     float mDist = length(mouseVec);
-    float repulse = smoothstep(0.32, 0.0, mDist) * (0.018 / max(uZoom, 0.75)) * (0.4 + 0.6 * uMorph);
+    float repulse = smoothstep(0.32, 0.0, mDist) * (0.017 / max(uZoom, 0.75)) * (0.4 + 0.6 * uMorph);
     if (mDist > 0.0001) {
       vec2 dir = normalize(mouseVec);
       rYX.x += dir.x * repulse * 0.65 + waveX * repulse * 0.35;
       rYX.y += dir.y * repulse * 0.65 + waveY * repulse * 0.35;
-      rYX.z += repulse * 1.4;
+      rYX.z += repulse * 1.35;
     }
 
-    // Perspective projection anchored at z = 0
+    // Optical Depth-of-Field Circle of Confusion around uFocusDepth
+    float coc = clamp(abs(rYX.z - uFocusDepth) * 3.6 * uDofStrength, 0.0, 1.0);
+    vCoc = coc;
+
     float camDist = 3.0;
     float persp = camDist / max(0.55, camDist - rYX.z * (0.65 + 0.35 * min(uZoom, 2.5)));
 
@@ -104,49 +116,74 @@ const VERTEX_SHADER_SRC = `
 
     gl_Position = vec4(ndc, clamp(-rYX.z * 0.45, -0.95, 0.95), 1.0);
 
-    // Crisp Kin OS square pixel-dot sizing: scales from fine glowing dust at 1x to crisp square matrix at 2.55x zoom
+    // Out-of-focus depth particles expand smoothly into soft optical bokeh discs
     float gridPx = (uViewportH * uCoverFactor / 270.0) * uZoom * uDpr;
-    float lumScale = 0.68 + 0.34 * lum + 0.18 * accent;
-    gl_PointSize = clamp(gridPx * 0.92 * lumScale * persp, 1.35 * uDpr, 11.5 * uDpr);
+    float lumScale = 0.72 + 0.30 * lum + 0.16 * accent;
+    float dofScale = 1.0 + coc * 2.0;
+    gl_PointSize = clamp(gridPx * 0.94 * lumScale * persp * dofScale, 1.4 * uDpr, 16.0 * uDpr);
 
     vLum = lum;
     vAccent = accent;
-    vAlpha = aAlpha * smoothstep(0.02, 0.25, uMorph);
+    vAlpha = aAlpha * smoothstep(0.02, 0.24, uMorph) * uExitFade;
     vDepth = clamp(rYX.z + 0.5, 0.0, 1.0);
-    vEdgeGlow = clamp(repulse * 18.0 + uSwirlPulse * 0.45, 0.0, 1.0);
+    vEdgeGlow = clamp(repulse * 18.0 + uSwirlPulse * 0.42, 0.0, 1.0);
   }
 `;
 
 const FRAGMENT_SHADER_SRC = `
   precision mediump float;
 
+  uniform float uThemeMix;
+
   varying float vLum;
   varying float vAccent;
   varying float vAlpha;
   varying float vDepth;
   varying float vEdgeGlow;
+  varying float vCoc;
 
   void main() {
-    // Crisp square Kin OS dot geometry with clean anti-aliased edge
     vec2 coord = gl_PointCoord - vec2(0.5);
     float boxDist = max(abs(coord.x), abs(coord.y));
-    if (boxDist > 0.47) discard;
+    float circleDist = length(coord);
 
-    float innerMask = 1.0 - smoothstep(0.36, 0.47, boxDist);
+    // Blend smoothly from crisp square pixel dot (in-focus) to circular optical bokeh disc (out-of-focus)
+    float dist = mix(boxDist, circleDist, vCoc);
+    if (dist > 0.48) discard;
 
-    // Platinum-white core mixed with Electric Indigo (#455CE9) & cool silver highlights
-    vec3 platinum = vec3(0.94, 0.96, 1.0);
-    vec3 indigo = vec3(0.271, 0.361, 0.914);
-    vec3 periwinkle = vec3(0.56, 0.66, 1.0);
+    float sharpness = mix(0.36, 0.10, vCoc);
+    float shapeMask = 1.0 - smoothstep(sharpness, 0.48, dist);
+    float bokehAtten = 1.0 - vCoc * 0.54;
 
-    vec3 baseCol = platinum * (0.48 + 0.65 * vLum);
-    vec3 accentCol = mix(indigo, periwinkle, 0.35 + 0.35 * vDepth);
+    // 1) LIGHT MODE PALETTE: Pristine Light Yellow + Warm Sunlit Gold-Amber Depth Contours
+    vec3 lightCore = vec3(0.996, 0.941, 0.541);    // #FEF08A Pristine Light Yellow
+    vec3 canaryGlow = vec3(0.992, 0.878, 0.278);   // #FDE047 Vivid Canary
+    vec3 warmGold = vec3(0.792, 0.541, 0.016);     // #CA8A04 Gold-Amber Contour
+    vec3 deepAmber = vec3(0.510, 0.298, 0.039);    // #824C0A Crisp Facial/Eye Relief
 
-    vec3 col = mix(baseCol, accentCol, clamp(vAccent * 0.88 + vEdgeGlow * 0.45, 0.0, 0.95));
-    col += vec3(0.06, 0.09, 0.18) * (vDepth * 0.55);
+    float contourMix = smoothstep(0.26, 0.84, 1.0 - vLum);
+    vec3 lightShade = mix(lightCore, warmGold, contourMix * 0.85);
+    lightShade = mix(lightShade, deepAmber, smoothstep(0.65, 0.96, 1.0 - vLum) * 0.72);
+    lightShade = mix(lightShade, canaryGlow, clamp(vAccent * 0.68 + vEdgeGlow * 0.35, 0.0, 0.85));
 
-    float alpha = vAlpha * innerMask * (0.42 + 0.58 * vLum);
-    gl_FragColor = vec4(col, alpha);
+    // 2) DARK MODE PALETTE: Dark Neon (Ice-White + Neon Cyan #00F0FF + Electric Indigo #455CE9 + Violet)
+    vec3 iceWhite = vec3(0.95, 0.98, 1.0);
+    vec3 neonCyan = vec3(0.0, 0.94, 1.0);
+    vec3 electricIndigo = vec3(0.271, 0.361, 0.914);
+    vec3 neonViolet = vec3(0.486, 0.227, 0.929);
+
+    vec3 darkBase = iceWhite * (0.48 + 0.65 * vLum);
+    vec3 neonRim = mix(electricIndigo, mix(neonCyan, neonViolet, 0.35 + 0.35 * sin(vDepth * 3.14)), clamp(vDepth, 0.0, 1.0));
+    vec3 darkCol = mix(darkBase, neonRim, clamp(vAccent * 0.90 + vEdgeGlow * 0.50, 0.0, 0.96));
+    darkCol += neonCyan * (vDepth * 0.08);
+
+    vec3 finalCol = mix(lightShade, darkCol, uThemeMix);
+
+    float lightAlpha = vAlpha * shapeMask * bokehAtten * (0.64 + 0.36 * (1.0 - vLum * 0.32));
+    float darkAlpha = vAlpha * shapeMask * bokehAtten * (0.46 + 0.54 * vLum);
+    float finalAlpha = mix(lightAlpha, darkAlpha, uThemeMix);
+
+    gl_FragColor = vec4(finalCol, finalAlpha);
   }
 `;
 
@@ -182,7 +219,6 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
     let disposed = false;
     let rafId = 0;
 
-    // Try WebGL1 first; cleanly fall back to Canvas2D if WebGL is unavailable
     const gl = canvas.getContext("webgl", {
       alpha: true,
       antialias: false,
@@ -197,12 +233,8 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
     let metaBuffer: WebGLBuffer | null = null;
     let alphaBuffer: WebGLBuffer | null = null;
 
-    let uniforms: Record<string, WebGLUniformLocation | null> = {};
-    let attrs: { aPos: number; aMeta: number; aAlpha: number } = {
-      aPos: -1,
-      aMeta: -1,
-      aAlpha: -1,
-    };
+    const uniforms: Record<string, WebGLUniformLocation | null> = {};
+    let attrs = { aPos: -1, aMeta: -1, aAlpha: -1 };
 
     if (gl) {
       const vs = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER_SRC);
@@ -234,6 +266,10 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
               "uViewportH",
               "uMouse",
               "uSwirlPulse",
+              "uThemeMix",
+              "uDofStrength",
+              "uFocusDepth",
+              "uExitFade",
             ];
             names.forEach((name) => {
               if (program) {
@@ -265,8 +301,6 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
       const tmpPos: number[] = [];
       const tmpMeta: number[] = [];
       const tmpAlpha: number[] = [];
-
-      // Canvas2D fallback subsamples every 2nd pixel (~5k particles) for 60fps CPU rendering
       const step = gl && program ? 1 : 2;
 
       for (let py = 0; py < img.height; py += step) {
@@ -345,7 +379,7 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
       const cam = cameraRef.current;
       const elapsedSec = (now - startTime) * 0.001;
 
-      if (pts && cam.morph > 0.005) {
+      if (pts && cam.morph > 0.005 && cam.exitFade > 0.005) {
         const containerW = Math.min(viewW, 920);
         const coverW = Math.max(containerW, viewH * pts.imgAspect);
         const coverH = coverW / pts.imgAspect;
@@ -390,10 +424,13 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
           gl.uniform1f(uniforms.uViewportH, viewH);
           gl.uniform2f(uniforms.uMouse, cam.mouseX, cam.mouseY);
           gl.uniform1f(uniforms.uSwirlPulse, cam.swirlPulse);
+          gl.uniform1f(uniforms.uThemeMix, cam.themeMix);
+          gl.uniform1f(uniforms.uDofStrength, cam.dofStrength);
+          gl.uniform1f(uniforms.uFocusDepth, cam.focusDepth);
+          gl.uniform1f(uniforms.uExitFade, cam.exitFade);
 
           gl.drawArrays(gl.POINTS, 0, pts.count);
         } else if (ctx2d) {
-          // Canvas2D graceful fallback
           const cw = canvas.width;
           const ch = canvas.height;
           ctx2d.clearRect(0, 0, cw, ch);
@@ -404,7 +441,8 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
           const sy = Math.sin(cam.rotY);
           const cx = Math.cos(cam.rotX);
           const sx = Math.sin(cam.rotX);
-          const dotSize = Math.max(1.5, Math.min(8 * dpr, 2.2 * cam.zoom * dpr));
+          const dotSize = Math.max(1.5, Math.min(9 * dpr, 2.4 * cam.zoom * dpr));
+          const darkT = cam.themeMix;
 
           for (let i = 0; i < pts.count; i++) {
             const p3 = i * 3;
@@ -429,11 +467,17 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
             if (sxScreen < -dotSize || sxScreen > cw + dotSize) continue;
             if (syScreen < -dotSize || syScreen > ch + dotSize) continue;
 
-            const alpha = cam.morph * pts.alphas[i] * (0.45 + 0.55 * lum);
-            if (acc > 0.35) {
-              ctx2d.fillStyle = `rgba(110, 134, 255, ${alpha.toFixed(2)})`;
+            const alpha = cam.morph * cam.exitFade * pts.alphas[i] * (0.5 + 0.5 * lum);
+            if (darkT < 0.5) {
+              // Pristine Light Yellow + Gold-Amber Depth Contours
+              const rC = Math.round(145 + lum * 109);
+              const gC = Math.round(92 + lum * 142);
+              const bC = Math.round(12 + lum * 116);
+              ctx2d.fillStyle = `rgba(${rC}, ${gC}, ${bC}, ${alpha.toFixed(2)})`;
+            } else if (acc > 0.35) {
+              ctx2d.fillStyle = `rgba(0, 240, 255, ${alpha.toFixed(2)})`;
             } else {
-              const v = Math.round(115 + lum * 135);
+              const v = Math.round(125 + lum * 125);
               ctx2d.fillStyle = `rgba(${v}, ${v + 4}, 255, ${alpha.toFixed(2)})`;
             }
             ctx2d.fillRect(sxScreen, syScreen, dotSize, dotSize);
@@ -467,7 +511,7 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
   return (
     <canvas
       ref={canvasRef}
-      aria-label="Volumetric 3D Kin-style Point-Cloud Portrait of Birky Pacuribot"
+      aria-label="Optical Depth-of-Field 3D Point-Cloud Portrait of Birky Pacuribot"
       className="pointer-events-none absolute inset-0 h-full w-full"
     />
   );

@@ -96,7 +96,7 @@ export function WorkMatrix({
   return (
     <section
       id="work"
-      className="theme-surface bg-[var(--color-paper)] text-[var(--color-ink)] pb-24 sm:pb-32 relative"
+      className="theme-surface bg-[var(--color-paper)] text-[var(--color-ink)] pt-20 sm:pt-28 pb-24 sm:pb-32 relative"
       onMouseMove={handleMouseMove}
     >
       <div className="mx-auto max-w-6xl px-6 sm:px-12">
@@ -530,6 +530,11 @@ export function WorkMatrix({
           View
         </div>
       </div>
+      {/* Seamless Bottom Ambient Transition into Proof Rail */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-[#080A0F]/25"
+      />
     </section>
   );
 }

@@ -7,7 +7,6 @@ import { Hero } from "./Hero";
 import { WorkMatrix } from "./WorkMatrix";
 import { InteractiveProofs } from "./InteractiveProofs";
 import { AppleBentoSection } from "./AppleBentoSection";
-import { SlidingGallery } from "./SlidingGallery";
 import { ContactSection } from "./ContactSection";
 import { CommandPalette } from "./CommandPalette";
 import type { ThemeMode } from "./ThemeToggle";
@@ -123,7 +122,11 @@ export function PortfolioShell() {
         onOpenCommandPalette={() => setPaletteOpen(true)}
       />
       <main>
-        <Hero focusMode={focusMode} onJumpToProof={handleJumpToProof} />
+        <Hero
+          theme={theme}
+          focusMode={focusMode}
+          onJumpToProof={handleJumpToProof}
+        />
 
         <WorkMatrix
           externalFilter={workFilter}
@@ -136,8 +139,6 @@ export function PortfolioShell() {
           onJumpToProof={handleJumpToProof}
           onSelectService={setSelectedService}
         />
-
-        <SlidingGallery onJumpToProof={handleJumpToProof} />
       </main>
 
       <ContactSection preselectedService={selectedService} />

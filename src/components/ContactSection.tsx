@@ -96,7 +96,15 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
   };
 
   return (
-    <footer id="contact" className="bg-[#1C1D20] text-white pt-24 sm:pt-36 pb-10">
+    <footer
+      id="contact"
+      className="relative bg-[#111318] text-white pt-32 sm:pt-44 pb-10"
+    >
+      {/* Seamless Top Blend from Core Pillars Surface into Obsidian Contact Footer */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[var(--color-paper)] to-transparent"
+      />
       <div className="mx-auto max-w-6xl px-6 sm:px-12">
         {/* Iconic Dennis Snellenberg "Let's work together" Header with Circular Portrait Badge */}
         <div className="flex items-end justify-between">

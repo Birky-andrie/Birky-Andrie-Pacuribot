@@ -952,8 +952,13 @@ export function InteractiveProofs({
   return (
     <section
       id="proof-lab"
-      className="bg-[#07080B] text-white py-20 sm:py-28 border-y border-white/10 overflow-hidden"
+      className="relative bg-[#080A0F] text-white pt-28 sm:pt-36 pb-28 sm:pb-36 overflow-hidden"
     >
+      {/* Seamless Top Vertical Gradient from Page Paper into Obsidian Proof Rail */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[var(--color-paper)] to-transparent"
+      />
       {/* Minimal Header + Left-to-Right Controls */}
       <div className="mx-auto max-w-7xl px-6 sm:px-10 mb-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
@@ -1148,6 +1153,12 @@ export function InteractiveProofs({
           </div>
         </div>
       )}
+
+      {/* Seamless Bottom Vertical Gradient from Obsidian Proof Rail back to Page Paper */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[var(--color-paper)] to-transparent"
+      />
     </section>
   );
 }
