@@ -210,7 +210,7 @@ export function Navbar({
         </div>
       </header>
 
-      {/* Dennis Snellenberg Floating Circular Liquid-Fill Magnetic Hamburger Button */}
+      {/* Floating Frosted Glassmorphism Magnetic Hamburger Button */}
       <div
         className={`fixed top-5 right-5 sm:top-7 sm:right-7 z-50 transition-all duration-300 ease-dennis ${
           drawerOpen || scrolled
@@ -223,16 +223,35 @@ export function Navbar({
           ariaLabel={
             drawerOpen ? "Close navigation drawer" : "Open navigation drawer"
           }
-          className={`h-16 w-16 sm:h-20 sm:w-20 rounded-full flex items-center justify-center shadow-lg border border-white/10 ${
-            drawerOpen ? "bg-[#455CE9] text-white" : "bg-[#1C1D20] text-white"
+          fillColor={
+            drawerOpen
+              ? "rgba(255, 255, 255, 0.14)"
+              : isLight
+                ? "rgba(255, 255, 255, 0.52)"
+                : "rgba(255, 255, 255, 0.14)"
+          }
+          className={`h-16 w-16 sm:h-20 sm:w-20 rounded-full flex items-center justify-center backdrop-blur-2xl border transition-colors ${
+            drawerOpen
+              ? "bg-white/[0.10] border-white/20 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_14px_34px_-10px_rgba(0,0,0,0.55)]"
+              : isLight
+                ? "bg-[#EFECE6]/70 border-[var(--color-hairline)] text-[#16171B] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_12px_30px_-10px_rgba(22,23,27,0.20)]"
+                : "bg-[#10131C]/65 border-white/15 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.20),0_14px_34px_-10px_rgba(0,0,0,0.65)]"
           }`}
         >
           {drawerOpen ? (
             <X className="h-6 w-6 stroke-[1.5]" />
           ) : (
             <div className="flex flex-col gap-1.5 items-center justify-center">
-              <span className="block h-[1.5px] w-6 bg-white" />
-              <span className="block h-[1.5px] w-6 bg-white" />
+              <span
+                className={`block h-[1.5px] w-6 ${
+                  isLight ? "bg-[#16171B]" : "bg-white"
+                }`}
+              />
+              <span
+                className={`block h-[1.5px] w-6 ${
+                  isLight ? "bg-[#16171B]" : "bg-white"
+                }`}
+              />
             </div>
           )}
         </MagneticButton>
@@ -270,10 +289,7 @@ export function Navbar({
           </svg>
 
           <div className="space-y-7 pt-6">
-            <div className="flex items-center justify-between border-b border-white/15 pb-4">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-[#999D9E]">
-                Navigation &amp; Theme
-              </span>
+            <div className="flex items-center justify-start border-b border-white/15 pb-5">
               <ThemeToggle theme={theme} onToggle={onToggleTheme} size="md" />
             </div>
 

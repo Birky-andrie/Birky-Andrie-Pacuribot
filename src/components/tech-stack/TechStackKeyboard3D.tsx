@@ -466,28 +466,28 @@ export default function TechStackKeyboard3D({
       const capMat = new THREE.MeshPhysicalMaterial({
         color: lightColor.clone(),
         emissive: darkGlowColor.clone(),
-        emissiveIntensity: 0.12,
-        // Frosted Apple Liquid Glass: milky satin optical transmission + chromatic prism dispersion
-        transmission: 0.72,
-        thickness: 1.35,
+        emissiveIntensity: 0.02,
+        // Crystal-clear see-through Apple Liquid Glass with vivid chromatic prism dispersion
+        transmission: 0.92,
+        thickness: 1.55,
         ior: 1.52,
-        dispersion: 4.5,
+        dispersion: 5.6,
         // Thin-film iridescent prism color bending across sculpted rounded shoulders
         iridescence: 1.0,
-        iridescenceIOR: 1.33,
-        iridescenceThicknessRange: [220, 620],
-        // Richer frosted crystal surface + crisp Apple wet-glass clearcoat specular glaze
-        roughness: 0.36,
-        metalness: 0.02,
+        iridescenceIOR: 1.34,
+        iridescenceThicknessRange: [210, 640],
+        // Lightly satin glass surface (clear see-through depth + crisp wet-glass clearcoat)
+        roughness: 0.13,
+        metalness: 0.01,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.05,
-        sheen: 0.85,
-        sheenRoughness: 0.22,
+        clearcoatRoughness: 0.04,
+        sheen: 0.22,
+        sheenRoughness: 0.2,
         sheenColor: new THREE.Color("#FFFFFF"),
         attenuationColor: lightAtten.clone(),
-        attenuationDistance: 1.45,
+        attenuationDistance: 2.4,
         reflectivity: 1.0,
-        envMapIntensity: 1.95,
+        envMapIntensity: 2.1,
       });
 
       const capMesh = new THREE.Mesh(capGeo, capMat);
@@ -865,24 +865,24 @@ export default function TechStackKeyboard3D({
         // Smooth glow boost on press
         rt.glowCurrent += (rt.pressTarget - rt.glowCurrent) * (1 - Math.exp(-dt * 16));
 
-        // Frosted Apple Liquid Glass: real optical transmission + chromatic dispersion + thin-film prism sheen
+        // Crystal-clear see-through Apple Liquid Glass + chromatic dispersion + thin-film prism sheen
         rt.capMat.color.copy(rt.lightColor).lerp(rt.darkColor, currentThemeMix);
         if (rt.glowCurrent > 0.01) {
-          rt.capMat.color.lerp(rt.accentColor, rt.glowCurrent * lerp(0.24, 0.38, currentThemeMix));
+          rt.capMat.color.lerp(rt.accentColor, rt.glowCurrent * lerp(0.2, 0.34, currentThemeMix));
         }
         rt.capMat.attenuationColor.copy(rt.lightAtten).lerp(rt.darkAtten, currentThemeMix);
-        rt.capMat.transmission = lerp(0.72, 0.68, currentThemeMix) - rt.glowCurrent * 0.06;
-        rt.capMat.roughness = lerp(0.36, 0.3, currentThemeMix) - rt.glowCurrent * 0.07;
-        rt.capMat.dispersion = lerp(4.5, 5.2, currentThemeMix) + rt.glowCurrent * 1.5;
+        rt.capMat.transmission = lerp(0.92, 0.88, currentThemeMix) - rt.glowCurrent * 0.04;
+        rt.capMat.roughness = lerp(0.13, 0.1, currentThemeMix) - rt.glowCurrent * 0.03;
+        rt.capMat.dispersion = lerp(5.6, 6.5, currentThemeMix) + rt.glowCurrent * 1.4;
         rt.capMat.iridescence = 1.0;
-        rt.capMat.envMapIntensity = lerp(1.95, 1.55, currentThemeMix) + rt.glowCurrent * 0.4;
+        rt.capMat.envMapIntensity = lerp(2.1, 1.75, currentThemeMix) + rt.glowCurrent * 0.45;
         rt.capMat.emissiveIntensity =
-          lerp(0.11, 0.18, currentThemeMix) +
-          rt.glowCurrent * lerp(0.34, 1.05, currentThemeMix);
+          lerp(0.02, 0.06, currentThemeMix) +
+          rt.glowCurrent * lerp(0.24, 0.85, currentThemeMix);
 
         rt.ledMat.emissiveIntensity =
-          lerp(0.65, 1.55, currentThemeMix) +
-          rt.glowCurrent * lerp(1.05, 2.5, currentThemeMix);
+          lerp(0.55, 1.45, currentThemeMix) +
+          rt.glowCurrent * lerp(1.1, 2.5, currentThemeMix);
 
         if (swapLegends) {
           rt.legendMat.map = legendMode === "dark" ? rt.darkTex : rt.lightTex;

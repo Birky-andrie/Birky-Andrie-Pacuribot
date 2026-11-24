@@ -333,10 +333,10 @@ export function createKeycapLegendTexture(
     ctx.roundRect(16, 16, 224, 224, 36);
     ctx.stroke();
 
-    // Subtle frosted top-left specular sheen crescent inside the glass dish
-    const sheenGrad = ctx.createLinearGradient(20, 20, 165, 165);
-    sheenGrad.addColorStop(0, isDark ? "rgba(255, 255, 255, 0.14)" : "rgba(255, 255, 255, 0.36)");
-    sheenGrad.addColorStop(0.55, "rgba(255, 255, 255, 0)");
+    // Subtle top-left specular sheen crescent inside the clear glass dish
+    const sheenGrad = ctx.createLinearGradient(20, 20, 150, 150);
+    sheenGrad.addColorStop(0, isDark ? "rgba(255, 255, 255, 0.09)" : "rgba(255, 255, 255, 0.18)");
+    sheenGrad.addColorStop(0.5, "rgba(255, 255, 255, 0)");
     ctx.fillStyle = sheenGrad;
     ctx.beginPath();
     ctx.roundRect(18, 18, 220, 220, 34);
