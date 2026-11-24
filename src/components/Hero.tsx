@@ -364,16 +364,16 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
           aria-hidden="true"
         />
 
-        {/* True Transparent 4K Studio Cutout Layer (Zero wall or margin borders!) */}
+        {/* True Transparent 4K Studio Cutout Layer (object-contain bottom-anchored so head never clips) */}
         <div
           ref={photoLayerRef}
           className="pointer-events-none absolute inset-0 flex items-end justify-center will-change-transform"
         >
-          <div className="relative h-full w-full max-w-[920px] flex items-end justify-center overflow-visible">
+          <div className="relative h-[90vh] max-h-[960px] w-full max-w-[920px] flex items-end justify-center overflow-visible">
             <img
               src="/hero-cutout-4k.png"
               alt="Birky Andrie L. Pacuribot"
-              className="h-full w-full object-cover object-center transition-[filter] duration-500 ease-dennis"
+              className="h-full w-full object-contain object-bottom transition-[filter] duration-500 ease-dennis"
               style={{ filter: "var(--hero-cutout-filter)" }}
             />
           </div>

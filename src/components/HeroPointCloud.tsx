@@ -155,16 +155,19 @@ const FRAGMENT_SHADER_SRC = `
     float shapeMask = 1.0 - smoothstep(sharpness, 0.48, dist);
     float bokehAtten = 1.0 - vCoc * 0.54;
 
-    // 1) LIGHT MODE PALETTE: Pristine Light Yellow + Warm Sunlit Gold-Amber Depth Contours
-    vec3 lightCore = vec3(0.996, 0.941, 0.541);    // #FEF08A Pristine Light Yellow
-    vec3 canaryGlow = vec3(0.992, 0.878, 0.278);   // #FDE047 Vivid Canary
-    vec3 warmGold = vec3(0.792, 0.541, 0.016);     // #CA8A04 Gold-Amber Contour
-    vec3 deepAmber = vec3(0.510, 0.298, 0.039);    // #824C0A Crisp Facial/Eye Relief
+    // 1) LIGHT MODE PALETTE: Sculptural Sunlit Gold -> Burnished Amber -> Espresso-Bronze Relief
+    // High contrast on #F7F6F2 pearl daylight so facial features stay crisp at 1x and 2.65x zoom
+    vec3 sunlitGold = vec3(0.953, 0.749, 0.133);      // #F3BF22 Rich Sunlit Gold Highlight
+    vec3 vividRimGold = vec3(0.980, 0.800, 0.082);    // #FACC15 Golden Rim Shimmer
+    vec3 burnishedAmber = vec3(0.796, 0.494, 0.047);  // #CB7E0C Sculptural Midtone Amber
+    vec3 bronzeUmber = vec3(0.518, 0.278, 0.055);     // #84470E Bronze Contour Shading
+    vec3 espressoCore = vec3(0.243, 0.129, 0.039);    // #3E210A Crisp Eyes, Hair & Facial Relief
 
-    float contourMix = smoothstep(0.26, 0.84, 1.0 - vLum);
-    vec3 lightShade = mix(lightCore, warmGold, contourMix * 0.85);
-    lightShade = mix(lightShade, deepAmber, smoothstep(0.65, 0.96, 1.0 - vLum) * 0.72);
-    lightShade = mix(lightShade, canaryGlow, clamp(vAccent * 0.68 + vEdgeGlow * 0.35, 0.0, 0.85));
+    float darkness = 1.0 - vLum;
+    vec3 lightShade = mix(sunlitGold, burnishedAmber, smoothstep(0.08, 0.46, darkness));
+    lightShade = mix(lightShade, bronzeUmber, smoothstep(0.38, 0.74, darkness) * 0.92);
+    lightShade = mix(lightShade, espressoCore, smoothstep(0.68, 0.96, darkness) * 0.86);
+    lightShade = mix(lightShade, vividRimGold, clamp(vAccent * 0.45 + vEdgeGlow * 0.35, 0.0, 0.65));
 
     // 2) DARK MODE PALETTE: Dark Neon (Ice-White + Neon Cyan #00F0FF + Electric Indigo #455CE9 + Violet)
     vec3 iceWhite = vec3(0.95, 0.98, 1.0);
@@ -179,7 +182,7 @@ const FRAGMENT_SHADER_SRC = `
 
     vec3 finalCol = mix(lightShade, darkCol, uThemeMix);
 
-    float lightAlpha = vAlpha * shapeMask * bokehAtten * (0.64 + 0.36 * (1.0 - vLum * 0.32));
+    float lightAlpha = vAlpha * shapeMask * bokehAtten * (0.78 + 0.22 * darkness);
     float darkAlpha = vAlpha * shapeMask * bokehAtten * (0.46 + 0.54 * vLum);
     float finalAlpha = mix(lightAlpha, darkAlpha, uThemeMix);
 
@@ -380,10 +383,13 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
       const elapsedSec = (now - startTime) * 0.001;
 
       if (pts && cam.morph > 0.005 && cam.exitFade > 0.005) {
+        // Match Hero's object-contain object-bottom cutout framing so head never clips and 1x morph aligns 1:1
         const containerW = Math.min(viewW, 920);
-        const coverW = Math.max(containerW, viewH * pts.imgAspect);
-        const coverH = coverW / pts.imgAspect;
-        const coverFactor = coverH / viewH;
+        const maxH = Math.min(viewH * 0.9, 960);
+        const fitH = Math.min(maxH, containerW / pts.imgAspect);
+        const coverFactor = fitH / viewH;
+        const bottomAnchorNdc = -(1.0 - coverFactor) * Math.max(0, 1.0 - (cam.zoom - 1.0) * 1.4);
+        const effectivePanY = cam.panY + bottomAnchorNdc;
 
         if (gl && program && posBuffer && metaBuffer && alphaBuffer) {
           gl.clearColor(0, 0, 0, 0);
@@ -415,7 +421,7 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
           gl.uniform1f(uniforms.uMorph, cam.morph);
           gl.uniform1f(uniforms.uZoom, cam.zoom);
           gl.uniform1f(uniforms.uPanX, cam.panX);
-          gl.uniform1f(uniforms.uPanY, cam.panY);
+          gl.uniform1f(uniforms.uPanY, effectivePanY);
           gl.uniform1f(uniforms.uRotY, cam.rotY);
           gl.uniform1f(uniforms.uRotX, cam.rotX);
           gl.uniform1f(uniforms.uAspect, viewW / viewH);
@@ -459,7 +465,7 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
 
             const persp = 3.0 / Math.max(0.6, 3.0 - rz);
             const ndcX = ((rx * projBase) / aspect) * persp + cam.panX;
-            const ndcY = ry * projBase * persp + cam.panY;
+            const ndcY = ry * projBase * persp + effectivePanY;
 
             const sxScreen = (ndcX * 0.5 + 0.5) * cw;
             const syScreen = (0.5 - ndcY * 0.5) * ch;
@@ -467,12 +473,13 @@ export function HeroPointCloud({ cameraRef }: HeroPointCloudProps) {
             if (sxScreen < -dotSize || sxScreen > cw + dotSize) continue;
             if (syScreen < -dotSize || syScreen > ch + dotSize) continue;
 
-            const alpha = cam.morph * cam.exitFade * pts.alphas[i] * (0.5 + 0.5 * lum);
+            const alpha =
+              cam.morph * cam.exitFade * pts.alphas[i] * (0.68 + 0.32 * (1 - lum));
             if (darkT < 0.5) {
-              // Pristine Light Yellow + Gold-Amber Depth Contours
-              const rC = Math.round(145 + lum * 109);
-              const gC = Math.round(92 + lum * 142);
-              const bC = Math.round(12 + lum * 116);
+              // Sculptural Sunlit Gold -> Burnished Amber -> Espresso-Bronze Relief
+              const rC = Math.round(62 + lum * 181);
+              const gC = Math.round(33 + lum * 158);
+              const bC = Math.round(10 + lum * 26);
               ctx2d.fillStyle = `rgba(${rC}, ${gC}, ${bC}, ${alpha.toFixed(2)})`;
             } else if (acc > 0.35) {
               ctx2d.fillStyle = `rgba(0, 240, 255, ${alpha.toFixed(2)})`;
