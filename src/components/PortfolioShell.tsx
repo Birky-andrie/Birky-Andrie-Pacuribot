@@ -5,6 +5,7 @@ import { Preloader } from "./Preloader";
 import { Navbar } from "./Navbar";
 import { Hero } from "./Hero";
 import { TechStackSection } from "./TechStackSection";
+import { AboutSection } from "./AboutSection";
 import { WorkMatrix } from "./WorkMatrix";
 import { InteractiveProofs } from "./InteractiveProofs";
 import { AppleBentoSection } from "./AppleBentoSection";
@@ -130,6 +131,8 @@ export function PortfolioShell() {
         />
 
         <TechStackSection theme={theme} />
+
+        <AboutSection theme={theme} />
 
         <WorkMatrix
           externalFilter={workFilter}

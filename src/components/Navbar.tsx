@@ -8,10 +8,10 @@ import { ThemeToggle, type ThemeMode } from "./ThemeToggle";
 
 const NAV_LINKS = [
   { label: "Tech Stack", href: "#tech-stack" },
+  { label: "About", href: "#about" },
   { label: "Work", href: "#work" },
   { label: "Proof Stage", href: "#proof-lab" },
   { label: "Services", href: "#services" },
-  { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ];
 

@@ -97,6 +97,13 @@ export function CommandPalette({
         run: () => jumpTo("#tech-stack"),
       },
       {
+        id: "jump-about",
+        group: "Navigation",
+        label: "Jump to A Little About Me",
+        hint: "#ABOUT",
+        run: () => jumpTo("#about"),
+      },
+      {
         id: "proof-husai",
         group: "Cinema Proof Stage",
         label: "Launch HusAI Showcase (60s Remotion Demo + Localhost :5173)",

@@ -27,7 +27,7 @@ interface HeroProps {
   onJumpToProof: (tab: ProofTab) => void;
 }
 
-const IDLE_CYCLE_MS = 6000;
+const ASSEMBLY_DURATION_MS = 1350;
 
 function clamp01(v: number): number {
   return Math.max(0, Math.min(1, v));
@@ -40,6 +40,11 @@ function lerp(a: number, b: number, t: number): number {
 function smoothstep(edge0: number, edge1: number, x: number): number {
   const t = clamp01((x - edge0) / (edge1 - edge0));
   return t * t * (3 - 2 * t);
+}
+
+function easeOutQuint(t: number): number {
+  const inv = 1 - clamp01(t);
+  return 1 - inv * inv * inv * inv * inv;
 }
 
 function GlobeIcon() {
@@ -64,7 +69,6 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
   const isLight = theme === "light";
 
   const runwayRef = useRef<HTMLElement | null>(null);
-  const photoLayerRef = useRef<HTMLDivElement | null>(null);
   const glowRef = useRef<HTMLDivElement | null>(null);
 
   const locationPillRef = useRef<HTMLDivElement | null>(null);
@@ -83,7 +87,7 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
   }, [theme]);
 
   const cameraRef = useRef<PointCloudCameraState>({
-    morph: 0,
+    assembly: 0,
     zoom: 1,
     panX: 0,
     panY: 0,
@@ -92,8 +96,9 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
     mouseX: 0,
     mouseY: 0,
     swirlPulse: 0,
+    motionBlur: 0,
     themeMix: theme === "dark" ? 1 : 0,
-    dofStrength: 0,
+    dofStrength: 0.28,
     focusDepth: 0.13,
     exitFade: 1,
   });
@@ -108,7 +113,10 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
     let velocityBoost = 0;
     let smoothP = 0;
     let smoothThemeMix = targetThemeRef.current;
+    let smoothBlur = 0;
     let rafId = 0;
+    const mountTime = performance.now();
+    let lastFrameTime = mountTime;
 
     const prefersReduced =
       typeof window !== "undefined" &&
@@ -129,14 +137,17 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
     };
 
     const tick = (now: number) => {
+      const dt = Math.min(0.05, Math.max(0.001, (now - lastFrameTime) / 1000));
+      lastFrameTime = now;
+
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const isMobile = vw < 768;
 
-      // Smooth 2D marquee motion
-      const baseSpeed = prefersReduced ? 0 : 0.011;
-      xPercent += (baseSpeed + velocityBoost) * direction;
-      velocityBoost *= 0.92;
+      // Smooth frame-rate-independent 2D marquee motion
+      const baseSpeed = prefersReduced ? 0 : 0.68 * dt;
+      xPercent += (baseSpeed + velocityBoost * (dt * 60)) * direction;
+      velocityBoost *= Math.exp(-dt * 5.2);
       if (xPercent <= -50) xPercent += 50;
       else if (xPercent > 0) xPercent -= 50;
 
@@ -152,54 +163,43 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
         const maxScroll = Math.max(1, rect.height - vh);
         rawP = clamp01(-rect.top / maxScroll);
       }
-      smoothP += (rawP - smoothP) * 0.12;
-      if (Math.abs(rawP - smoothP) < 0.0004) smoothP = rawP;
 
-      // Smoothly crossfade Light Yellow <-> Dark Neon point-cloud colors
-      smoothThemeMix += (targetThemeRef.current - smoothThemeMix) * 0.09;
+      // Frame-rate-independent silk damping across 60Hz / 120Hz / 144Hz displays
+      const prevSmoothP = smoothP;
+      const scrollDamp = 1 - Math.exp(-dt * 8.2);
+      smoothP += (rawP - smoothP) * scrollDamp;
+      if (Math.abs(rawP - smoothP) < 0.0003) smoothP = rawP;
+
+      // Live camera velocity drives subtle silky motion blur & micro-swirl
+      const scrollSpeed = Math.abs(rawP - prevSmoothP);
+      const targetBlur = prefersReduced
+        ? 0
+        : clamp01(scrollSpeed * 18.5);
+      smoothBlur += (targetBlur - smoothBlur) * (1 - Math.exp(-dt * 12));
+
+      // Smoothly crossfade Light Amber-Gold <-> Dark Neon point-cloud colors
+      smoothThemeMix += (targetThemeRef.current - smoothThemeMix) * (1 - Math.exp(-dt * 7.5));
 
       // Pointer inertia for cursor parallax & particle repulsion
+      const mouseDamp = 1 - Math.exp(-dt * 6.8);
       currentMouseRef.current.x +=
-        (targetMouseRef.current.x - currentMouseRef.current.x) * 0.09;
+        (targetMouseRef.current.x - currentMouseRef.current.x) * mouseDamp;
       currentMouseRef.current.y +=
-        (targetMouseRef.current.y - currentMouseRef.current.y) * 0.09;
+        (targetMouseRef.current.y - currentMouseRef.current.y) * mouseDamp;
       const mx = currentMouseRef.current.x;
       const my = currentMouseRef.current.y;
 
-      // Top 6-second hybrid auto-dissolve cycle (when near scroll top)
-      const idleElapsed = now % IDLE_CYCLE_MS;
-      let idleDissolve = 0;
-      let idleSwirl = 0;
-
-      if (!prefersReduced && smoothP < 0.025) {
-        if (idleElapsed >= 3800 && idleElapsed < 4350) {
-          idleDissolve = smoothstep(3800, 4350, idleElapsed);
-          idleSwirl = Math.sin(idleDissolve * Math.PI) * 0.48;
-        } else if (idleElapsed >= 4350 && idleElapsed < 5450) {
-          idleDissolve = 1;
-          idleSwirl = 0.08;
-        } else if (idleElapsed >= 5450) {
-          idleDissolve = 1 - smoothstep(5450, 6000, idleElapsed);
-          idleSwirl = Math.sin(idleDissolve * Math.PI) * 0.48;
-        }
-      }
-
-      // Scroll morph dominates smoothly as soon as visitor scrolls down
-      const scrollMorph = smoothstep(0.01, 0.12, smoothP);
-      const totalMorph = Math.max(idleDissolve, scrollMorph);
-
-      // Transparent 4K Studio Cutout fades smoothly into the 3D point-cloud
-      const photoOpacity = clamp01(1 - Math.max(idleDissolve * 0.94, scrollMorph));
-      if (photoLayerRef.current) {
-        photoLayerRef.current.style.opacity = String(photoOpacity);
-        const tiltPx = mx * 14 * (1 - scrollMorph);
-        const tiltPy = my * 9 * (1 - scrollMorph);
-        photoLayerRef.current.style.transform = `translate3d(${tiltPx}px, ${tiltPy}px, 0)`;
-      }
+      // Dramatic 1.35s micro-pixel spiral assembly on load
+      const assemblyLinear = prefersReduced
+        ? 1
+        : clamp01((now - mountTime) / ASSEMBLY_DURATION_MS);
+      const assembly = easeOutQuint(assemblyLinear);
 
       if (glowRef.current) {
         glowRef.current.style.transform = `translate3d(${mx * -22}px, ${my * -16}px, 0)`;
-        glowRef.current.style.opacity = String(clamp01(1 - smoothstep(0.84, 0.96, smoothP)));
+        glowRef.current.style.opacity = String(
+          clamp01((0.4 + assembly * 0.6) * (1 - smoothstep(0.84, 0.96, smoothP)))
+        );
       }
 
       // Top Hero chrome (location pill, role block, bottom marquee) glides out as zoom begins
@@ -221,7 +221,7 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
         marqueeWrapRef.current.style.transform = `translate3d(0, ${smoothstep(0.01, 0.13, smoothP) * 40}px, 0)`;
       }
 
-      // Unbroken Seamless Face-Zoom & Left-Right Pan Choreography (3 Postcard Beats)
+      // Unbroken Face-Zoom & Left-Right Pan Choreography (3 Postcard Beats)
       const p1 = smoothstep(0.04, 0.25, smoothP); // zoom 1 -> 2.15, pan Left (-0.36) for Postcard 1 Right
       const p2 = smoothstep(0.36, 0.56, smoothP); // zoom 2.15 -> 2.65, glide Right (+0.38) for Postcard 2 Left
       const p3 = smoothstep(0.66, 0.84, smoothP); // zoom 2.65 -> 2.38, glide Left (-0.34) for Postcard 3 Right
@@ -231,7 +231,7 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
       const camZoom =
         lerp(1.0, isMobile ? 1.65 : 2.15, p1) * (1 - p2) +
         (lerp(isMobile ? 1.65 : 2.15, isMobile ? 1.92 : 2.65, p2) * (1 - p3) +
-          lerp(isMobile ? 1.92 : 2.65, isMobile ? 1.80 : 2.38, p3) * p3) *
+          lerp(isMobile ? 1.92 : 2.65, isMobile ? 1.8 : 2.38, p3) * p3) *
           p2;
 
       const camPanX =
@@ -244,24 +244,25 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
       const camPanY = lerp(0, isMobile ? -0.11 : -0.21, smoothstep(0.06, 0.38, smoothP));
 
       const camRotY =
-        Math.sin(now * 0.0007) * 0.045 +
-        lerp(0, 0.20, p1) * (1 - p2) +
-        lerp(0.20, -0.22, p2) * (1 - p3) +
-        lerp(-0.22, 0.18, p3) * p3 +
-        mx * 0.09;
-      const camRotX = -my * 0.055;
+        Math.sin(now * 0.0007) * 0.055 +
+        lerp(0, 0.22, p1) * (1 - p2) +
+        lerp(0.22, -0.24, p2) * (1 - p3) +
+        lerp(-0.24, 0.2, p3) * p3 +
+        mx * 0.1;
+      const camRotX = -my * 0.06;
 
-      // Optical Depth-of-Field bokeh strength intensifies smoothly as macro face zoom deepens
-      const dofStrength = clamp01(smoothstep(0.14, 0.52, smoothP) * 0.96);
+      // Optical Depth-of-Field bokeh starts at cinematic 0.28 baseline and deepens to 1.0 on macro face zoom
+      const dofStrength = clamp01(0.28 + smoothstep(0.1, 0.52, smoothP) * 0.72);
 
-      // Smooth exit scatter/fade into Recent Work before unsticking (zero ghostly overlap)
+      // Smooth exit scatter/fade into Tech Stack before unsticking
       const exitFade = clamp01(1 - smoothstep(0.83, 0.95, smoothP));
 
       const transitionPulse =
-        Math.sin(smoothstep(0.34, 0.56, smoothP) * Math.PI) * 0.28 +
-        Math.sin(smoothstep(0.64, 0.84, smoothP) * Math.PI) * 0.28;
+        Math.sin(smoothstep(0.34, 0.56, smoothP) * Math.PI) * 0.24 +
+        Math.sin(smoothstep(0.64, 0.84, smoothP) * Math.PI) * 0.24 +
+        smoothBlur * 0.35;
 
-      cameraRef.current.morph = totalMorph;
+      cameraRef.current.assembly = assembly;
       cameraRef.current.zoom = camZoom;
       cameraRef.current.panX = camPanX;
       cameraRef.current.panY = camPanY;
@@ -269,7 +270,8 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
       cameraRef.current.rotX = camRotX;
       cameraRef.current.mouseX = mx;
       cameraRef.current.mouseY = -my;
-      cameraRef.current.swirlPulse = Math.max(idleSwirl, transitionPulse);
+      cameraRef.current.swirlPulse = transitionPulse;
+      cameraRef.current.motionBlur = smoothBlur;
       cameraRef.current.themeMix = smoothThemeMix;
       cameraRef.current.dofStrength = dofStrength;
       cameraRef.current.focusDepth = 0.13;
@@ -344,16 +346,9 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
       onMouseLeave={handleMouseLeave}
       className="theme-surface relative h-[300vh] min-h-[2250px] w-full bg-[var(--color-hero-bg)] select-none"
     >
-      {/* Semantic #about anchor positioned cleanly in Beat 2/3 */}
-      <div
-        id="about"
-        className="pointer-events-none absolute top-[185vh] h-px w-px"
-        aria-hidden="true"
-      />
-
-      {/* Seamless Borderless Sticky 100vh Viewport */}
+      {/* Borderless Sticky 100vh Viewport */}
       <div className="theme-surface sticky top-0 h-screen w-full overflow-hidden bg-[var(--color-hero-bg)]">
-        {/* Subtle Radial Optical Glow behind Cutout & Point-Cloud */}
+        {/* Subtle Radial Optical Glow behind 3D Micro-Pixel Point-Cloud */}
         <div
           ref={glowRef}
           className="pointer-events-none absolute inset-0 will-change-transform"
@@ -364,22 +359,7 @@ export function Hero({ theme, focusMode, onJumpToProof }: HeroProps) {
           aria-hidden="true"
         />
 
-        {/* True Transparent 4K Studio Cutout Layer (object-contain bottom-anchored so head never clips) */}
-        <div
-          ref={photoLayerRef}
-          className="pointer-events-none absolute inset-0 flex items-end justify-center will-change-transform"
-        >
-          <div className="relative h-[90vh] max-h-[960px] w-full max-w-[920px] flex items-end justify-center overflow-visible">
-            <img
-              src="/hero-cutout-4k.png"
-              alt="Birky Andrie L. Pacuribot"
-              className="h-full w-full object-contain object-bottom transition-[filter] duration-500 ease-dennis"
-              style={{ filter: "var(--hero-cutout-filter)" }}
-            />
-          </div>
-        </div>
-
-        {/* LIVE WEBGL 3D POINT-CLOUD CANVAS (Pristine Light Yellow <-> Dark Neon + True Z-DoF Bokeh) */}
+        {/* LIVE WEBGL 3D MICRO-PIXEL POINT-CLOUD (Pure Silhouette + Floating Halo + Motion Blur + Z-DoF) */}
         <HeroPointCloud cameraRef={cameraRef} />
 
         {/* Left-Docked Location Badge */}
