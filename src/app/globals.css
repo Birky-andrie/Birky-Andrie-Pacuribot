@@ -55,17 +55,29 @@ html[data-theme="dark"] {
     scroll-behavior: smooth;
     background-color: var(--color-paper);
     color: var(--color-ink);
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-hairline) transparent;
   }
 
   body {
     font-family: var(--font-sans);
     background-color: var(--color-paper);
     color: var(--color-ink);
+    caret-color: var(--color-dennis-blue);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
     transition: background-color 500ms cubic-bezier(0.76, 0, 0.24, 1),
       color 500ms cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  a {
+    text-underline-offset: 0.22em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-dennis-blue);
+    outline-offset: 3px;
   }
 
   ::selection {

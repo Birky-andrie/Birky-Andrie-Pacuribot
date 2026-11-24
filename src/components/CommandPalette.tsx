@@ -90,6 +90,13 @@ export function CommandPalette({
         },
       },
       {
+        id: "jump-tech-stack",
+        group: "Navigation",
+        label: "Jump to 3D Glassmorphism Tech Stack Keyboard",
+        hint: "#TECH-STACK",
+        run: () => jumpTo("#tech-stack"),
+      },
+      {
         id: "proof-husai",
         group: "Cinema Proof Stage",
         label: "Launch HusAI Showcase (60s Remotion Demo + Localhost :5173)",

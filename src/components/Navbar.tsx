@@ -7,6 +7,7 @@ import { MagneticButton } from "./MagneticButton";
 import { ThemeToggle, type ThemeMode } from "./ThemeToggle";
 
 const NAV_LINKS = [
+  { label: "Tech Stack", href: "#tech-stack" },
   { label: "Work", href: "#work" },
   { label: "Proof Stage", href: "#proof-lab" },
   { label: "Services", href: "#services" },
@@ -57,7 +58,7 @@ export function Navbar({
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 160);
+      setScrolled(window.scrollY > 240);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -211,7 +212,7 @@ export function Navbar({
 
       {/* Dennis Snellenberg Floating Circular Liquid-Fill Magnetic Hamburger Button */}
       <div
-        className={`fixed top-5 right-5 sm:top-7 sm:right-7 z-50 transition-all duration-500 ease-dennis ${
+        className={`fixed top-5 right-5 sm:top-7 sm:right-7 z-50 transition-all duration-300 ease-dennis ${
           drawerOpen || scrolled
             ? "scale-100 opacity-100 visible"
             : "scale-0 opacity-0 invisible pointer-events-none"
