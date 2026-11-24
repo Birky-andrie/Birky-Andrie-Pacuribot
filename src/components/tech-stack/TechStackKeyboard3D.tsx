@@ -6,7 +6,6 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 import {
   KEYBOARD_COLS,
   KEYBOARD_ROWS,
-  PILLAR_BY_ID,
   TECH_STACK_KEYS,
   type TechStackKey,
 } from "@/data/techStack";
@@ -384,16 +383,24 @@ export default function TechStackKeyboard3D({
 
     // Shared keycap geometries
     const capGeo = createSculptedKeycapGeometry();
-    const stemGeo = new THREE.CylinderGeometry(0.16, 0.22, 0.34, 14);
+    // Caramel-brown mechanical tactile switch housing + MX cross-stem clearly visible through crystal glass
+    const switchHousingGeo = new THREE.BoxGeometry(0.46, 0.24, 0.46);
+    const stemBarXGeo = new THREE.BoxGeometry(0.24, 0.14, 0.068);
+    const stemBarZGeo = new THREE.BoxGeometry(0.068, 0.14, 0.24);
     // Opaque glowing under-key diffuser puck so Three.js physical transmission
-    // genuinely frost-blurs & prism-disperses its color through the glass keycap!
-    const ledGeo = new THREE.CylinderGeometry(0.36, 0.4, 0.055, 20);
+    // genuinely refracts & prism-disperses each app's brand color through the glass keycap
+    const ledGeo = new THREE.CylinderGeometry(0.38, 0.42, 0.055, 20);
     const legendGeo = new THREE.PlaneGeometry(0.66, 0.66);
 
-    // Shared tactile brown switch stem material (visibly refracted through frosted glass!)
+    // Warm caramel-brown mechanical tactile switch materials (Render 1 look)
+    const switchBaseMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color("#A96B3D"),
+      roughness: 0.36,
+      metalness: 0.12,
+    });
     const brownStemMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#9A6543"),
-      roughness: 0.38,
+      color: new THREE.Color("#7C4722"),
+      roughness: 0.34,
       metalness: 0.14,
     });
 
@@ -423,7 +430,6 @@ export default function TechStackKeyboard3D({
     const keyByMesh = new Map<THREE.Object3D, TechStackKey>();
 
     TECH_STACK_KEYS.forEach((key, index) => {
-      const pillar = PILLAR_BY_ID[key.pillar];
       const slotX = (key.col - (KEYBOARD_COLS - 1) / 2) * KEY_PITCH;
       const slotZ = (key.row - (KEYBOARD_ROWS - 1) / 2) * KEY_PITCH;
 
@@ -431,22 +437,29 @@ export default function TechStackKeyboard3D({
       slotGroup.position.set(slotX, 0.43, slotZ);
       floatPivot.add(slotGroup);
 
-      // Fixed under-switch tactile brown stem + opaque emissive diffuser puck
-      const stemMesh = new THREE.Mesh(stemGeo, brownStemMat);
-      stemMesh.position.y = 0.2;
-      slotGroup.add(stemMesh);
+      // Caramel-brown mechanical switch housing + MX cross-stem clearly visible inside glass
+      const housingMesh = new THREE.Mesh(switchHousingGeo, switchBaseMat);
+      housingMesh.position.y = 0.14;
+      slotGroup.add(housingMesh);
+
+      const stemX = new THREE.Mesh(stemBarXGeo, brownStemMat);
+      stemX.position.y = 0.3;
+      slotGroup.add(stemX);
+
+      const stemZ = new THREE.Mesh(stemBarZGeo, brownStemMat);
+      stemZ.position.y = 0.3;
+      slotGroup.add(stemZ);
 
       const accentColor = new THREE.Color(key.accentHex);
-      const darkGlowColor = new THREE.Color(pillar.darkGlowHex).lerp(accentColor, 0.45);
       const ledMat = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(pillar.lightTintHex).lerp(accentColor, 0.35),
-        emissive: darkGlowColor.clone(),
-        emissiveIntensity: 0.32,
-        roughness: 0.35,
+        color: new THREE.Color("#FFFFFF").lerp(accentColor, 0.45),
+        emissive: accentColor.clone(),
+        emissiveIntensity: 0.48,
+        roughness: 0.32,
         metalness: 0.05,
       });
       const ledMesh = new THREE.Mesh(ledGeo, ledMat);
-      ledMesh.position.y = 0.035;
+      ledMesh.position.y = 0.032;
       slotGroup.add(ledMesh);
 
       // Moving keycap group (depresses downward on press)
@@ -454,40 +467,37 @@ export default function TechStackKeyboard3D({
       motionGroup.position.y = 0.12;
       slotGroup.add(motionGroup);
 
-      // Apple Liquid Glass frosted crystal + chromatic prism dispersion material
-      const lightColor = new THREE.Color("#FFFFFF").lerp(
-        new THREE.Color(pillar.lightTintHex),
-        0.38
-      );
-      const darkColor = new THREE.Color("#1E2638").lerp(accentColor, 0.22);
-      const lightAtten = new THREE.Color("#F4F8FF").lerp(accentColor, 0.32);
-      const darkAtten = new THREE.Color("#38BDF8").lerp(accentColor, 0.55);
+      // Render 1 target: ultra-clear 15%-frosted optical crystal + exact 20% app brand color tint
+      const lightColor = new THREE.Color("#FFFFFF").lerp(accentColor, 0.2);
+      const darkColor = new THREE.Color("#182030").lerp(accentColor, 0.24);
+      const lightAtten = new THREE.Color("#FFFFFF").lerp(accentColor, 0.24);
+      const darkAtten = new THREE.Color("#E2F2FF").lerp(accentColor, 0.48);
 
       const capMat = new THREE.MeshPhysicalMaterial({
         color: lightColor.clone(),
-        emissive: darkGlowColor.clone(),
+        emissive: accentColor.clone(),
         emissiveIntensity: 0.02,
-        // Crystal-clear see-through Apple Liquid Glass with vivid chromatic prism dispersion
-        transmission: 0.92,
-        thickness: 1.55,
+        // Crystal-clear see-through optical glass + 15% fine satin frost + prism rainbow caustics
+        transmission: 0.9,
+        thickness: 1.6,
         ior: 1.52,
-        dispersion: 5.6,
-        // Thin-film iridescent prism color bending across sculpted rounded shoulders
+        dispersion: 6.2,
+        // Iridescent prism color bending across sculpted rounded shoulders & skirts
         iridescence: 1.0,
-        iridescenceIOR: 1.34,
-        iridescenceThicknessRange: [210, 640],
-        // Lightly satin glass surface (clear see-through depth + crisp wet-glass clearcoat)
-        roughness: 0.13,
+        iridescenceIOR: 1.32,
+        iridescenceThicknessRange: [230, 660],
+        // 15% frosted satin glass surface + wet optical clearcoat glaze
+        roughness: 0.15,
         metalness: 0.01,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.04,
-        sheen: 0.22,
-        sheenRoughness: 0.2,
+        clearcoatRoughness: 0.035,
+        sheen: 0.2,
+        sheenRoughness: 0.18,
         sheenColor: new THREE.Color("#FFFFFF"),
         attenuationColor: lightAtten.clone(),
-        attenuationDistance: 2.4,
+        attenuationDistance: 2.2,
         reflectivity: 1.0,
-        envMapIntensity: 2.1,
+        envMapIntensity: 2.2,
       });
 
       const capMesh = new THREE.Mesh(capGeo, capMat);
@@ -827,9 +837,9 @@ export default function TechStackKeyboard3D({
       currentThemeMix += (themeTarget - currentThemeMix) * themeStep;
 
       caseMat.color.copy(cCaseLight).lerp(cCaseDark, currentThemeMix);
-      caseMat.metalness = lerp(0.36, 0.58, currentThemeMix);
-      caseMat.roughness = lerp(0.34, 0.38, currentThemeMix);
-      caseMat.envMapIntensity = lerp(1.25, 0.95, currentThemeMix);
+      caseMat.metalness = lerp(0.72, 0.62, currentThemeMix);
+      caseMat.roughness = lerp(0.24, 0.36, currentThemeMix);
+      caseMat.envMapIntensity = lerp(1.45, 1.0, currentThemeMix);
 
       plateMat.color.copy(cPlateLight).lerp(cPlateDark, currentThemeMix);
       stripMat.color.copy(cStripLight).lerp(cStripDark, currentThemeMix);
@@ -865,24 +875,24 @@ export default function TechStackKeyboard3D({
         // Smooth glow boost on press
         rt.glowCurrent += (rt.pressTarget - rt.glowCurrent) * (1 - Math.exp(-dt * 16));
 
-        // Crystal-clear see-through Apple Liquid Glass + chromatic dispersion + thin-film prism sheen
+        // Render 1 target: 15%-frosted clear optical glass + 20% app color tint + vivid prism caustics
         rt.capMat.color.copy(rt.lightColor).lerp(rt.darkColor, currentThemeMix);
         if (rt.glowCurrent > 0.01) {
-          rt.capMat.color.lerp(rt.accentColor, rt.glowCurrent * lerp(0.2, 0.34, currentThemeMix));
+          rt.capMat.color.lerp(rt.accentColor, rt.glowCurrent * lerp(0.24, 0.38, currentThemeMix));
         }
         rt.capMat.attenuationColor.copy(rt.lightAtten).lerp(rt.darkAtten, currentThemeMix);
-        rt.capMat.transmission = lerp(0.92, 0.88, currentThemeMix) - rt.glowCurrent * 0.04;
-        rt.capMat.roughness = lerp(0.13, 0.1, currentThemeMix) - rt.glowCurrent * 0.03;
-        rt.capMat.dispersion = lerp(5.6, 6.5, currentThemeMix) + rt.glowCurrent * 1.4;
+        rt.capMat.transmission = lerp(0.9, 0.86, currentThemeMix) - rt.glowCurrent * 0.04;
+        rt.capMat.roughness = lerp(0.15, 0.13, currentThemeMix) - rt.glowCurrent * 0.03;
+        rt.capMat.dispersion = lerp(6.2, 6.8, currentThemeMix) + rt.glowCurrent * 1.4;
         rt.capMat.iridescence = 1.0;
-        rt.capMat.envMapIntensity = lerp(2.1, 1.75, currentThemeMix) + rt.glowCurrent * 0.45;
+        rt.capMat.envMapIntensity = lerp(2.2, 1.8, currentThemeMix) + rt.glowCurrent * 0.45;
         rt.capMat.emissiveIntensity =
-          lerp(0.02, 0.06, currentThemeMix) +
-          rt.glowCurrent * lerp(0.24, 0.85, currentThemeMix);
+          lerp(0.02, 0.07, currentThemeMix) +
+          rt.glowCurrent * lerp(0.22, 0.88, currentThemeMix);
 
         rt.ledMat.emissiveIntensity =
-          lerp(0.55, 1.45, currentThemeMix) +
-          rt.glowCurrent * lerp(1.1, 2.5, currentThemeMix);
+          lerp(0.48, 1.45, currentThemeMix) +
+          rt.glowCurrent * lerp(1.05, 2.5, currentThemeMix);
 
         if (swapLegends) {
           rt.legendMat.map = legendMode === "dark" ? rt.darkTex : rt.lightTex;
@@ -958,7 +968,9 @@ export default function TechStackKeyboard3D({
       plateGeo.dispose();
       stripGeo.dispose();
       capGeo.dispose();
-      stemGeo.dispose();
+      switchHousingGeo.dispose();
+      stemBarXGeo.dispose();
+      stemBarZGeo.dispose();
       ledGeo.dispose();
       legendGeo.dispose();
       shadowGeo.dispose();
@@ -966,6 +978,7 @@ export default function TechStackKeyboard3D({
       caseMat.dispose();
       plateMat.dispose();
       stripMat.dispose();
+      switchBaseMat.dispose();
       brownStemMat.dispose();
       shadowMat.dispose();
 

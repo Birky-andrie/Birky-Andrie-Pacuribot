@@ -96,7 +96,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "Digit2",
     shortcutChar: "2",
     proof: "Core browser runtime powering WebGL shaders, Web Audio, and live UI.",
-    accentHex: "#EAB308",
+    accentHex: "#F7DF1E",
   },
   {
     id: "react",
@@ -108,7 +108,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "Digit3",
     shortcutChar: "3",
     proof: "Component architecture behind HusAI, this portfolio, and live proof labs.",
-    accentHex: "#38BDF8",
+    accentHex: "#00D8FF",
   },
   {
     id: "nextjs",
@@ -120,7 +120,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "Digit4",
     shortcutChar: "4",
     proof: "App Router, static speed, and 60fps interactive interfaces on Vercel.",
-    accentHex: "#6366F1",
+    accentHex: "#475569",
   },
   {
     id: "tailwind",
@@ -132,7 +132,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "Digit5",
     shortcutChar: "5",
     proof: "Tokenized Light/Dark systems, crisp 1px hairlines, and fluid layouts.",
-    accentHex: "#06B6D4",
+    accentHex: "#38BDF8",
   },
   {
     id: "threejs",
@@ -144,7 +144,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "Digit6",
     shortcutChar: "6",
     proof: "Custom WebGL shaders, optical DoF point clouds, and procedural 3D glass.",
-    accentHex: "#4F6BFF",
+    accentHex: "#6366F1",
   },
 
   // Row 1 — Backend & Systems (Q W E R T Y)
@@ -158,7 +158,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyQ",
     shortcutChar: "Q",
     proof: "Real-time backend runtime driving HusAI and SIAM_CS3B servers.",
-    accentHex: "#22C55E",
+    accentHex: "#339933",
   },
   {
     id: "express",
@@ -170,7 +170,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyW",
     shortcutChar: "W",
     proof: "REST APIs, role-based auth layers, and low-latency AI proxy routes.",
-    accentHex: "#38BDF8",
+    accentHex: "#64748B",
   },
   {
     id: "python",
@@ -182,7 +182,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyE",
     shortcutChar: "E",
     proof: "Workflow automation, Pacs Builders <5s audit queries, and image pipelines.",
-    accentHex: "#3B82F6",
+    accentHex: "#3776AB",
   },
   {
     id: "cpp",
@@ -194,7 +194,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyR",
     shortcutChar: "R",
     proof: "Systems fundamentals, algorithms, and parallel processing (BS CS).",
-    accentHex: "#0284C7",
+    accentHex: "#00599C",
   },
   {
     id: "flutter",
@@ -206,7 +206,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyT",
     shortcutChar: "T",
     proof: "Single Dart codebase targeting 6 OS platforms — built Financify.",
-    accentHex: "#0EA5E9",
+    accentHex: "#027DFD",
   },
   {
     id: "electron",
@@ -218,7 +218,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyY",
     shortcutChar: "Y",
     proof: "Native desktop shell wrapping HusAI's dual-channel live call coach.",
-    accentHex: "#22D3EE",
+    accentHex: "#47848F",
   },
 
   // Row 2 — AI & Cloud (A S D F G H)
@@ -232,7 +232,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyA",
     shortcutChar: "A",
     proof: "Post-call review scoring, structured synthesis, and multimodal workflows.",
-    accentHex: "#60A5FA",
+    accentHex: "#4285F4",
   },
   {
     id: "groq",
@@ -244,7 +244,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyS",
     shortcutChar: "S",
     proof: "Sub-second LLaMA 3.1 smart replies & 4.0s voice VAD in HusAI.",
-    accentHex: "#F59E0B",
+    accentHex: "#F55036",
   },
   {
     id: "claude",
@@ -256,7 +256,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyD",
     shortcutChar: "D",
     proof: "AI-assisted architecture, rapid prototyping, and technical workflows.",
-    accentHex: "#EA580C",
+    accentHex: "#D97757",
   },
   {
     id: "socketio",
@@ -268,7 +268,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyF",
     shortcutChar: "F",
     proof: "Bidirectional live event syncing in SIAM_CS3B with QA traceability.",
-    accentHex: "#FACC15",
+    accentHex: "#25C2A0",
   },
   {
     id: "github",
@@ -280,7 +280,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyG",
     shortcutChar: "G",
     proof: "Version control, PR discipline, CI/CD pipelines, and open-source repos.",
-    accentHex: "#F97316",
+    accentHex: "#F05032",
   },
   {
     id: "vercel",
@@ -292,7 +292,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyH",
     shortcutChar: "H",
     proof: "Production edge deploys, Speed Insights, and instant preview URLs.",
-    accentHex: "#EAB308",
+    accentHex: "#52525B",
   },
 
   // Row 3 — Creative & Ops (Z X C V B N)
@@ -306,7 +306,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyZ",
     shortcutChar: "Z",
     proof: "45+ beat-synced 9:16 paid social ads for Hackerlily (Germany / AU).",
-    accentHex: "#A855F7",
+    accentHex: "#06B6D4",
   },
   {
     id: "remotion",
@@ -318,7 +318,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyX",
     shortcutChar: "X",
     proof: "Code-driven React motion graphics — engineered HusAI's 60s launch film.",
-    accentHex: "#8B5CF6",
+    accentHex: "#0B84F3",
   },
   {
     id: "figma",
@@ -330,7 +330,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyC",
     shortcutChar: "C",
     proof: "UI/UX wireframes, optical spacing systems, and crisp component specs.",
-    accentHex: "#EC4899",
+    accentHex: "#F24E1E",
   },
   {
     id: "adobe",
@@ -342,7 +342,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyV",
     shortcutChar: "V",
     proof: "Graphic assets, brand direction, and direct-response ad visuals.",
-    accentHex: "#F43F5E",
+    accentHex: "#FA0F00",
   },
   {
     id: "clickup",
@@ -354,7 +354,7 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyB",
     shortcutChar: "B",
     proof: "Agile sprints, Trailblazer 1.00 SDLC delivery, and executive VA ops.",
-    accentHex: "#C084FC",
+    accentHex: "#7B68EE",
   },
   {
     id: "social",
@@ -366,6 +366,6 @@ export const TECH_STACK_KEYS: readonly TechStackKey[] = [
     shortcutCode: "KeyN",
     shortcutChar: "N",
     proof: "A/B hook testing, multi-platform SMM calendars, and ad retention.",
-    accentHex: "#D946EF",
+    accentHex: "#E11D48",
   },
 ] as const;
