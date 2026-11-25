@@ -268,17 +268,17 @@ export const CASE_STUDIES: CaseStudy[] = [
     index: "02",
     code: "GH-01",
     title: "HusAI — Real-Time AI Call Coach",
-    clientOrContext: "USTP Startup Incubation · Open Source",
+    clientOrContext: "Trailblazer Startup Lab (1.00 Distinction) · Open Source",
     locationTag: "REACT + ELECTRON + GROQ AI",
     role: "Creator & Project Lead (Final Grade: 1.00)",
     period: "2026",
     categories: ["engineering", "va", "github", "leadership"],
-    primaryMetric: "4.0s VAD",
-    primaryMetricLabel: "Live VA Call Coaching & 69/100 Review",
+    primaryMetric: "1.00 · 4.0s VAD",
+    primaryMetricLabel: "Startup Lab Lead & Live AI Coach",
     problem:
       "Remote VAs take high-stakes international client calls solo without real-time supervisor support.",
     execution:
-      "Built a React + Electron + Express app using a 4.0s Web Audio silence VAD to fire 3 Groq LLaMA 3.1 Smart Replies.",
+      "Led full-SDLC delivery (earning USTP's highest 1.00 distinction) and built a React + Electron + Express app firing 3 Groq LLaMA 3.1 replies on a 4.0s Web Audio VAD.",
     impact:
       "Ships as both a web app and desktop shell with dual-channel transcription and post-call Gemini scoring.",
     stack: [
@@ -288,13 +288,14 @@ export const CASE_STUDIES: CaseStudy[] = [
       "Web Audio VAD",
       "Groq LLaMA 3.1 & Whisper",
       "Gemini Flash",
+      "1.00 SDLC Lead",
     ],
     previewMedia: {
       type: "image",
-      src: "/husai/screen-solution.png",
-      badge: "HUSAI // BUILT FOR REMOTE VAs",
+      src: "/husai/husai-preview.png",
+      badge: "HUSAI · REAL-TIME AI COACH",
       highlight: "4.0s Silence VAD -> 3 Instant Smart Replies",
-      sublabel: "Localhost :5173 UI + 60s Remotion Reveal",
+      sublabel: "Web + Electron Desktop · 1.00 Distinction",
     },
     links: {
       repo: "https://github.com/Birky-andrie/HusAI",
@@ -302,15 +303,71 @@ export const CASE_STUDIES: CaseStudy[] = [
     },
   },
   {
-    id: "remote-va-ops",
+    id: "pacs-builders",
     index: "03",
+    code: "CS-02",
+    title: "Pacs Builders — Material Audit Engine",
+    clientOrContext: "Pacs Builders (Engineering Firm)",
+    locationTag: "CDO, PH · WORKFLOW AUTOMATION",
+    role: "Contract Programmer — Frontend & Workflow Automation",
+    period: "AUG 2025 – DEC 2025",
+    categories: ["engineering", "va"],
+    primaryMetric: "< 5s",
+    primaryMetricLabel: "Audit Report Generation",
+    problem:
+      "Fragmented manual Excel sheets caused data entry errors and 20-minute audit reconciliations.",
+    execution:
+      "Built a role-based web platform (Admin, Auditor, Staff) with immutable transaction trails and fast queries.",
+    impact:
+      "Cut material audit report generation from ~20 minutes of manual Excel work to under 5 seconds.",
+    stack: ["Python", "HTML/CSS", "Role-Based Auth", "Excel Migration", "Audit Reporting"],
+    previewMedia: {
+      type: "telemetry",
+      badge: "PACS BUILDERS · AUDIT ENGINE",
+      highlight: "1.84s Avg Query vs. ~20m Manual Excel",
+      sublabel: "Admin · Auditor · Staff Permission Trails",
+    },
+  },
+  {
+    id: "financify",
+    index: "04",
+    code: "GH-03",
+    title: "Financify — Cross-Platform Budget & Analysis App",
+    clientOrContext: "GitHub Open Source · Flutter / Dart",
+    locationTag: "6 OS TARGETS · LIVE TEST RUN",
+    role: "Flutter Cross-Platform Developer",
+    period: "2025",
+    categories: ["engineering", "github"],
+    primaryMetric: "6 OS",
+    primaryMetricLabel: "Weekly ₱ Budget & Delta App",
+    problem:
+      "Personal finance trackers often require bloated subscriptions instead of fast offline weekly ₱ budgeting.",
+    execution:
+      "Built a 625-line Flutter app (lib/main.dart) with BudgetScreen, AnalysisScreen delta trends, and SharedPreferences.",
+    impact:
+      "Targets 6 OS platforms from one Dart codebase—available to test-run live in the Proof Stage below.",
+    stack: ["Flutter", "Dart", "SharedPreferences", "ImagePicker", "6 OS Targets"],
+    previewMedia: {
+      type: "image",
+      src: "/financify/financify-preview.png",
+      badge: "FLUTTER LIVE MOBILE TEST RUN",
+      highlight: "₱ Weekly Budget · Delta Analysis · 6 OS",
+      sublabel: "Interactive lib/main.dart Runner",
+    },
+    links: {
+      repo: "https://github.com/Birky-andrie/Financify",
+    },
+  },
+  {
+    id: "remote-va-ops",
+    index: "05",
     code: "VA-01",
     title: "Global Remote Operations & SMM Growth",
-    clientOrContext: "Alpha VA Certified · Freelance Movement · Clothing Brand",
-    locationTag: "REMOTE // GLOBAL CLIENTS",
+    clientOrContext: "Alpha VA Certified · Freelance Movement · Brand Ops",
+    locationTag: "REMOTE · GLOBAL CLIENTS",
     role: "Technical Virtual Assistant, SMM & Creative Director",
     period: "JAN 2023 – PRESENT",
-    categories: ["va", "creative"],
+    categories: ["va", "creative", "leadership"],
     primaryMetric: "3+ Yrs",
     primaryMetricLabel: "Remote VA, SMM & Brand Direction",
     problem:
@@ -334,122 +391,6 @@ export const CASE_STUDIES: CaseStudy[] = [
       badge: "ALPHA VA + SMM + BRAND OPS",
       highlight: "Executive Ops · Content Calendars · AI Speed",
       sublabel: "ClickUp · Google Workspace · Multi-Platform SMM",
-    },
-  },
-  {
-    id: "pacs-builders",
-    index: "04",
-    code: "CS-02",
-    title: "Pacs Builders — Material Audit Engine",
-    clientOrContext: "Pacs Builders (Engineering Firm)",
-    locationTag: "CDO, PH // WORKFLOW AUTOMATION",
-    role: "Contract Programmer — Frontend & Workflow Automation",
-    period: "AUG 2025 – DEC 2025",
-    categories: ["engineering", "va"],
-    primaryMetric: "< 5s",
-    primaryMetricLabel: "Complex Audit Report Generation",
-    problem:
-      "Fragmented manual Excel sheets caused data entry errors and 20-minute audit reconciliations.",
-    execution:
-      "Built a role-based web platform (Admin, Auditor, Staff) with immutable transaction trails and fast queries.",
-    impact:
-      "Cut material audit report generation from ~20 minutes of manual Excel work to under 5 seconds.",
-    stack: ["Python", "HTML/CSS", "Role-Based Auth", "Excel Migration", "Audit Reporting"],
-    previewMedia: {
-      type: "telemetry",
-      badge: "EXCEL -> WEB AUTOMATION // < 5.0S",
-      highlight: "1.84s Avg Query vs. ~20m Manual Excel",
-      sublabel: "Admin · Auditor · Staff Permission Trails",
-    },
-  },
-  {
-    id: "trailblazer-startup-lab",
-    index: "05",
-    code: "CS-03",
-    title: "Trailblazer Startup Lab — Incubation Lead",
-    clientOrContext: "Trailblazer Startup Lab, USTP",
-    locationTag: "USTP CDO // FULL SDLC",
-    role: "Project Lead",
-    period: "JUN 2026 – AUG 2026",
-    categories: ["leadership", "va"],
-    primaryMetric: "1.00",
-    primaryMetricLabel: "Final Grade (Highest Distinction)",
-    problem:
-      "Turning an early startup concept into a documented, QA-verified, and deployed software build on deadline.",
-    execution:
-      "Led system architecture specs, ClickUp sprint backlogs, and full-SDLC delivery through Demo Day.",
-    impact:
-      "Earned a Final Grade of 1.00—the highest possible academic distinction at USTP.",
-    stack: [
-      "Technical Leadership",
-      "SDLC Documentation",
-      "ClickUp",
-      "System Architecture",
-    ],
-    previewMedia: {
-      type: "telemetry",
-      badge: "INCUBATION LEADERSHIP",
-      highlight: "1.00 Final Distinction Grade",
-      sublabel: "Concept -> Architecture -> QA -> Demo Day",
-    },
-  },
-  {
-    id: "siam-cs3b",
-    index: "06",
-    code: "GH-02",
-    title: "SIAM_CS3B — Real-Time App & QA Suite",
-    clientOrContext: "GitHub Open Source · Render",
-    locationTag: "NODE.JS + SOCKET.IO + QA",
-    role: "Systems & QA Contributor",
-    period: "2026",
-    categories: ["engineering", "leadership", "github"],
-    primaryMetric: "100%",
-    primaryMetricLabel: "SDLC & QA Traceability",
-    problem:
-      "Early web builds often ship without real-time synchronization, CI/CD pipelines, or formal defect logs.",
-    execution:
-      "Built a Node.js + Express + Socket.IO application backed by Agile sprint logs, CI/CD, and risk registers.",
-    impact:
-      "Links live bidirectional Socket.IO events with verifiable QA defect and release tracking.",
-    stack: ["Node.js", "Express", "Socket.IO", "CI/CD", "QA Defect Logs"],
-    previewMedia: {
-      type: "telemetry",
-      badge: "DEVOPS & QA RIGOR",
-      highlight: "Socket.IO + CI/CD + Risk Registers",
-      sublabel: "Full Defect Log & Sprint Traceability",
-    },
-    links: {
-      repo: "https://github.com/Birky-andrie/SIAM_CS3B",
-    },
-  },
-  {
-    id: "financify",
-    index: "07",
-    code: "GH-03",
-    title: "Financify — Cross-Platform Budget & Analysis App",
-    clientOrContext: "GitHub Open Source · Flutter / Dart",
-    locationTag: "6 OS TARGETS · LIVE TEST RUN",
-    role: "Flutter Cross-Platform Developer",
-    period: "2025",
-    categories: ["engineering", "github"],
-    primaryMetric: "6 OS",
-    primaryMetricLabel: "Weekly ₱ Budget & Spending Delta App",
-    problem:
-      "Personal finance trackers often require bloated subscriptions instead of fast offline weekly ₱ budgeting.",
-    execution:
-      "Built a 625-line Flutter app (lib/main.dart) with BudgetScreen, AnalysisScreen delta trends, and SharedPreferences.",
-    impact:
-      "Targets 6 OS platforms from one Dart codebase—available to test-run live in Stage 04 of the Proof Stage.",
-    stack: ["Flutter", "Dart", "SharedPreferences", "ImagePicker", "6 OS Targets"],
-    previewMedia: {
-      type: "image",
-      src: "/financify/financify-preview.png",
-      badge: "FLUTTER LIVE MOBILE TEST RUN",
-      highlight: "₱ Weekly Budget · Delta Analysis · 6 OS",
-      sublabel: "Interactive lib/main.dart Runner in Proof Stage",
-    },
-    links: {
-      repo: "https://github.com/Birky-andrie/Financify",
     },
   },
 ];

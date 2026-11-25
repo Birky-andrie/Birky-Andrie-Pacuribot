@@ -14,17 +14,7 @@ const FILTERS: { id: WorkCategory; label: string }[] = [
   { id: "va", label: "VA & Ops" },
   { id: "creative", label: "Creative" },
   { id: "engineering", label: "Engineering" },
-  { id: "leadership", label: "Leadership" },
-  { id: "github", label: "GitHub" },
-];
-
-const STAGE_BG_PALETTE = [
-  "#1C1D20",
-  "#D6D7DC",
-  "#E2DCD5",
-  "#242730",
-  "#D9DFE4",
-  "#22252A",
+  { id: "github", label: "Open Source" },
 ];
 
 interface WorkMatrixProps {
@@ -100,11 +90,11 @@ export function WorkMatrix({
       onMouseMove={handleMouseMove}
     >
       <div className="mx-auto max-w-6xl px-6 sm:px-12">
-        {/* Eyebrow + Filter Pills */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-[var(--color-ink-muted)]">
-            Recent Work
-          </p>
+        {/* Heading + Filter Pills */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-10">
+          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">
+            Selected Work
+          </h2>
 
           <div
             className="flex flex-wrap gap-2"
@@ -197,12 +187,12 @@ export function WorkMatrix({
                 {isExpanded && (
                   <div
                     onMouseEnter={() => setIsHoveringList(false)}
-                    className="px-4 sm:px-8 pb-10 pt-6 space-y-6 border-t border-[var(--color-hairline)] bg-[var(--color-paper-alt)]"
+                    className="mx-1 mb-6 rounded-[28px] border border-[var(--color-hairline)] bg-[var(--color-paper-alt)] px-5 py-7 sm:px-8 sm:py-8 space-y-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-4">
                       <div>
-                        <div className="font-mono text-xs uppercase tracking-wider text-[#455CE9]">
-                          {study.code} // {study.clientOrContext} ({study.period})
+                        <div className="text-xs font-medium text-[#455CE9]">
+                          {study.clientOrContext} &middot; {study.period}
                         </div>
                         <p className="mt-1 max-w-3xl text-base sm:text-lg leading-relaxed text-[var(--color-ink)] font-medium">
                           {study.impact}
@@ -214,7 +204,7 @@ export function WorkMatrix({
                           <button
                             type="button"
                             onClick={() => onJumpToProof("husai")}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-4 py-2 font-mono text-xs uppercase tracking-wider text-white transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-4 py-2 text-xs font-medium text-white transition-colors cursor-pointer"
                           >
                             <Play className="h-3 w-3 fill-current" />
                             Open in Proof Stage
@@ -224,7 +214,7 @@ export function WorkMatrix({
                           <button
                             type="button"
                             onClick={() => onJumpToProof("hackerlily")}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-4 py-2 font-mono text-xs uppercase tracking-wider text-white transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-4 py-2 text-xs font-medium text-white transition-colors cursor-pointer"
                           >
                             <Play className="h-3 w-3 fill-current" />
                             Open 9:16 Reels Stage
@@ -234,7 +224,7 @@ export function WorkMatrix({
                           <button
                             type="button"
                             onClick={() => onJumpToProof("pacs")}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20] hover:bg-[#455CE9] px-4 py-2 font-mono text-xs uppercase tracking-wider text-white transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 rounded-full bg-[#1C1D20] hover:bg-[#455CE9] px-4 py-2 text-xs font-medium text-white transition-colors cursor-pointer"
                           >
                             <Play className="h-3 w-3 fill-current" />
                             Run &lt;5s Audit Benchmark
@@ -244,7 +234,7 @@ export function WorkMatrix({
                           <button
                             type="button"
                             onClick={() => onJumpToProof("financify")}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-4 py-2 font-mono text-xs uppercase tracking-wider text-white transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-4 py-2 text-xs font-medium text-white transition-colors cursor-pointer"
                           >
                             <Play className="h-3 w-3 fill-current" />
                             Run Live Mobile Test
@@ -255,7 +245,7 @@ export function WorkMatrix({
                             href={study.links.live}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1 rounded-full bg-[#1C1D20] hover:bg-[#455CE9] px-4 py-2 font-mono text-xs uppercase tracking-wider text-white transition-colors"
+                            className="inline-flex items-center gap-1 rounded-full bg-[#1C1D20] hover:bg-[#455CE9] px-4 py-2 text-xs font-medium text-white transition-colors"
                           >
                             Live Site
                             <ArrowUpRight className="h-3.5 w-3.5" />
@@ -266,7 +256,7 @@ export function WorkMatrix({
                             href={study.links.repo}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1 rounded-full border border-[#1C1D20]/25 bg-white hover:bg-[#1C1D20] hover:text-white px-4 py-2 font-mono text-xs uppercase tracking-wider text-[#1C1D20] transition-colors"
+                            className="inline-flex items-center gap-1 rounded-full border border-[var(--color-hairline)] bg-[var(--color-paper)] hover:bg-[#1C1D20] hover:text-white px-4 py-2 text-xs font-medium text-[var(--color-ink)] transition-colors"
                           >
                             GitHub
                             <ArrowUpRight className="h-3.5 w-3.5" />
@@ -277,24 +267,24 @@ export function WorkMatrix({
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div className="rounded-2xl bg-[var(--color-paper)] p-4 border border-[var(--color-hairline)]">
-                        <div className="font-mono text-[10px] uppercase tracking-widest text-[#455CE9] mb-1">
-                          01 // Challenge
+                        <div className="text-[11px] font-semibold text-[#455CE9] mb-1">
+                          Challenge
                         </div>
                         <p className="text-xs sm:text-sm leading-relaxed text-[var(--color-ink)]">
                           {study.problem}
                         </p>
                       </div>
                       <div className="rounded-2xl bg-[var(--color-paper)] p-4 border border-[var(--color-hairline)]">
-                        <div className="font-mono text-[10px] uppercase tracking-widest text-[#455CE9] mb-1">
-                          02 // System Built
+                        <div className="text-[11px] font-semibold text-[#455CE9] mb-1">
+                          System Built
                         </div>
                         <p className="text-xs sm:text-sm leading-relaxed text-[var(--color-ink)]">
                           {study.execution}
                         </p>
                       </div>
                       <div className="rounded-2xl bg-[var(--color-paper)] p-4 border border-[var(--color-hairline)]">
-                        <div className="font-mono text-[10px] uppercase tracking-widest text-[#455CE9] mb-1">
-                          03 // Verified Outcome
+                        <div className="text-[11px] font-semibold text-[#455CE9] mb-1">
+                          Verified Outcome
                         </div>
                         <p className="text-xs sm:text-sm leading-relaxed text-[var(--color-ink)]">
                           {study.impact}
@@ -303,34 +293,32 @@ export function WorkMatrix({
                     </div>
 
                     {study.id === "hackerlily-hipsurfer" && (
-                      <div className="bg-[#1C1D20] p-5 text-white">
-                        <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider mb-4">
-                          <span>INLINE 9:16 AD PLAYBACK (3 FEATURED CUTS)</span>
-                          <span className="text-[#999D9E]">
-                            UNMUTE OR EXPAND IN PLAYER CONTROLS
-                          </span>
+                      <div className="rounded-[24px] border border-white/12 bg-[#111318] p-5 text-white">
+                        <div className="flex items-center justify-between text-xs text-white/75 mb-4">
+                          <span className="font-medium text-white">Featured 9:16 Ad Cuts</span>
+                          <span>Unmute or expand in player controls</span>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                           {[
                             {
                               src: "/videos/hipsurfer-01.mp4",
                               poster: "/videos/hipsurfer-01-poster.jpg",
-                              label: "01 // Skeptic UGC (0:20)",
+                              label: "Skeptic UGC (0:20)",
                             },
                             {
                               src: "/videos/hipsurfer-02.mp4",
                               poster: "/videos/hipsurfer-02-poster.jpg",
-                              label: "02 // Competitor Switcher (0:20)",
+                              label: "Competitor Switcher (0:20)",
                             },
                             {
                               src: "/videos/hipsurfer-03.mp4",
                               poster: "/videos/hipsurfer-03-poster.jpg",
-                              label: "03 // Minimalist Aesthetic (0:18)",
+                              label: "Minimalist Aesthetic (0:18)",
                             },
                           ].map((vid) => (
                             <div
                               key={vid.src}
-                              className="border border-white/15 bg-[#141517]"
+                              className="overflow-hidden rounded-2xl border border-white/12 bg-[#141517]"
                             >
                               <video
                                 src={vid.src}
@@ -342,7 +330,7 @@ export function WorkMatrix({
                                 preload="metadata"
                                 className="aspect-[9/16] w-full object-cover"
                               />
-                              <div className="border-t border-white/15 px-3 py-2 font-mono text-[10px]">
+                              <div className="border-t border-white/10 px-3.5 py-2.5 text-xs text-white/85">
                                 {vid.label}
                               </div>
                             </div>
@@ -352,10 +340,10 @@ export function WorkMatrix({
                     )}
 
                     {study.id === "husai" && (
-                      <div className="bg-[#1C1D20] p-5 text-white">
-                        <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider mb-3">
-                          <span>HUSAI 60-SECOND PRODUCT REVEAL (REMOTION BUILD)</span>
-                          <span className="text-[#999D9E]">1920×1080 · H.264</span>
+                      <div className="rounded-[24px] border border-white/12 bg-[#111318] p-5 text-white">
+                        <div className="flex items-center justify-between text-xs text-white/75 mb-3">
+                          <span className="font-medium text-white">HusAI 60-Second Product Reveal (Remotion)</span>
+                          <span className="font-mono text-[11px]">1920×1080</span>
                         </div>
                         <video
                           src="/husai/husai-demo.mp4"
@@ -363,37 +351,35 @@ export function WorkMatrix({
                           controls
                           playsInline
                           preload="metadata"
-                          className="aspect-video w-full border border-white/15 bg-[#141517]"
+                          className="aspect-video w-full rounded-2xl border border-white/12 bg-[#141517]"
                         />
                       </div>
                     )}
 
                     {study.id === "financify" && (
-                      <div className="bg-[#1C1D20] p-5 text-white">
-                        <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-wider mb-4">
-                          <span>FINANCIFY LIVE TEST RUN CAPTURES (LIB/MAIN.DART)</span>
-                          <span className="text-[#999D9E]">
-                            BUDGET · ANALYSIS DELTA · SETTINGS
-                          </span>
+                      <div className="rounded-[24px] border border-white/12 bg-[#111318] p-5 text-white">
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-white/75 mb-4">
+                          <span className="font-medium text-white">Financify Flutter Captures (lib/main.dart)</span>
+                          <span>Budget · Analysis Delta · Settings</span>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                           {[
                             {
                               src: "/financify/screen-budget.png",
-                              label: "01 // BudgetScreen (Weekly ₱ Tracker)",
+                              label: "BudgetScreen (Weekly ₱ Tracker)",
                             },
                             {
                               src: "/financify/screen-analysis.png",
-                              label: "02 // AnalysisScreen (Spending Delta)",
+                              label: "AnalysisScreen (Spending Delta)",
                             },
                             {
                               src: "/financify/screen-settings.png",
-                              label: "03 // SettingsScreen (ImagePicker Profile)",
+                              label: "SettingsScreen (ImagePicker Profile)",
                             },
                           ].map((shot) => (
                             <div
                               key={shot.src}
-                              className="border border-white/15 bg-[#0E1014] flex flex-col justify-between"
+                              className="overflow-hidden rounded-2xl border border-white/12 bg-[#0E1014] flex flex-col justify-between"
                             >
                               <div className="p-4 flex items-center justify-center">
                                 <img
@@ -402,7 +388,7 @@ export function WorkMatrix({
                                   className="max-h-[340px] w-auto object-contain"
                                 />
                               </div>
-                              <div className="border-t border-white/15 px-3 py-2 font-mono text-[10px] text-white/85">
+                              <div className="border-t border-white/10 px-3.5 py-2.5 text-xs text-white/85">
                                 {shot.label}
                               </div>
                             </div>
@@ -415,7 +401,7 @@ export function WorkMatrix({
                       {study.stack.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-full border border-[var(--color-hairline)] bg-[var(--color-paper)] px-3 py-1 font-mono text-[11px] text-[var(--color-ink-muted)]"
+                          className="rounded-full border border-[var(--color-hairline)] bg-[var(--color-paper)] px-3 py-1 text-xs text-[var(--color-ink-muted)]"
                         >
                           {tag}
                         </span>
@@ -446,14 +432,14 @@ export function WorkMatrix({
         </div>
       </div>
 
-      {/* LAYER 1: Dennis Snellenberg 350x350 Vertical-Sliding Reel Preview Box (0.14 Spring Lerp) */}
+      {/* LAYER 1: Full-Bleed Edge-to-Edge 350x350 Vertical-Sliding Preview Panel (Zero Margins) */}
       <div
         ref={modalRef}
         aria-hidden="true"
         className="hidden lg:block pointer-events-none fixed top-0 left-0 z-40 h-[350px] w-[350px] will-change-transform"
       >
         <div
-          className={`h-full w-full overflow-hidden shadow-2xl transition-transform duration-500 ease-dennis ${
+          className={`h-full w-full overflow-hidden rounded-[28px] ring-1 ring-inset ring-white/20 shadow-[0_28px_70px_-12px_rgba(0,0,0,0.58)] transition-transform duration-500 ease-dennis ${
             showFloatingPreview ? "scale-100" : "scale-0"
           }`}
         >
@@ -464,66 +450,71 @@ export function WorkMatrix({
             }}
             className="h-full w-full transition-transform duration-500 ease-dennis"
           >
-            {filtered.map((study, idx) => (
+            {filtered.map((study) => (
               <div
                 key={study.id}
-                style={{
-                  backgroundColor:
-                    STAGE_BG_PALETTE[idx % STAGE_BG_PALETTE.length],
-                }}
-                className="h-[350px] w-[350px] p-6 flex items-center justify-center"
+                className="relative h-[350px] w-[350px] overflow-hidden bg-[#0D1017]"
               >
-                <div className="relative h-full w-full overflow-hidden bg-[#141517] flex items-center justify-center shadow-lg">
-                  {study.previewMedia.type === "video" &&
-                    study.previewMedia.src && (
-                      <video
-                        src={study.previewMedia.src}
-                        poster={study.previewMedia.poster}
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        className="h-full w-full object-cover"
-                      />
-                    )}
+                {study.previewMedia.type === "video" &&
+                  study.previewMedia.src && (
+                    <video
+                      src={study.previewMedia.src}
+                      poster={study.previewMedia.poster}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="h-full w-full object-cover"
+                    />
+                  )}
 
-                  {study.previewMedia.type === "image" &&
-                    study.previewMedia.src && (
-                      <img
-                        src={study.previewMedia.src}
-                        alt={study.title}
-                        className="h-full w-full object-cover object-top"
-                      />
-                    )}
+                {study.previewMedia.type === "image" &&
+                  study.previewMedia.src && (
+                    <img
+                      src={study.previewMedia.src}
+                      alt={study.title}
+                      className="h-full w-full object-cover object-center"
+                    />
+                  )}
 
-                  {study.previewMedia.type === "telemetry" && (
-                    <div className="p-6 text-center space-y-2 text-white">
-                      <div className="font-mono text-[10px] uppercase tracking-widest text-[#999D9E]">
-                        {study.previewMedia.badge}
-                      </div>
-                      <div className="font-mono text-4xl font-semibold tabular-nums">
+                {study.previewMedia.type === "telemetry" && (
+                  <div
+                    className="flex h-full w-full flex-col justify-between p-8 text-white"
+                    style={{
+                      background:
+                        "radial-gradient(120% 100% at 15% 10%, rgba(69, 92, 233, 0.34) 0%, rgba(13, 16, 23, 0.98) 62%)",
+                    }}
+                  >
+                    <span className="inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 font-mono text-[10px] tracking-wider text-white/85">
+                      {study.previewMedia.badge}
+                    </span>
+                    <div className="space-y-2">
+                      <div className="font-[family-name:var(--font-display)] text-6xl font-semibold tracking-tight tabular-nums">
                         {study.primaryMetric}
                       </div>
-                      <div className="text-xs text-white/80">
+                      <div className="text-sm font-medium text-white/90">
                         {study.previewMedia.highlight}
                       </div>
+                      <div className="text-xs text-white/60">
+                        {study.previewMedia.sublabel}
+                      </div>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* LAYER 2: Independent Faster-Lerping #455CE9 Blue "View" Cursor Circle (0.28 Spring Lerp) */}
+      {/* LAYER 2: Faster-Lerping Frosted Liquid Glass "View" Cursor Circle (0.28 Spring Lerp) */}
       <div
         ref={cursorCircleRef}
         aria-hidden="true"
         className="hidden lg:block pointer-events-none fixed top-0 left-0 z-50 h-20 w-20 will-change-transform"
       >
         <div
-          className={`h-full w-full rounded-full bg-[#455CE9] text-white flex items-center justify-center text-sm font-medium shadow-lg transition-transform duration-300 ease-dennis ${
+          className={`h-full w-full rounded-full border border-white/30 bg-[#455CE9]/85 backdrop-blur-xl text-white flex items-center justify-center text-sm font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_12px_30px_rgba(69,92,233,0.48)] transition-transform duration-300 ease-dennis ${
             showFloatingPreview ? "scale-100" : "scale-0"
           }`}
         >

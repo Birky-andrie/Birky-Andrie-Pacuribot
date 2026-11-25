@@ -827,8 +827,8 @@ export function InteractiveProofs({
         className="w-[340px] sm:w-[400px] h-[500px] shrink-0 flex flex-col justify-between p-5"
       >
         <div className="flex items-center justify-between gap-2 z-10">
-          <span className="rounded-full bg-[#2196F3]/20 border border-[#2196F3]/45 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-[#64B5F6]">
-            FINANCIFY // 6 OS FLUTTER
+          <span className="rounded-full bg-[#2196F3]/20 border border-[#2196F3]/45 px-3 py-1 text-[11px] font-medium text-[#64B5F6]">
+            Financify &middot; 6-OS Flutter
           </span>
           <a
             href="https://github.com/Birky-andrie/Financify"
@@ -962,10 +962,7 @@ export function InteractiveProofs({
       {/* Minimal Header + Left-to-Right Controls */}
       <div className="mx-auto max-w-7xl px-6 sm:px-10 mb-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#7D92FF]">
-            02 // PROOF RAIL
-          </p>
-          <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl sm:text-5xl font-normal tracking-[-0.03em] text-white">
+          <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-white">
             Shipped work. Live demos.
           </h2>
         </div>

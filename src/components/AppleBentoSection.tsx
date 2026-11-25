@@ -132,18 +132,15 @@ export function AppleBentoSection({
       className="theme-surface bg-[var(--color-paper)] text-[var(--color-ink)] pt-16 pb-24 sm:pt-24 sm:pb-32"
     >
       <div className="mx-auto max-w-6xl px-6 sm:px-12">
-        {/* Clean Minimal Header (Zero word clutter) */}
+        {/* Clean Minimal Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-10">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#455CE9]">
-              03 // CORE PILLARS
-            </p>
-            <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl sm:text-5xl font-medium tracking-[-0.03em] text-[var(--color-ink)]">
+            <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-[var(--color-ink)]">
               What I do. What shipped.
             </h2>
           </div>
-          <p className="font-mono text-[11px] uppercase tracking-widest text-[var(--color-ink-muted)]">
-            HOVER OR CLICK PANEL TO INTERACT
+          <p className="text-xs sm:text-sm text-[var(--color-ink-muted)]">
+            Hover or tap any panel to interact live
           </p>
         </div>
 
@@ -160,9 +157,9 @@ export function AppleBentoSection({
             }`}
           >
             <div className="flex items-center justify-between gap-2 min-w-0">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-hairline)] bg-[var(--color-paper)] px-2.5 py-1 font-mono text-[9.5px] uppercase tracking-wider whitespace-nowrap min-w-0 truncate text-[var(--color-ink)]">
-                <Cpu className="h-3 w-3 text-[#455CE9] shrink-0" />
-                <span className="truncate">01 &middot; Software &amp; AI</span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-hairline)] bg-[var(--color-paper)] px-3 py-1 text-xs font-medium whitespace-nowrap min-w-0 truncate text-[var(--color-ink)]">
+                <Cpu className="h-3.5 w-3.5 text-[#455CE9] shrink-0" />
+                <span className="truncate">Software &amp; AI</span>
               </span>
               <span className="font-mono text-xs font-semibold tabular-nums whitespace-nowrap shrink-0 text-[#455CE9]">
                 &lt; 5s
@@ -269,9 +266,9 @@ export function AppleBentoSection({
             }`}
           >
             <div className="flex items-center justify-between gap-2 min-w-0">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-hairline)] bg-[var(--color-paper)] px-2.5 py-1 font-mono text-[9.5px] uppercase tracking-wider whitespace-nowrap min-w-0 truncate text-[var(--color-ink)]">
-                <Film className="h-3 w-3 text-[#455CE9] shrink-0" />
-                <span className="truncate">02 &middot; Paid Video Ads</span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-hairline)] bg-[var(--color-paper)] px-3 py-1 text-xs font-medium whitespace-nowrap min-w-0 truncate text-[var(--color-ink)]">
+                <Film className="h-3.5 w-3.5 text-[#455CE9] shrink-0" />
+                <span className="truncate">Paid Video Ads</span>
               </span>
               <span className="font-mono text-xs font-semibold tabular-nums whitespace-nowrap shrink-0 text-[#455CE9]">
                 45+ Cuts
@@ -390,12 +387,12 @@ export function AppleBentoSection({
             }`}
           >
             <div className="flex items-center justify-between gap-2 min-w-0">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-hairline)] bg-[var(--color-paper)] px-2.5 py-1 font-mono text-[9.5px] uppercase tracking-wider whitespace-nowrap min-w-0 truncate text-[var(--color-ink)]">
-                <Globe className="h-3 w-3 text-[#455CE9] shrink-0" />
-                <span className="truncate">03 &middot; Remote Ops &amp; SMM</span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-hairline)] bg-[var(--color-paper)] px-3 py-1 text-xs font-medium whitespace-nowrap min-w-0 truncate text-[var(--color-ink)]">
+                <Globe className="h-3.5 w-3.5 text-[#455CE9] shrink-0" />
+                <span className="truncate">Remote Ops &amp; SMM</span>
               </span>
-              <span className="font-mono text-[11px] uppercase tracking-wider whitespace-nowrap shrink-0 text-emerald-500 flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+              <span className="font-mono text-[11px] uppercase tracking-wider whitespace-nowrap shrink-0 text-emerald-500 flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 UTC+8
               </span>
             </div>

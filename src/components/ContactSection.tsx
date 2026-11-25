@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { ArrowDownLeft, ArrowUpRight, Check, Copy } from "lucide-react";
+import {
+  ArrowDownLeft,
+  ArrowUpRight,
+  Check,
+  Copy,
+  Download,
+  MessageCircle,
+} from "lucide-react";
 import { PROFILE, SERVICES } from "@/data/portfolio";
 import { MagneticButton } from "./MagneticButton";
 
@@ -17,10 +24,11 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
   const [email, setEmail] = useState("");
   const [brief, setBrief] = useState("");
   const [copiedBrief, setCopiedBrief] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
   const [showBriefForm, setShowBriefForm] = useState(false);
   const [localTime, setLocalTime] = useState("UTC+8 (CDO, PH)");
   const [submitStatus, setSubmitStatus] = useState<
-    "idle" | "submitting" | "sent"
+    "idle" | "submitting" | "sent-direct" | "sent-fallback"
   >("idle");
 
   useEffect(() => {
@@ -59,6 +67,10 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
     ].join("\n");
   };
 
+  const mailtoHref = `mailto:${PROFILE.email}?subject=${encodeURIComponent(
+    `[Portfolio Inquiry] ${service}`
+  )}&body=${encodeURIComponent(buildBriefText())}`;
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitStatus("submitting");
@@ -70,18 +82,15 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
         body: JSON.stringify({ service, name, email, brief }),
       });
       const data = (await res.json()) as { ok?: boolean; mode?: string };
-      setSubmitStatus("sent");
-
-      if (data.mode !== "resend") {
-        const subject = encodeURIComponent(`[Portfolio Inquiry] ${service}`);
-        const body = encodeURIComponent(buildBriefText());
-        window.location.href = `mailto:${PROFILE.email}?subject=${subject}&body=${body}`;
+      if (data.mode === "resend") {
+        setSubmitStatus("sent-direct");
+      } else {
+        await navigator.clipboard.writeText(buildBriefText()).catch(() => {});
+        setSubmitStatus("sent-fallback");
       }
     } catch {
-      setSubmitStatus("sent");
-      const subject = encodeURIComponent(`[Portfolio Inquiry] ${service}`);
-      const body = encodeURIComponent(buildBriefText());
-      window.location.href = `mailto:${PROFILE.email}?subject=${subject}&body=${body}`;
+      await navigator.clipboard.writeText(buildBriefText()).catch(() => {});
+      setSubmitStatus("sent-fallback");
     }
   };
 
@@ -95,24 +104,34 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
     }
   };
 
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(PROFILE.email);
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2200);
+    } catch {
+      // ignore
+    }
+  };
+
   return (
     <footer
       id="contact"
-      className="relative bg-[#111318] text-white pt-32 sm:pt-44 pb-10"
+      className="relative bg-[#080A0F] text-white pt-32 sm:pt-40 pb-12"
     >
-      {/* Seamless Top Blend from Core Pillars Surface into Obsidian Contact Footer */}
+      {/* Top Blend from Core Pillars Surface into Obsidian Contact Footer */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[var(--color-paper)] to-transparent"
       />
       <div className="mx-auto max-w-6xl px-6 sm:px-12">
-        {/* Iconic Dennis Snellenberg "Let's work together" Header with Circular Portrait Badge */}
+        {/* Header with Crisp Editorial Portrait Badge */}
         <div className="flex items-end justify-between">
           <div className="space-y-2">
             <div className="flex items-center gap-4 sm:gap-6">
-              <div className="h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden bg-[#999D9E] shrink-0">
+              <div className="h-14 w-14 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-1 ring-white/25 bg-[#141822] shrink-0 shadow-lg">
                 <img
-                  src="/portrait-avatar.jpg"
+                  src="/about-portrait.jpg"
                   alt={PROFILE.name}
                   className="h-full w-full object-cover object-top"
                 />
@@ -132,108 +151,121 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
           />
         </div>
 
-        {/* Horizontal Divider with Overlapping #455CE9 Blue Circular Liquid-Fill Magnetic "Get in touch" Button */}
+        {/* Hairline Divider + Overlapping Frosted Primary "Get in touch" Button */}
         <div className="relative mt-16 sm:mt-24 mb-16 sm:mb-20">
-          <div className="h-[1px] w-full bg-white/20" />
+          <div className="h-[1px] w-full bg-white/15" />
           <div className="absolute right-6 sm:right-20 -top-20 sm:-top-24">
             <MagneticButton
               onClick={() => setShowBriefForm((prev) => !prev)}
               fillColor="#334BD3"
-              className="h-40 w-40 sm:h-48 sm:w-48 rounded-full bg-[#455CE9] text-white flex items-center justify-center shadow-lg"
+              className="h-40 w-40 sm:h-48 sm:w-48 rounded-full border border-white/25 bg-[#455CE9] text-white flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_20px_50px_rgba(69,92,233,0.4)]"
             >
               <span className="text-base sm:text-lg font-medium tracking-tight">
-                Get in touch
+                {showBriefForm ? "Hide brief" : "Get in touch"}
               </span>
-              <span className="mt-1 font-mono text-[10px] uppercase tracking-widest text-white/80">
-                {showBriefForm ? "Hide Brief" : "Scope Project"}
+              <span className="mt-1 text-xs text-white/80">
+                Scope a project
               </span>
             </MagneticButton>
           </div>
         </div>
 
-        {/* Dennis Snellenberg Rounded Liquid-Fill Magnetic Contact Pills */}
-        <div className="flex flex-wrap items-center gap-4">
+        {/* 4 Streamlined Zero-Duplicate Client Action Pills */}
+        <div className="flex flex-wrap items-center gap-3.5">
           <MagneticButton
-            href={`mailto:${PROFILE.email}`}
-            strength={0.22}
+            onClick={handleCopyEmail}
+            strength={0.2}
             textStrength={0.1}
-            className="rounded-full border border-white/20 px-7 py-4 text-sm sm:text-base text-white"
+            title="Click to copy email address"
+            className="rounded-full border border-white/16 bg-white/[0.04] backdrop-blur-xl px-6 py-3.5 text-sm sm:text-base text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]"
           >
-            <span>{PROFILE.email}</span>
+            <span className="inline-flex items-center gap-2">
+              {copiedEmail ? (
+                <>
+                  <Check className="h-4 w-4 text-emerald-400" aria-hidden="true" />
+                  <span>Copied {PROFILE.email}</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4 text-white/70" aria-hidden="true" />
+                  <span>{PROFILE.email}</span>
+                </>
+              )}
+            </span>
           </MagneticButton>
 
           <MagneticButton
-            href={`tel:${PROFILE.phone.replace(/\s+/g, "")}`}
-            strength={0.22}
+            href={PROFILE.whatsappUrl}
+            strength={0.2}
             textStrength={0.1}
-            className="rounded-full border border-white/20 px-7 py-4 text-sm sm:text-base text-white tabular-nums"
+            className="rounded-full border border-white/16 bg-white/[0.04] backdrop-blur-xl px-6 py-3.5 text-sm sm:text-base text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]"
           >
-            <span>{PROFILE.phone}</span>
+            <span className="inline-flex items-center gap-2">
+              <MessageCircle className="h-4 w-4 text-emerald-400" aria-hidden="true" />
+              <span>WhatsApp &middot; {PROFILE.phone}</span>
+            </span>
           </MagneticButton>
 
           <MagneticButton
             href="/Birky_Andrie_Pacuribot_CV.pdf"
-            strength={0.22}
+            strength={0.2}
             textStrength={0.1}
-            className="rounded-full border border-white/20 px-7 py-4 text-sm sm:text-base text-white"
+            className="rounded-full border border-white/16 bg-white/[0.04] backdrop-blur-xl px-6 py-3.5 text-sm sm:text-base text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]"
           >
-            <span>Download CV (PDF)</span>
+            <span className="inline-flex items-center gap-2">
+              <Download className="h-4 w-4 text-white/75" aria-hidden="true" />
+              <span>Download CV (PDF)</span>
+            </span>
           </MagneticButton>
 
           <MagneticButton
-            href="/Birky_Andrie_Pacuribot_Harvard_CV.docx"
-            strength={0.22}
+            href={PROFILE.github}
+            strength={0.2}
             textStrength={0.1}
-            className="rounded-full border border-white/20 px-7 py-4 text-sm sm:text-base text-white"
+            className="rounded-full border border-white/16 bg-white/[0.04] backdrop-blur-xl px-6 py-3.5 text-sm sm:text-base text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]"
           >
-            <span>Download CV (Word)</span>
-          </MagneticButton>
-
-          <MagneticButton
-            onClick={() => setShowBriefForm((prev) => !prev)}
-            strength={0.22}
-            textStrength={0.1}
-            className="rounded-full border border-white/20 px-7 py-4 text-sm sm:text-base text-white/85"
-          >
-            <span>
-              {showBriefForm
-                ? "Close Brief Builder"
-                : "+ Open Project Brief Builder"}
+            <span className="inline-flex items-center gap-1.5">
+              <span>GitHub</span>
+              <ArrowUpRight className="h-4 w-4 text-white/75" aria-hidden="true" />
             </span>
           </MagneticButton>
         </div>
 
-        {/* Expandable Project Brief Builder */}
+        {/* Frosted Liquid Glass Project Brief Builder */}
         {showBriefForm && (
           <form
             onSubmit={handleSubmit}
-            className="mt-10 border border-white/20 bg-[#141517] p-6 sm:p-8 space-y-5"
+            className="mt-10 rounded-[28px] border border-white/15 bg-white/[0.05] backdrop-blur-2xl p-6 sm:p-9 space-y-5 shadow-[0_28px_80px_-16px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.16)]"
           >
-            <div className="flex items-center justify-between border-b border-white/15 pb-4">
-              <span className="font-mono text-xs uppercase tracking-wider text-white">
-                Project Brief Intake
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/12 pb-4">
+              <span className="text-base font-medium text-white">
+                Project Brief
               </span>
-              <span className="font-mono text-[11px] text-[#999D9E]">
-                VERCEL API + DIRECT MAILTO
-              </span>
+              <a
+                href="/Birky_Andrie_Pacuribot_Harvard_CV.docx"
+                download
+                className="text-xs text-white/65 hover:text-white underline"
+              >
+                Need ATS Word (.docx) CV instead?
+              </a>
             </div>
 
             <div>
               <label
                 htmlFor="service-select"
-                className="block font-mono text-xs uppercase tracking-wider text-[#999D9E] mb-2"
+                className="block text-xs font-medium text-white/75 mb-2"
               >
-                Service Pillar
+                What do you need help with?
               </label>
               <select
                 id="service-select"
                 value={service}
                 onChange={(e) => setService(e.target.value)}
-                className="w-full border border-white/25 bg-[#1C1D20] px-3.5 py-2.5 font-mono text-xs text-white focus:outline-none focus:border-[#455CE9]"
+                className="w-full rounded-xl border border-white/16 bg-[#111520] px-4 py-3 text-sm text-white focus:outline-none focus:border-[#455CE9]"
               >
                 {SERVICES.map((item) => (
                   <option key={item.id} value={item.title}>
-                    {item.number} — {item.title}
+                    {item.title}
                   </option>
                 ))}
               </select>
@@ -243,9 +275,9 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
               <div>
                 <label
                   htmlFor="client-name"
-                  className="block font-mono text-xs uppercase tracking-wider text-[#999D9E] mb-2"
+                  className="block text-xs font-medium text-white/75 mb-2"
                 >
-                  Your Name
+                  Your name
                 </label>
                 <input
                   id="client-name"
@@ -254,15 +286,15 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Alex Rivera"
-                  className="w-full border border-white/20 bg-[#1C1D20] px-3.5 py-2.5 text-sm text-white placeholder:text-[#999D9E]/60 focus:outline-none focus:border-[#455CE9]"
+                  className="w-full rounded-xl border border-white/16 bg-[#111520] px-4 py-3 text-sm text-white placeholder:text-white/35 focus:outline-none focus:border-[#455CE9]"
                 />
               </div>
               <div>
                 <label
                   htmlFor="client-email"
-                  className="block font-mono text-xs uppercase tracking-wider text-[#999D9E] mb-2"
+                  className="block text-xs font-medium text-white/75 mb-2"
                 >
-                  Work Email
+                  Work email
                 </label>
                 <input
                   id="client-email"
@@ -271,7 +303,7 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="alex@company.com"
-                  className="w-full border border-white/20 bg-[#1C1D20] px-3.5 py-2.5 text-sm text-white placeholder:text-[#999D9E]/60 focus:outline-none focus:border-[#455CE9]"
+                  className="w-full rounded-xl border border-white/16 bg-[#111520] px-4 py-3 text-sm text-white placeholder:text-white/35 focus:outline-none focus:border-[#455CE9]"
                 />
               </div>
             </div>
@@ -279,9 +311,9 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
             <div>
               <label
                 htmlFor="project-brief"
-                className="block font-mono text-xs uppercase tracking-wider text-[#999D9E] mb-2"
+                className="block text-xs font-medium text-white/75 mb-2"
               >
-                Scope, Bottleneck &amp; Timeline
+                Goal &amp; timeline
               </label>
               <textarea
                 id="project-brief"
@@ -289,8 +321,8 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
                 required
                 value={brief}
                 onChange={(e) => setBrief(e.target.value)}
-                placeholder="Describe the workflow bottleneck, product prototype, or paid ad campaign target..."
-                className="w-full border border-white/20 bg-[#1C1D20] px-3.5 py-2.5 text-sm text-white placeholder:text-[#999D9E]/60 focus:outline-none focus:border-[#455CE9]"
+                placeholder="Share the product, ad campaign, or operations workflow you want shipped..."
+                className="w-full rounded-xl border border-white/16 bg-[#111520] px-4 py-3 text-sm text-white placeholder:text-white/35 focus:outline-none focus:border-[#455CE9]"
               />
             </div>
 
@@ -298,33 +330,47 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
               <button
                 type="submit"
                 disabled={submitStatus === "submitting"}
-                className="inline-flex items-center gap-2 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-6 py-3 font-mono text-xs uppercase tracking-wider text-white transition-colors cursor-pointer disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-full bg-[#455CE9] hover:bg-[#334BD3] px-6 py-3 text-xs sm:text-sm font-medium text-white transition-colors cursor-pointer disabled:opacity-60"
               >
-                {submitStatus === "submitting"
-                  ? "Dispatching Brief..."
-                  : submitStatus === "sent"
-                    ? "Brief Logged // Send Again"
-                    : "Send Brief via Email"}
+                <span>
+                  {submitStatus === "submitting"
+                    ? "Sending brief..."
+                    : submitStatus === "sent-direct"
+                      ? "Brief sent — I'll reply shortly"
+                      : submitStatus === "sent-fallback"
+                        ? "Brief copied — open email below"
+                        : "Send project brief"}
+                </span>
                 <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
               </button>
+
+              {submitStatus === "sent-fallback" && (
+                <a
+                  href={mailtoHref}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/40 bg-emerald-500/15 px-5 py-3 text-xs sm:text-sm font-medium text-emerald-300 hover:bg-emerald-500/25 transition-colors"
+                >
+                  <span>Open pre-filled email</span>
+                  <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                </a>
+              )}
 
               <button
                 type="button"
                 onClick={handleCopyBrief}
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-3 font-mono text-xs uppercase tracking-wider text-white hover:bg-white/10 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-full border border-white/16 px-5 py-3 text-xs sm:text-sm text-white/85 hover:bg-white/10 transition-colors cursor-pointer"
               >
                 {copiedBrief ? (
                   <>
                     <Check
-                      className="h-3.5 w-3.5 text-[#455CE9]"
+                      className="h-3.5 w-3.5 text-emerald-400"
                       aria-hidden="true"
                     />
-                    <span>Brief Copied</span>
+                    <span>Brief copied</span>
                   </>
                 ) : (
                   <>
                     <Copy className="h-3.5 w-3.5" aria-hidden="true" />
-                    <span>Copy Brief</span>
+                    <span>Copy brief</span>
                   </>
                 )}
               </button>
@@ -332,19 +378,19 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
           </form>
         )}
 
-        {/* Dennis Snellenberg Signature Bottom Bar: VERSION | LOCAL TIME | SOCIALS */}
-        <div className="mt-24 pt-8 border-t border-white/15 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-8">
+        {/* Bottom Bar: Edition | Local Time | Distinction | Direct Links */}
+        <div className="mt-24 pt-8 border-t border-white/12 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-8">
           <div className="flex flex-wrap gap-10">
             <div>
-              <div className="font-mono text-[10px] uppercase tracking-widest text-[#999D9E] mb-1.5">
-                Version
+              <div className="text-[11px] font-medium text-white/50 mb-1">
+                Edition
               </div>
               <div className="text-xs sm:text-sm text-white">
-                2026 &copy; Edition
+                2026 &copy; Birky Pacuribot
               </div>
             </div>
             <div>
-              <div className="font-mono text-[10px] uppercase tracking-widest text-[#999D9E] mb-1.5">
+              <div className="text-[11px] font-medium text-white/50 mb-1">
                 Local Time
               </div>
               <div className="text-xs sm:text-sm text-white tabular-nums">
@@ -352,20 +398,28 @@ export function ContactSection({ preselectedService }: ContactSectionProps) {
               </div>
             </div>
             <div>
-              <div className="font-mono text-[10px] uppercase tracking-widest text-[#999D9E] mb-1.5">
+              <div className="text-[11px] font-medium text-white/50 mb-1">
                 Education &amp; Distinction
               </div>
               <div className="text-xs sm:text-sm text-white">
-                USTP BS CS &apos;27 · 1.00 Startup Lab Lead
+                USTP BS CS &apos;27 &middot; 1.00 Startup Lab Lead
               </div>
             </div>
           </div>
 
           <div>
-            <div className="font-mono text-[10px] uppercase tracking-widest text-[#999D9E] mb-1.5">
-              Socials
+            <div className="text-[11px] font-medium text-white/50 mb-1">
+              Direct Channels
             </div>
             <div className="flex items-center gap-6 text-xs sm:text-sm text-white">
+              <a
+                href={PROFILE.whatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#455CE9] transition-colors"
+              >
+                WhatsApp
+              </a>
               <a
                 href={PROFILE.github}
                 target="_blank"
