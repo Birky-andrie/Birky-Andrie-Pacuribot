@@ -479,24 +479,69 @@ export function WorkMatrix({
 
                 {study.previewMedia.type === "telemetry" && (
                   <div
-                    className="flex h-full w-full flex-col justify-between p-8 text-white"
+                    className="flex h-full w-full flex-col justify-between p-5 text-white"
                     style={{
                       background:
-                        "radial-gradient(120% 100% at 15% 10%, rgba(69, 92, 233, 0.34) 0%, rgba(13, 16, 23, 0.98) 62%)",
+                        "radial-gradient(125% 110% at 15% 5%, rgba(69, 92, 233, 0.32) 0%, rgba(11, 14, 22, 0.99) 58%)",
                     }}
                   >
-                    <span className="inline-flex w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 font-mono text-[10px] tracking-wider text-white/85">
-                      {study.previewMedia.badge}
-                    </span>
-                    <div className="space-y-2">
-                      <div className="font-[family-name:var(--font-display)] text-6xl font-semibold tracking-tight tabular-nums">
-                        {study.primaryMetric}
+                    {/* Miniature App Top Bar */}
+                    <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-3">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="h-2 w-2 rounded-full bg-emerald-400 shrink-0" />
+                        <span className="truncate text-[11px] font-medium text-white/90">
+                          Pacs Builders · Audit Engine
+                        </span>
                       </div>
-                      <div className="text-sm font-medium text-white/90">
-                        {study.previewMedia.highlight}
+                      <span className="rounded-full border border-white/15 bg-white/10 px-2 py-0.5 font-mono text-[9px] text-[#9EB0FF] shrink-0">
+                        ADMIN · AUDITOR
+                      </span>
+                    </div>
+
+                    {/* Latency Comparison Card */}
+                    <div className="rounded-2xl border border-white/12 bg-white/[0.05] p-3.5 space-y-2.5">
+                      <div className="flex items-end justify-between gap-2">
+                        <div>
+                          <div className="font-mono text-[9px] uppercase tracking-wider text-white/55">
+                            Automated Query
+                          </div>
+                          <div className="font-[family-name:var(--font-display)] text-4xl font-semibold leading-none tracking-tight tabular-nums text-white mt-0.5">
+                            1.84s
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-mono text-[9px] uppercase tracking-wider text-emerald-400">
+                            &lt; 5s SLA Pass
+                          </div>
+                          <div className="font-mono text-[10px] text-white/55 tabular-nums">
+                            vs ~20m Excel
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-xs text-white/60">
-                        {study.previewMedia.sublabel}
+
+                      <div className="space-y-1">
+                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                          <div className="h-full w-[14%] rounded-full bg-[#455CE9]" />
+                        </div>
+                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                          <div className="h-full w-full rounded-full bg-white/25" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Immutable Material Ledger Rows */}
+                    <div className="rounded-2xl border border-white/10 bg-black/35 divide-y divide-white/[0.07] font-mono text-[9.5px]">
+                      <div className="flex items-center justify-between px-3 py-2 text-white/85">
+                        <span className="truncate">TX-9041 · Portland Cement</span>
+                        <span className="text-emerald-400 shrink-0 ml-2">VERIFIED</span>
+                      </div>
+                      <div className="flex items-center justify-between px-3 py-2 text-white/85">
+                        <span className="truncate">TX-9042 · Rebar 12mm (180)</span>
+                        <span className="text-emerald-400 shrink-0 ml-2">VERIFIED</span>
+                      </div>
+                      <div className="flex items-center justify-between px-3 py-2 text-white/85">
+                        <span className="truncate">TX-9043 · Marine Plywood</span>
+                        <span className="text-[#9EB0FF] shrink-0 ml-2">FLAGGED</span>
                       </div>
                     </div>
                   </div>
